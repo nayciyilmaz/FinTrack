@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">FinTrack</string>
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_analysis">Analiz</string>
+    <string name="nav_ai_advisor">AI Asistan</string>
+    <string name="nav_profile">Profil</string>
+    <string name="title_home">Ana Sayfa</string>
+    <string name="title_transactions">İşlemler</string>
+    <string name="title_add_transaction">İşlem Ekle</string>
+    <string name="title_spending_analysis">Harcama Analizi</string>
+    <string name="title_savings_goals">Tasarruf ve Hedefler</string>
+    <string name="title_budget_limits">Bütçe ve Limitler</string>
+    <string name="title_payment_reminders">Ödeme Hatırlatıcıları</string>
+    <string name="title_reports">Raporlar</string>
+    <string name="title_profile">Profil</string>
+    <string name="title_ai_advisor">AI Asistan</string>
+</resources>
