@@ -14,4 +14,26 @@
     <string name="title_reports">Raporlar</string>
     <string name="title_profile">Profil</string>
     <string name="title_ai_advisor">AI Asistan</string>
+    <string name="sign_in_title">Giriş Yap</string>
+    <string name="sign_in_email">E-Mail</string>
+    <string name="sign_in_password">Şifre</string>
+    <string name="sign_in_forgot_password">Şifremi Unuttum</string>
+    <string name="sign_in_google_button">Google ile Giriş Yap</string>
+    <string name="sign_in_no_account">Hala üye değil misiniz?</string>
+    <string name="sign_in_register">Üye Ol</string>
+    <string name="sign_up_title">Kayıt Ol</string>
+    <string name="sign_up_first_name">İsim</string>
+    <string name="sign_up_last_name">Soyisim</string>
+    <string name="sign_up_have_account">Hesabınız var mı?</string>
+    <string name="forgot_password_title">Şifremi Unuttum</string>
+    <string name="forgot_password_description">Şifrenizi sıfırlamak için e-mailinizi girin. Size şifre sıfırlama kodu göndereceğiz.</string>
+    <string name="forgot_password_send">Gönder</string>
+    <string name="forgot_password_remembered">Şifremi hatırladım</string>
+    <string name="forgot_password_check_email">Lütfen mailinizi kontrol edin. Gelen kodu aşağıdaki yere giriniz.</string>
+    <string name="forgot_password_confirm">Onayla</string>
+    <string name="forgot_password_go_back">Geri Gel</string>
+    <string name="forgot_password_new_password">Kullanmak istediğiniz şifreyi giriniz.</string>
+    <string name="forgot_password_save">Kaydet</string>
+    <string name="forgot_password_new_password_label">Yeni Şifre</string>
+    <string name="forgot_password_new_password_repeat">Yeni Şifre (Tekrar)</string>
 </resources>
