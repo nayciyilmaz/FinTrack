@@ -19,16 +19,11 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.components.EditButton
+import com.example.fintrack.components.EditIconButton
+import com.example.fintrack.components.EditOutlinedTextField
+import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.WaveBackground
 import com.example.fintrack.features.auth.AuthScreens
 import com.example.fintrack.features.main.MainScreens
@@ -80,7 +79,7 @@ fun SignInScreen(
                 modifier = modifier.padding(bottom = 20.dp)
             )
 
-            OutlinedTextField(
+            EditOutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 modifier = modifier
@@ -99,17 +98,10 @@ fun SignInScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
-                ),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
-                    focusedLabelColor = colorResource(id = R.color.bottom_bar_fab)
                 )
             )
 
-            OutlinedTextField(
+            EditOutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 modifier = modifier.fillMaxWidth(),
@@ -124,42 +116,28 @@ fun SignInScreen(
                     )
                 },
                 trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.icon_orange)
-                        )
-                    }
+                    EditIconButton(
+                        onClick = { passwordVisible = !passwordVisible },
+                        imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                    )
                 },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
-                ),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
-                    focusedLabelColor = colorResource(id = R.color.bottom_bar_fab)
                 )
             )
 
-            TextButton(
+            EditTextButton(
                 onClick = { navController.navigate(AuthScreens.ForgotPasswordScreen.route) },
+                text = stringResource(id = R.string.sign_in_forgot_password),
                 modifier = modifier
                     .align(Alignment.End)
-                    .padding(vertical = 4.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.sign_in_forgot_password),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
+                    .padding(vertical = 4.dp),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
 
-            Button(
+            EditButton(
                 onClick = {
                     navigateAndClearBackStack(
                         navController = navController,
@@ -168,16 +146,9 @@ fun SignInScreen(
                         inclusive = true
                     )
                 },
-                modifier = modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.bottom_bar_fab))
-            ) {
-                Text(
-                    text = stringResource(id = R.string.sign_in_title),
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                    modifier = modifier.padding(8.dp)
-                )
-            }
+                text = stringResource(id = R.string.sign_in_title),
+                modifier = modifier.fillMaxWidth()
+            )
 
             OutlinedButton(
                 onClick = {},
@@ -191,13 +162,13 @@ fun SignInScreen(
                 Image(
                     painter = painterResource(id = R.drawable.google_g_2015),
                     contentDescription = null,
-                    modifier = modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp)
                 )
                 Text(
                     text = stringResource(id = R.string.sign_in_google_button),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
                     color = colorResource(id = R.color.text_on_surface),
-                    modifier = modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp)
                 )
             }
 
@@ -210,13 +181,10 @@ fun SignInScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(id = R.color.text_secondary)
                 )
-                TextButton(onClick = { navController.navigate(AuthScreens.SignUpScreen.route) }) {
-                    Text(
-                        text = stringResource(id = R.string.sign_in_register),
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                        color = colorResource(id = R.color.bottom_bar_fab)
-                    )
-                }
+                EditTextButton(
+                    onClick = { navController.navigate(AuthScreens.SignUpScreen.route) },
+                    text = stringResource(id = R.string.sign_in_register)
+                )
             }
         }
     }

@@ -17,15 +17,9 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -53,6 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.components.EditButton
+import com.example.fintrack.components.EditIconButton
+import com.example.fintrack.components.EditOutlinedTextField
+import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.WaveBackground
 import com.example.fintrack.features.auth.AuthScreens
 import com.example.fintrack.util.navigateAndClearBackStack
@@ -141,7 +139,7 @@ private fun EmailSection(
         modifier = modifier.padding(bottom = 8.dp)
     )
 
-    OutlinedTextField(
+    EditOutlinedTextField(
         value = email,
         onValueChange = onEmailChange,
         modifier = modifier
@@ -160,30 +158,16 @@ private fun EmailSection(
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Done
-        ),
-        singleLine = true,
-        shape = RoundedCornerShape(12.dp),
-        textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
-            focusedLabelColor = colorResource(id = R.color.bottom_bar_fab)
         )
     )
 
-    Button(
+    EditButton(
         onClick = onSendClick,
+        text = stringResource(id = R.string.forgot_password_send),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.bottom_bar_fab))
-    ) {
-        Text(
-            text = stringResource(id = R.string.forgot_password_send),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            modifier = modifier.padding(8.dp)
-        )
-    }
+            .padding(top = 16.dp)
+    )
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -195,13 +179,10 @@ private fun EmailSection(
             style = MaterialTheme.typography.bodyMedium,
             color = colorResource(id = R.color.text_secondary)
         )
-        TextButton(onClick = onSignInClick) {
-            Text(
-                text = stringResource(id = R.string.sign_in_title),
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                color = colorResource(id = R.color.bottom_bar_fab)
-            )
-        }
+        EditTextButton(
+            onClick = onSignInClick,
+            text = stringResource(id = R.string.sign_in_title)
+        )
     }
 }
 
@@ -264,31 +245,19 @@ private fun CodeSection(
         }
     }
 
-    Button(
+    EditButton(
         onClick = onConfirmClick,
+        text = stringResource(id = R.string.forgot_password_confirm),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 32.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.bottom_bar_fab))
-    ) {
-        Text(
-            text = stringResource(id = R.string.forgot_password_confirm),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            modifier = modifier.padding(8.dp)
-        )
-    }
+            .padding(top = 32.dp)
+    )
 
-    TextButton(
+    EditTextButton(
         onClick = onBackClick,
+        text = stringResource(id = R.string.forgot_password_go_back),
         modifier = modifier.padding(top = 8.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.forgot_password_go_back),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            color = colorResource(id = R.color.bottom_bar_fab)
-        )
-    }
+    )
 }
 
 @Composable
@@ -312,7 +281,7 @@ private fun NewPasswordSection(
         modifier = modifier.padding(bottom = 8.dp)
     )
 
-    OutlinedTextField(
+    EditOutlinedTextField(
         value = newPassword,
         onValueChange = onNewPasswordChange,
         modifier = modifier
@@ -329,29 +298,19 @@ private fun NewPasswordSection(
             )
         },
         trailingIcon = {
-            IconButton(onClick = onNewPasswordVisibleChange) {
-                Icon(
-                    imageVector = if (newPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.icon_orange)
-                )
-            }
+            EditIconButton(
+                onClick = onNewPasswordVisibleChange,
+                imageVector = if (newPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+            )
         },
         visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Next
-        ),
-        singleLine = true,
-        shape = RoundedCornerShape(12.dp),
-        textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
-            focusedLabelColor = colorResource(id = R.color.bottom_bar_fab)
         )
     )
 
-    OutlinedTextField(
+    EditOutlinedTextField(
         value = newPasswordRepeat,
         onValueChange = onNewPasswordRepeatChange,
         modifier = modifier
@@ -368,53 +327,31 @@ private fun NewPasswordSection(
             )
         },
         trailingIcon = {
-            IconButton(onClick = onNewPasswordRepeatVisibleChange) {
-                Icon(
-                    imageVector = if (newPasswordRepeatVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.icon_orange)
-                )
-            }
+            EditIconButton(
+                onClick = onNewPasswordRepeatVisibleChange,
+                imageVector = if (newPasswordRepeatVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+            )
         },
         visualTransformation = if (newPasswordRepeatVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
-        ),
-        singleLine = true,
-        shape = RoundedCornerShape(12.dp),
-        textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
-            focusedLabelColor = colorResource(id = R.color.bottom_bar_fab)
         )
     )
 
-    Button(
+    EditButton(
         onClick = onSaveClick,
+        text = stringResource(id = R.string.forgot_password_save),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 20.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.bottom_bar_fab))
-    ) {
-        Text(
-            text = stringResource(id = R.string.forgot_password_save),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            modifier = modifier.padding(8.dp)
-        )
-    }
+            .padding(top = 20.dp)
+    )
 
-    TextButton(
+    EditTextButton(
         onClick = onBackClick,
+        text = stringResource(id = R.string.forgot_password_go_back),
         modifier = modifier.padding(top = 8.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.forgot_password_go_back),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            color = colorResource(id = R.color.bottom_bar_fab)
-        )
-    }
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)
