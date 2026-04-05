@@ -16,7 +16,7 @@ val bottomBarRoutes = setOf(
     MainScreens.ProfileScreen.route
 )
 
-val leftItems = listOf(
+val bottomNavItems = listOf(
     NavigationItem(
         route = MainScreens.HomeScreen.route,
         icon = Icons.Filled.Home,
@@ -26,10 +26,12 @@ val leftItems = listOf(
         route = MainScreens.SpendingAnalysisScreen.route,
         icon = Icons.Filled.Analytics,
         labelResId = R.string.nav_analysis
-    )
-)
-
-val rightItems = listOf(
+    ),
+    NavigationItem(
+        route = "",
+        icon = Icons.Filled.Home,
+        labelResId = R.string.nav_home
+    ),
     NavigationItem(
         route = MainScreens.AiAdvisorScreen.route,
         icon = Icons.Filled.SmartToy,

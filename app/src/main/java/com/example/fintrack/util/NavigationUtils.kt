@@ -11,9 +11,7 @@ fun navigateAndClearBackStack(
     navController.navigate(destination) {
         popUpTo(popUpToRoute) {
             this.inclusive = inclusive
-            saveState = true
         }
         launchSingleTop = true
-        restoreState = true
     }
 }

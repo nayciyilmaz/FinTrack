@@ -10,4 +10,5 @@
     <color name="sign_in_title">#FFE65100</color>
     <color name="sign_in_google_button">#FFFFFFFF</color>
     <color name="wave_color">#FFFF9E40</color>
+    <color name="scaffold_background">#FFEEEEEE</color>
 </resources>
