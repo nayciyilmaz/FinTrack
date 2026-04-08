@@ -36,4 +36,9 @@
     <string name="forgot_password_save">Kaydet</string>
     <string name="forgot_password_new_password_label">Yeni Şifre</string>
     <string name="forgot_password_new_password_repeat">Yeni Şifre (Tekrar)</string>
+    <string name="quick_actions_title">Hızlı İşlemler</string>
+    <string name="quick_action_reminders">Hatırlatıcı</string>
+    <string name="quick_action_savings">Tasarruf</string>
+    <string name="quick_action_budget">Bütçe</string>
+    <string name="quick_action_reports">Rapor</string>
 </resources>

@@ -11,4 +11,14 @@
     <color name="sign_in_google_button">#FFFFFFFF</color>
     <color name="wave_color">#FFFF9E40</color>
     <color name="scaffold_background">#FFEEEEEE</color>
+    <color name="quick_action_background">#FFFFF3E0</color>
+    <color name="income_green">#FF2E7D32</color>
+    <color name="expense_red">#FFC62828</color>
+    <color name="surface_gray">#FFF7F7F7</color>
+    <color name="progress_track">#FFF0F0F0</color>
+    <color name="text_tertiary">#FF555555</color>
+    <color name="text_quaternary">#FF888888</color>
+    <color name="transaction_expense_background">#FFFFEBEE</color>
+    <color name="transaction_income_background">#FFE8F5E9</color>
+    <color name="divider_color">#FFDADADA</color>
 </resources>
