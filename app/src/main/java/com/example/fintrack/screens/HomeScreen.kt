@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTextButton
+import com.example.fintrack.components.TransactionRow
 import com.example.fintrack.features.main.MainScreens
 import com.example.fintrack.features.main.quickActionItems
 import com.example.fintrack.util.navigateAndClearBackStack
@@ -364,73 +363,6 @@ private fun RecentTransactions(
                 iconTint = colorResource(id = R.color.income_green),
                 showDivider = false
             )
-        }
-    }
-}
-
-@Composable
-private fun TransactionRow(
-    icon: ImageVector,
-    title: String,
-    dateTime: String,
-    amount: String,
-    remainingBalance: String,
-    amountColor: Color,
-    iconBackgroundColor: Color,
-    iconTint: Color,
-    showDivider: Boolean,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = iconTint,
-                modifier = modifier
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(iconBackgroundColor)
-                    .padding(11.dp)
-            )
-            Column(
-                modifier = modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                    color = colorResource(id = R.color.text_primary)
-                )
-                Text(
-                    text = dateTime,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
-                Text(
-                    text = amount,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    color = amountColor
-                )
-                Text(
-                    text = remainingBalance,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        if (showDivider) {
-            HorizontalDivider(color = colorResource(id = R.color.divider_color))
         }
     }
 }
