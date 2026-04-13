@@ -92,12 +92,12 @@ private fun BudgetHeader(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             BudgetHeaderInfoItem(
-                label = "Kalan tutar",
+                label = stringResource(id = R.string.label_remaining_balance),
                 value = "₺$remainingBalance",
                 modifier = modifier.weight(1f)
             )
             BudgetHeaderInfoItem(
-                label = "Günlük limit",
+                label = stringResource(id = R.string.label_daily_limit),
                 value = "₺$dailyLimit",
                 modifier = modifier.weight(1f)
             )
@@ -150,14 +150,14 @@ private fun BudgetDetails(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             BudgetDetailsInfoItem(
-                label = "Gelir",
+                label = stringResource(id = R.string.label_income),
                 value = "₺$income",
                 valueColor = colorResource(id = R.color.income_green),
                 borderColor = colorResource(id = R.color.income_green),
                 modifier = modifier.weight(1f)
             )
             BudgetDetailsInfoItem(
-                label = "Gider",
+                label = stringResource(id = R.string.label_expense),
                 value = "₺$expense",
                 valueColor = colorResource(id = R.color.expense_red),
                 borderColor = colorResource(id = R.color.expense_red),
@@ -172,7 +172,7 @@ private fun BudgetDetails(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Harcama oranı",
+                    text = stringResource(id = R.string.label_spending_rate),
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                     color = colorResource(id = R.color.text_tertiary)
                 )
@@ -318,7 +318,7 @@ private fun RecentTransactions(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Son İşlemler",
+                text = stringResource(id = R.string.label_recent_transactions),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
             EditTextButton(
@@ -330,7 +330,7 @@ private fun RecentTransactions(
                         inclusive = false
                     )
                 },
-                text = "Tüm İşlemler",
+                text = stringResource(id = R.string.label_all_transactions),
                 color = Color.Black
             )
         }

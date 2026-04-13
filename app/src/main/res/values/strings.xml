@@ -41,4 +41,35 @@
     <string name="quick_action_savings">Tasarruf</string>
     <string name="quick_action_budget">Bütçe</string>
     <string name="quick_action_reports">Rapor</string>
+    <string name="category_market">Market</string>
+    <string name="category_kira">Kira</string>
+    <string name="category_ulasim">Ulaşım</string>
+    <string name="category_eglence">Eğlence</string>
+    <string name="category_fatura">Fatura</string>
+    <string name="category_saglik">Sağlık</string>
+    <string name="category_giyim">Giyim</string>
+    <string name="category_spor">Spor</string>
+    <string name="category_egitim">Eğitim</string>
+    <string name="category_abonelik">Abonelik</string>
+    <string name="label_remaining_balance">Kalan tutar</string>
+    <string name="label_daily_limit">Günlük limit</string>
+    <string name="label_income">Gelir</string>
+    <string name="label_expense">Gider</string>
+    <string name="label_spending_rate">Harcama oranı</string>
+    <string name="label_recent_transactions">Son İşlemler</string>
+    <string name="label_all_transactions">Tüm İşlemler</string>
+    <string name="label_hour">Saat</string>
+    <string name="label_minute">Dakika</string>
+    <string name="label_cancel">İptal</string>
+    <string name="label_confirm">Tamam</string>
+
+    <string-array name="week_days_short">
+        <item>Pzt</item>
+        <item>Sal</item>
+        <item>Çar</item>
+        <item>Per</item>
+        <item>Cum</item>
+        <item>Cmt</item>
+        <item>Paz</item>
+    </string-array>
 </resources>
