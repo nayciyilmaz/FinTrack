@@ -62,6 +62,22 @@
     <string name="label_minute">Dakika</string>
     <string name="label_cancel">İptal</string>
     <string name="label_confirm">Tamam</string>
+    <string name="label_category">Kategori</string>
+    <string name="label_amount">İşlem Tutarı</string>
+    <string name="label_amount_placeholder">0.00 ₺</string>
+    <string name="label_note">Not</string>
+    <string name="label_note_placeholder">Açıklama Ekle</string>
+    <string name="label_date_time">Tarih ve Saat</string>
+    <string name="label_date">Tarih</string>
+    <string name="label_time">Saat</string>
+    <string name="label_photo">Fotoğraf</string>
+    <string name="label_photo_select">Fotoğraf Seç</string>
+    <string name="label_photo_description">Galeriden bir fotoğraf ekleyin</string>
+    <string name="label_recurring_payment">Düzenli ödeme</string>
+    <string name="label_recurring_payment_desc">Her ay otomatik ödeme yapar</string>
+    <string name="label_reminder">Hatırlatıcı</string>
+    <string name="label_reminder_desc">Ödeme günü bildirim gönderir</string>
+    <string name="label_save">Kaydet</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>

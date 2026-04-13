@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -132,6 +133,8 @@ private fun EmailSection(
     onSignInClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusManager = LocalFocusManager.current
+
     Text(
         text = stringResource(id = R.string.forgot_password_description),
         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
@@ -158,6 +161,9 @@ private fun EmailSection(
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() }
         )
     )
 
@@ -274,6 +280,8 @@ private fun NewPasswordSection(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusManager = LocalFocusManager.current
+
     Text(
         text = stringResource(id = R.string.forgot_password_new_password),
         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
@@ -336,6 +344,9 @@ private fun NewPasswordSection(
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() }
         )
     )
 

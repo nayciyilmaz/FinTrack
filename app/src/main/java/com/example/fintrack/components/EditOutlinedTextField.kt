@@ -1,6 +1,7 @@
 package com.example.fintrack.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -21,10 +22,13 @@ fun EditOutlinedTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
+    enabled: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     colors: TextFieldColors? = null
@@ -34,10 +38,13 @@ fun EditOutlinedTextField(
         onValueChange = onValueChange,
         modifier = modifier,
         label = label,
+        placeholder = placeholder,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         singleLine = singleLine,
+        enabled = enabled,
         shape = RoundedCornerShape(12.dp),
         textStyle = textStyle,
         visualTransformation = visualTransformation,

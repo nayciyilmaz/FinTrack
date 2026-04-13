@@ -21,4 +21,5 @@
     <color name="transaction_expense_background">#FFFFEBEE</color>
     <color name="transaction_income_background">#FFE8F5E9</color>
     <color name="divider_color">#FFDADADA</color>
+    <color name="switch_unchecked_track">#FFDDDDDD</color>
 </resources>

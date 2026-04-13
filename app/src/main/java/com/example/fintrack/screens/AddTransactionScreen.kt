@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -23,10 +24,14 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,9 +46,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,7 +59,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.components.EditButton
 import com.example.fintrack.components.EditDatePicker
+import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTimePicker
 import com.example.fintrack.features.main.expenseCategories
@@ -79,6 +88,8 @@ fun AddTransactionScreen(
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     var selectedTime by remember { mutableStateOf<LocalTime?>(null) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var isRecurring by remember { mutableStateOf(false) }
+    var isReminder by remember { mutableStateOf(false) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -159,6 +170,17 @@ fun AddTransactionScreen(
                     },
                     onRemovePhoto = { selectedImageUri = null }
                 )
+                RecurringPaymentSection(
+                    isRecurring = isRecurring,
+                    onRecurringChange = { isRecurring = it },
+                    isReminder = isReminder,
+                    onReminderChange = { isReminder = it }
+                )
+                EditButton(
+                    onClick = {},
+                    text = stringResource(id = R.string.label_save),
+                    modifier = modifier.fillMaxWidth()
+                )
             }
         }
     }
@@ -179,9 +201,9 @@ private fun TransactionTypeSelector(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = "Gider",
+            text = stringResource(id = R.string.label_expense),
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            color = if (!isIncome) Color.White else Color(0xFF888888),
+            color = if (!isIncome) Color.White else colorResource(id = R.color.text_quaternary),
             textAlign = TextAlign.Center,
             modifier = modifier
                 .weight(1f)
@@ -191,9 +213,9 @@ private fun TransactionTypeSelector(
                 .padding(vertical = 10.dp)
         )
         Text(
-            text = "Gelir",
+            text = stringResource(id = R.string.label_income),
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            color = if (isIncome) Color.White else Color(0xFF888888),
+            color = if (isIncome) Color.White else colorResource(id = R.color.text_quaternary),
             textAlign = TextAlign.Center,
             modifier = modifier
                 .weight(1f)
@@ -216,7 +238,7 @@ private fun CategorySelector(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
-            text = "Kategori",
+            text = stringResource(id = R.string.label_category),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
         )
         Row(
@@ -273,34 +295,39 @@ private fun AmountInput(
     onAmountChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "İşlem Tutarı",
+            text = stringResource(id = R.string.label_amount),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
         )
-        OutlinedTextField(
+        EditOutlinedTextField(
             value = amount,
             onValueChange = { onAmountChange(it.filter { c -> c.isDigit() }) },
             modifier = modifier.fillMaxWidth(),
             placeholder = {
                 Text(
-                    text = "0.00 ₺",
+                    text = stringResource(id = R.string.label_amount_placeholder),
                     color = colorResource(id = R.color.text_secondary)
                 )
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-            shape = RoundedCornerShape(16.dp),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
+            ),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
                 unfocusedBorderColor = colorResource(id = R.color.text_secondary),
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
-            ),
-            textStyle = MaterialTheme.typography.bodyLarge
+            )
         )
     }
 }
@@ -311,37 +338,39 @@ private fun NoteInput(
     onNoteChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Not",
+            text = stringResource(id = R.string.label_note),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
         )
-        OutlinedTextField(
+        EditOutlinedTextField(
             value = note,
             onValueChange = onNoteChange,
             modifier = modifier.fillMaxWidth(),
             placeholder = {
                 Text(
-                    text = "Açıklama Ekle",
+                    text = stringResource(id = R.string.label_note_placeholder),
                     color = colorResource(id = R.color.text_secondary)
                 )
             },
-            singleLine = true,
-            shape = RoundedCornerShape(16.dp),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
+            ),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
                 unfocusedBorderColor = colorResource(id = R.color.text_secondary),
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
-            ),
-            textStyle = MaterialTheme.typography.bodyLarge
+            )
         )
     }
 }
-
 
 @Composable
 private fun DateTimeSection(
@@ -356,25 +385,26 @@ private fun DateTimeSection(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Tarih ve Saat",
+            text = stringResource(id = R.string.label_date_time),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
         )
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            OutlinedTextField(
+            EditOutlinedTextField(
                 value = date,
                 onValueChange = {},
                 modifier = modifier
                     .weight(1f)
                     .clickable { onDateClick() },
                 placeholder = {
-                    Text(text = "Tarih", color = colorResource(id = R.color.text_secondary))
+                    Text(
+                        text = stringResource(id = R.string.label_date),
+                        color = colorResource(id = R.color.text_secondary)
+                    )
                 },
                 enabled = false,
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.CalendarToday,
@@ -388,22 +418,21 @@ private fun DateTimeSection(
                     disabledTextColor = colorResource(id = R.color.text_primary),
                     disabledLeadingIconColor = colorResource(id = R.color.bottom_bar_fab),
                     disabledPlaceholderColor = colorResource(id = R.color.text_secondary)
-                ),
-                textStyle = MaterialTheme.typography.bodyLarge
+                )
             )
-
-            OutlinedTextField(
+            EditOutlinedTextField(
                 value = time,
                 onValueChange = {},
                 modifier = modifier
                     .weight(1f)
                     .clickable { onTimeClick() },
                 placeholder = {
-                    Text(text = "Saat", color = colorResource(id = R.color.text_secondary))
+                    Text(
+                        text = stringResource(id = R.string.label_time),
+                        color = colorResource(id = R.color.text_secondary)
+                    )
                 },
                 enabled = false,
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.AccessTime,
@@ -417,8 +446,7 @@ private fun DateTimeSection(
                     disabledTextColor = colorResource(id = R.color.text_primary),
                     disabledLeadingIconColor = colorResource(id = R.color.bottom_bar_fab),
                     disabledPlaceholderColor = colorResource(id = R.color.text_secondary)
-                ),
-                textStyle = MaterialTheme.typography.bodyLarge
+                )
             )
         }
     }
@@ -438,7 +466,7 @@ private fun PhotoSection(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Fotoğraf",
+            text = stringResource(id = R.string.label_photo),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
         )
         Column(
@@ -473,12 +501,12 @@ private fun PhotoSection(
                         tint = colorResource(id = R.color.bottom_bar_fab)
                     )
                     Text(
-                        text = "Fotoğraf Seç",
+                        text = stringResource(id = R.string.label_photo_select),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = colorResource(id = R.color.bottom_bar_fab)
                     )
                     Text(
-                        text = "Galeriden bir fotoğraf ekleyin",
+                        text = stringResource(id = R.string.label_photo_description),
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.text_secondary)
                     )
@@ -519,6 +547,92 @@ private fun PhotoSection(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RecurringPaymentSection(
+    isRecurring: Boolean,
+    onRecurringChange: (Boolean) -> Unit,
+    isReminder: Boolean,
+    onReminderChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+    ) {
+        RecurringPaymentRow(
+            icon = Icons.Filled.Repeat,
+            title = stringResource(id = R.string.label_recurring_payment),
+            description = stringResource(id = R.string.label_recurring_payment_desc),
+            checked = isRecurring,
+            onCheckedChange = onRecurringChange
+        )
+        HorizontalDivider(color = colorResource(id = R.color.divider_color))
+        RecurringPaymentRow(
+            icon = Icons.Filled.Notifications,
+            title = stringResource(id = R.string.label_reminder),
+            description = stringResource(id = R.string.label_reminder_desc),
+            checked = isReminder,
+            onCheckedChange = onReminderChange
+        )
+    }
+}
+
+@Composable
+private fun RecurringPaymentRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    description: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = colorResource(id = R.color.bottom_bar_fab),
+            modifier = modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(colorResource(id = R.color.quick_action_background))
+                .padding(10.dp)
+        )
+        Column(
+            modifier = modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = colorResource(id = R.color.text_primary)
+            )
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                color = colorResource(id = R.color.text_secondary)
+            )
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = colorResource(id = R.color.bottom_bar_fab),
+                uncheckedThumbColor = Color.White,
+                uncheckedTrackColor = colorResource(id = R.color.switch_unchecked_track)
+            )
+        )
     }
 }
 
