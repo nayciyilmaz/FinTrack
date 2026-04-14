@@ -65,6 +65,7 @@ import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTimePicker
 import com.example.fintrack.features.main.expenseCategories
+import com.example.fintrack.features.main.incomeCategories
 import com.example.fintrack.model.TransactionCategory
 import com.example.fintrack.util.dateFormatter
 import com.example.fintrack.util.timeFormatter
@@ -142,46 +143,46 @@ fun AddTransactionScreen(
                 }
             )
 
-            if (!isIncome) {
-                CategorySelector(
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
-                )
-                AmountInput(
-                    amount = amount,
-                    onAmountChange = { amount = it }
-                )
-                NoteInput(
-                    note = note,
-                    onNoteChange = { note = it }
-                )
-                DateTimeSection(
-                    date = selectedDate?.format(dateFormatter) ?: "",
-                    time = selectedTime?.format(timeFormatter) ?: "",
-                    onDateClick = { showDatePicker = true },
-                    onTimeClick = { showTimePicker = true }
-                )
-                PhotoSection(
-                    selectedImageUri = selectedImageUri,
-                    onPickPhoto = {
-                        photoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    },
-                    onRemovePhoto = { selectedImageUri = null }
-                )
-                RecurringPaymentSection(
-                    isRecurring = isRecurring,
-                    onRecurringChange = { isRecurring = it },
-                    isReminder = isReminder,
-                    onReminderChange = { isReminder = it }
-                )
-                EditButton(
-                    onClick = {},
-                    text = stringResource(id = R.string.label_save),
-                    modifier = modifier.fillMaxWidth()
-                )
-            }
+            CategorySelector(
+                categories = if (isIncome) incomeCategories else expenseCategories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { selectedCategory = it }
+            )
+            AmountInput(
+                amount = amount,
+                onAmountChange = { amount = it }
+            )
+            NoteInput(
+                note = note,
+                onNoteChange = { note = it }
+            )
+            DateTimeSection(
+                date = selectedDate?.format(dateFormatter) ?: "",
+                time = selectedTime?.format(timeFormatter) ?: "",
+                onDateClick = { showDatePicker = true },
+                onTimeClick = { showTimePicker = true }
+            )
+            PhotoSection(
+                selectedImageUri = selectedImageUri,
+                onPickPhoto = {
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
+                onRemovePhoto = { selectedImageUri = null }
+            )
+            RecurringPaymentSection(
+                isIncome = isIncome,
+                isRecurring = isRecurring,
+                onRecurringChange = { isRecurring = it },
+                isReminder = isReminder,
+                onReminderChange = { isReminder = it }
+            )
+            EditButton(
+                onClick = {},
+                text = stringResource(id = R.string.label_save),
+                modifier = modifier.fillMaxWidth()
+            )
         }
     }
 }
@@ -229,6 +230,7 @@ private fun TransactionTypeSelector(
 
 @Composable
 private fun CategorySelector(
+    categories: List<TransactionCategory>,
     selectedCategory: Int?,
     onCategorySelected: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -247,7 +249,7 @@ private fun CategorySelector(
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            expenseCategories.forEach { category ->
+            categories.forEach { category ->
                 val isSelected = selectedCategory == category.labelResId
                 CategoryItem(
                     category = category,
@@ -552,6 +554,7 @@ private fun PhotoSection(
 
 @Composable
 private fun RecurringPaymentSection(
+    isIncome: Boolean,
     isRecurring: Boolean,
     onRecurringChange: (Boolean) -> Unit,
     isReminder: Boolean,
@@ -567,8 +570,8 @@ private fun RecurringPaymentSection(
     ) {
         RecurringPaymentRow(
             icon = Icons.Filled.Repeat,
-            title = stringResource(id = R.string.label_recurring_payment),
-            description = stringResource(id = R.string.label_recurring_payment_desc),
+            title = stringResource(id = if (isIncome) R.string.label_recurring_income else R.string.label_recurring_payment),
+            description = stringResource(id = if (isIncome) R.string.label_recurring_income_desc else R.string.label_recurring_payment_desc),
             checked = isRecurring,
             onCheckedChange = onRecurringChange
         )
@@ -576,7 +579,7 @@ private fun RecurringPaymentSection(
         RecurringPaymentRow(
             icon = Icons.Filled.Notifications,
             title = stringResource(id = R.string.label_reminder),
-            description = stringResource(id = R.string.label_reminder_desc),
+            description = stringResource(id = if (isIncome) R.string.label_reminder_income_desc else R.string.label_reminder_desc),
             checked = isReminder,
             onCheckedChange = onReminderChange
         )
