@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,12 +19,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
+import com.example.fintrack.components.TransactionTypeSelector
 
 @Composable
 fun PaymentRemindersScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    var selectedFilter by remember { mutableIntStateOf(0) }
+
     EditScaffold(
         title = stringResource(id = R.string.title_payment_reminders),
         navController = navController
@@ -30,12 +35,19 @@ fun PaymentRemindersScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(20.dp)
+                .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Ödeme Hatırlatıcı Sayfası")
+            TransactionTypeSelector(
+                options = listOf(
+                    stringResource(id = R.string.label_upcoming),
+                    stringResource(id = R.string.label_planned),
+                    stringResource(id = R.string.label_regular)
+                ),
+                selectedIndex = selectedFilter,
+                onOptionSelected = { selectedFilter = it }
+            )
         }
     }
 }

@@ -35,6 +35,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,7 +53,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,6 +64,7 @@ import com.example.fintrack.components.EditDatePicker
 import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTimePicker
+import com.example.fintrack.components.TransactionTypeSelector
 import com.example.fintrack.features.main.expenseCategories
 import com.example.fintrack.features.main.incomeCategories
 import com.example.fintrack.model.TransactionCategory
@@ -78,7 +79,8 @@ fun AddTransactionScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    var isIncome by remember { mutableStateOf(false) }
+    var selectedTypeIndex by remember { mutableIntStateOf(0) }
+    val isIncome = selectedTypeIndex == 1
     var selectedCategory by remember { mutableStateOf<Int?>(null) }
     var amount by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
@@ -134,15 +136,18 @@ fun AddTransactionScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TransactionTypeSelector(
-                isIncome = isIncome,
-                onTypeSelected = {
-                    isIncome = it
+                options = listOf(
+                    stringResource(id = R.string.label_expense),
+                    stringResource(id = R.string.label_income)
+                ),
+                selectedIndex = selectedTypeIndex,
+                onOptionSelected = {
+                    selectedTypeIndex = it
                     selectedCategory = null
                     amount = ""
                     note = ""
                 }
             )
-
             CategorySelector(
                 categories = if (isIncome) incomeCategories else expenseCategories,
                 selectedCategory = selectedCategory,
@@ -184,47 +189,6 @@ fun AddTransactionScreen(
                 modifier = modifier.fillMaxWidth()
             )
         }
-    }
-}
-
-@Composable
-private fun TransactionTypeSelector(
-    isIncome: Boolean,
-    onTypeSelected: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.label_expense),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            color = if (!isIncome) Color.White else colorResource(id = R.color.text_quaternary),
-            textAlign = TextAlign.Center,
-            modifier = modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(12.dp))
-                .background(if (!isIncome) colorResource(id = R.color.bottom_bar_fab) else Color.Transparent)
-                .clickable { onTypeSelected(false) }
-                .padding(vertical = 10.dp)
-        )
-        Text(
-            text = stringResource(id = R.string.label_income),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            color = if (isIncome) Color.White else colorResource(id = R.color.text_quaternary),
-            textAlign = TextAlign.Center,
-            modifier = modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(12.dp))
-                .background(if (isIncome) colorResource(id = R.color.bottom_bar_fab) else Color.Transparent)
-                .clickable { onTypeSelected(true) }
-                .padding(vertical = 10.dp)
-        )
     }
 }
 

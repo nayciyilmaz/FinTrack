@@ -10,7 +10,7 @@
     <string name="title_spending_analysis">Harcama Analizi</string>
     <string name="title_savings_goals">Tasarruf ve Hedefler</string>
     <string name="title_budget_limits">Bütçe ve Limitler</string>
-    <string name="title_payment_reminders">Ödeme Hatırlatıcıları</string>
+    <string name="title_payment_reminders">Hatırlatıcılar</string>
     <string name="title_reports">Raporlar</string>
     <string name="title_profile">Profil</string>
     <string name="title_ai_advisor">AI Asistan</string>
@@ -55,6 +55,7 @@
     <string name="label_daily_limit">Günlük limit</string>
     <string name="label_income">Gelir</string>
     <string name="label_expense">Gider</string>
+    <string name="label_all">Tümü</string>
     <string name="label_spending_rate">Harcama oranı</string>
     <string name="label_recent_transactions">Son İşlemler</string>
     <string name="label_all_transactions">Tüm İşlemler</string>
@@ -90,6 +91,9 @@
     <string name="label_recurring_income">Düzenli gelir</string>
     <string name="label_recurring_income_desc">Her ay otomatik gelir kaydeder</string>
     <string name="label_reminder_income_desc">Gelir günü bildirim gönderir</string>
+    <string name="label_upcoming">Yaklaşan</string>
+    <string name="label_planned">Planlanan</string>
+    <string name="label_regular">Düzenli</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
@@ -99,5 +103,13 @@
         <item>Cum</item>
         <item>Cmt</item>
         <item>Paz</item>
+    </string-array>
+
+    <string-array name="transaction_periods">
+        <item>1 Hafta</item>
+        <item>15 Gün</item>
+        <item>1 Ay</item>
+        <item>3 Ay</item>
+        <item>6 Ay</item>
     </string-array>
 </resources>
