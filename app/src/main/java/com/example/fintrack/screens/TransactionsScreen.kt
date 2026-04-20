@@ -1,8 +1,6 @@
 package com.example.fintrack.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,14 +15,8 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocalGasStation
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,15 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
+import com.example.fintrack.components.PeriodSelector
 import com.example.fintrack.components.TransactionRow
 import com.example.fintrack.components.TransactionTypeSelector
 
@@ -54,7 +45,7 @@ fun TransactionsScreen(
     modifier: Modifier = Modifier
 ) {
     var selectedFilter by remember { mutableIntStateOf(0) }
-    var selectedPeriod by remember { mutableStateOf("1 Ay") }
+    var selectedPeriod by remember { mutableStateOf("Bu Ay") }
 
     EditScaffold(
         title = stringResource(id = R.string.title_transactions),
@@ -76,10 +67,16 @@ fun TransactionsScreen(
                 selectedIndex = selectedFilter,
                 onOptionSelected = { selectedFilter = it }
             )
-            TransactionsHeader(
-                selectedPeriod = selectedPeriod,
-                onPeriodSelected = { selectedPeriod = it }
-            )
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PeriodSelector(
+                    selectedPeriod = selectedPeriod,
+                    onPeriodSelected = { selectedPeriod = it }
+                )
+            }
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -170,65 +167,6 @@ fun TransactionsScreen(
                         iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
                         iconTint = colorResource(id = R.color.expense_red),
                         showDivider = false
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun TransactionsHeader(
-    selectedPeriod: String,
-    onPeriodSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val periods = stringArrayResource(id = R.array.transaction_periods)
-    var expanded by remember { mutableStateOf(false) }
-
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Row(
-                modifier = modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .border(1.dp, Color.Black.copy(alpha = 0.15f), RoundedCornerShape(20.dp))
-                    .clickable { expanded = true }
-                    .padding(horizontal = 14.dp, vertical = 7.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = selectedPeriod,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = Color.Black
-                )
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowDown,
-                    contentDescription = null,
-                    tint = Color.Black
-                )
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                periods.forEach { period ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = period,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Black
-                            )
-                        },
-                        onClick = {
-                            onPeriodSelected(period)
-                            expanded = false
-                        }
                     )
                 }
             }

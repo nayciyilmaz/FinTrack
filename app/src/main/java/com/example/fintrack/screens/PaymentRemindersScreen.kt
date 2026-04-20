@@ -74,7 +74,7 @@ fun PaymentRemindersScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Yaklaşan Ödemeler",
+                        text = stringResource(id = R.string.label_upcoming_payments),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     Column(
@@ -114,7 +114,7 @@ fun PaymentRemindersScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Yaklaşan Gelirler",
+                        text = stringResource(id = R.string.label_upcoming_incomes),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     Column(
@@ -156,7 +156,7 @@ fun PaymentRemindersScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Planlanan Ödemeler",
+                        text = stringResource(id = R.string.label_planned_payments),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     Column(
@@ -196,7 +196,7 @@ fun PaymentRemindersScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Planlanan Gelirler",
+                        text = stringResource(id = R.string.label_planned_incomes),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     Column(
@@ -238,7 +238,7 @@ fun PaymentRemindersScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Düzenli Ödemeler",
+                        text = stringResource(id = R.string.label_regular_payments),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     Column(
@@ -278,7 +278,7 @@ fun PaymentRemindersScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Düzenli Gelirler",
+                        text = stringResource(id = R.string.label_regular_incomes),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     Column(
