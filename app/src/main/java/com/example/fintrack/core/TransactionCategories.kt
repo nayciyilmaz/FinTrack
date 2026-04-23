@@ -1,4 +1,4 @@
-package com.example.fintrack.features.main
+package com.example.fintrack.core
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance

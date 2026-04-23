@@ -65,8 +65,8 @@ import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTimePicker
 import com.example.fintrack.components.TransactionTypeSelector
-import com.example.fintrack.features.main.expenseCategories
-import com.example.fintrack.features.main.incomeCategories
+import com.example.fintrack.core.expenseCategories
+import com.example.fintrack.core.incomeCategories
 import com.example.fintrack.model.TransactionCategory
 import com.example.fintrack.util.dateFormatter
 import com.example.fintrack.util.timeFormatter

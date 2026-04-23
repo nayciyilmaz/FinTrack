@@ -53,8 +53,8 @@ import com.example.fintrack.components.EditIconButton
 import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.WaveBackground
-import com.example.fintrack.features.auth.AuthScreens
-import com.example.fintrack.util.navigateAndClearBackStack
+import com.example.fintrack.navigation.auth.AuthScreens
+import com.example.fintrack.navigation.navigateAndClearBackStack
 
 @Composable
 fun ForgotPasswordScreen(

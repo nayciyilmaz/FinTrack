@@ -1,4 +1,4 @@
-package com.example.fintrack.util
+package com.example.fintrack.navigation
 
 import androidx.navigation.NavController
 

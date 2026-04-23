@@ -1,4 +1,4 @@
-package com.example.fintrack.features.auth
+package com.example.fintrack.navigation.auth
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController

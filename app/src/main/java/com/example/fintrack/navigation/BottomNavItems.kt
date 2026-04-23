@@ -1,4 +1,4 @@
-package com.example.fintrack.features.main
+package com.example.fintrack.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SmartToy
 import com.example.fintrack.R
+import com.example.fintrack.navigation.main.MainScreens
 import com.example.fintrack.model.NavigationItem
 
 val bottomBarRoutes = setOf(

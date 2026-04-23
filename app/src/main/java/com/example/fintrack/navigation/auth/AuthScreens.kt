@@ -1,4 +1,4 @@
-package com.example.fintrack.features.auth
+package com.example.fintrack.navigation.auth
 
 enum class AuthScreens(val route: String) {
     SignInScreen("sign_in_screen"),

@@ -25,10 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.fintrack.R
-import com.example.fintrack.features.main.MainScreens
-import com.example.fintrack.features.main.bottomBarRoutes
-import com.example.fintrack.features.main.bottomNavItems
-import com.example.fintrack.util.navigateAndClearBackStack
+import com.example.fintrack.navigation.main.MainScreens
+import com.example.fintrack.navigation.bottomBarRoutes
+import com.example.fintrack.navigation.bottomNavItems
+import com.example.fintrack.navigation.navigateAndClearBackStack
 
 @Composable
 fun EditScaffold(

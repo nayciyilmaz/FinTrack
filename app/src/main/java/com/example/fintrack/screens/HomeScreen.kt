@@ -34,9 +34,9 @@ import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.TransactionRow
-import com.example.fintrack.features.main.MainScreens
-import com.example.fintrack.features.main.quickActionItems
-import com.example.fintrack.util.navigateAndClearBackStack
+import com.example.fintrack.navigation.main.MainScreens
+import com.example.fintrack.core.quickActionItems
+import com.example.fintrack.navigation.navigateAndClearBackStack
 
 @Composable
 fun HomeScreen(

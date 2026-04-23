@@ -1,4 +1,4 @@
-package com.example.fintrack.features.main
+package com.example.fintrack.navigation.main
 
 enum class MainScreens(val route: String) {
     HomeScreen("home_screen"),

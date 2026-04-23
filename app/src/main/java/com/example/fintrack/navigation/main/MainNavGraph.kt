@@ -1,4 +1,4 @@
-package com.example.fintrack.features.main
+package com.example.fintrack.navigation.main
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController

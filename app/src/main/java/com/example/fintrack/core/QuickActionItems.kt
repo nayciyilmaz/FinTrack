@@ -1,4 +1,4 @@
-package com.example.fintrack.features.main
+package com.example.fintrack.core
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PieChart
 import com.example.fintrack.R
+import com.example.fintrack.navigation.main.MainScreens
 import com.example.fintrack.model.QuickActionItem
 
 val quickActionItems = listOf(
