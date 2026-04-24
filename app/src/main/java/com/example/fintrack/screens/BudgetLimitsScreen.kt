@@ -47,7 +47,6 @@ fun BudgetLimitsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             BudgetCard(
-                title = "Aylık Bütçe",
                 totalBudget = 14000,
                 usedBudget = 11240
             )
@@ -57,7 +56,6 @@ fun BudgetLimitsScreen(
 
 @Composable
 private fun BudgetCard(
-    title: String,
     totalBudget: Int,
     usedBudget: Int,
     modifier: Modifier = Modifier
@@ -87,13 +85,13 @@ private fun BudgetCard(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = title,
+                        text = stringResource(id = R.string.label_monthly_budget),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                         color = Color.White.copy(alpha = 0.75f)
                     )
@@ -108,14 +106,14 @@ private fun BudgetCard(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Kullanılan",
+                        text = stringResource(id = R.string.label_used),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                         color = Color.White.copy(alpha = 0.75f)
                     )
                     Text(
                         text = "₺${"%,d".format(usedBudget).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
-                        color = Color(0xFFFFE0B2)
+                        color = colorResource(id = R.color.budget_used_amount)
                     )
                 }
             }

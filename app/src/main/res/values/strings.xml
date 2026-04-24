@@ -102,6 +102,10 @@
     <string name="label_regular_incomes">Düzenli Gelirler</string>
     <string name="label_category_distribution">Kategori Dağılımı</string>
     <string name="label_spending_distribution">Harcama Dağılımı</string>
+    <string name="label_last_month_savings">Son Ay Tasarrufu</string>
+    <string name="label_total_savings">Toplam Tasarruf</string>
+    <string name="label_monthly_budget">Aylık Bütçe</string>
+    <string name="label_used">Kullanılan</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
