@@ -94,7 +94,7 @@ private fun SavingsCard(
                     Text(
                         text = stringResource(id = R.string.label_last_month_savings),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                        color = Color.White.copy(alpha = 0.75f)
+                        color = Color.White
                     )
                     Text(
                         text = "₺${"%,d".format(lastMonthSavings).replace(",", ".")}",
