@@ -11,11 +11,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BeachAccess
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.material.icons.filled.BeachAccess
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -37,6 +37,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
+import com.example.fintrack.components.ProgressBar
 
 @Composable
 fun SavingsGoalsScreen(
@@ -59,7 +60,7 @@ fun SavingsGoalsScreen(
                 totalSavings = 42300
             )
             Text(
-                text = "Aktif Hedefler",
+                text = stringResource(id = R.string.label_active_goals),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 modifier = modifier.padding(top = 4.dp)
             )
@@ -143,12 +144,12 @@ private fun SavingsCard(
                     Text(
                         text = stringResource(id = R.string.label_total_savings),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                        color = Color.White.copy(alpha = 0.75f)
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
                         text = "₺${"%,d".format(totalSavings).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
-                        color = colorResource(id = R.color.budget_used_amount)
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                 }
             }
@@ -180,7 +181,7 @@ private fun SavingsCard(
                     Text(
                         text = "Hedeflerinize 1 adım daha yaklaştınız.",
                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
-                        color = Color.White.copy(alpha = 0.75f)
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                 }
             }
@@ -229,7 +230,7 @@ private fun GoalCard(
                         modifier = modifier
                             .clip(RoundedCornerShape(10.dp))
                             .background(colorResource(id = R.color.quick_action_background))
-                            .padding(8.dp)
+                            .padding(6.dp)
                     )
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(
@@ -240,7 +241,7 @@ private fun GoalCard(
                         Text(
                             text = goalType,
                             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
-                            color = colorResource(id = R.color.text_secondary)
+                            color = Color.DarkGray
                         )
                     }
                 }
@@ -264,24 +265,14 @@ private fun GoalCard(
                     Text(
                         text = "₺${"%,d".format(targetAmount).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
-                        color = colorResource(id = R.color.text_secondary)
+                        color = Color.DarkGray
                     )
                 }
-                Row(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(colorResource(id = R.color.quick_action_background))
-                ) {
-                    Text(
-                        text = "",
-                        modifier = modifier
-                            .fillMaxWidth(progress)
-                            .clip(RoundedCornerShape(50.dp))
-                            .background(colorResource(id = R.color.bottom_bar_fab))
-                            .padding(vertical = 0.5.dp)
-                    )
-                }
+                ProgressBar(
+                    progress = progress,
+                    trackColor = colorResource(id = R.color.quick_action_background),
+                    progressColor = colorResource(id = R.color.bottom_bar_fab)
+                )
             }
 
             Row(

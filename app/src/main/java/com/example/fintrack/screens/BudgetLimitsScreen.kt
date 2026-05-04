@@ -11,10 +11,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.DirectionsBus
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -32,11 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
+import com.example.fintrack.components.ProgressBar
 
 @Composable
 fun BudgetLimitsScreen(
@@ -59,7 +58,7 @@ fun BudgetLimitsScreen(
                 usedBudget = 11240
             )
             Text(
-                text = "Kategori Limitleri",
+                text = stringResource(id = R.string.label_category_limits),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 modifier = modifier.padding(top = 4.dp)
             )
@@ -139,32 +138,21 @@ private fun BudgetCard(
                     Text(
                         text = stringResource(id = R.string.label_used),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                        color = Color.White.copy(alpha = 0.75f)
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
                         text = "₺${"%,d".format(usedBudget).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
-                        color = colorResource(id = R.color.budget_used_amount)
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                 }
             }
 
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(Color.White.copy(alpha = 0.2f))
-                    .padding(vertical = 2.dp)
-            ) {
-                Text(
-                    text = "",
-                    modifier = modifier
-                        .fillMaxWidth(progress)
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(Color.White.copy(alpha = 0.85f))
-                        .padding(vertical = 4.dp)
-                )
-            }
+            ProgressBar(
+                progress = progress,
+                trackColor = Color.White.copy(alpha = 0.2f),
+                progressColor = Color.White.copy(alpha = 0.85f)
+            )
 
             Text(
                 text = "Bütçenin %$percentage'ini kullandın · ₺${"%,d".format(remaining).replace(",", ".")} kaldı",
@@ -231,74 +219,48 @@ private fun CategoryLimitCard(
                         modifier = modifier
                             .clip(RoundedCornerShape(10.dp))
                             .background(activeBackgroundColor)
-                            .padding(6.dp)
+                            .padding(8.dp)
                     )
-                    Text(
-                        text = categoryName,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        ),
-                        color = colorResource(id = R.color.text_primary)
-                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(
+                            text = categoryName,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = colorResource(id = R.color.text_primary)
+                        )
+                        Text(
+                            text = if (isOverLimit) "Limit Aşıldı" else if (isWarning) "Uyarı" else "Normal",
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                            color = activeColor
+                        )
+                    }
                 }
+                Text(
+                    text = "%$percentage",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
+                    color = activeColor
+                )
+            }
+
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(3.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = "₺${"%,d".format(usedAmount).replace(",", ".")}",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 18.sp
-                        ),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = colorResource(id = R.color.text_primary)
                     )
                     Text(
-                        text = "/ ₺${"%,d".format(limitAmount).replace(",", ".")}",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp
-                        ),
-                        color = colorResource(id = R.color.text_secondary)
+                        text = "₺${"%,d".format(limitAmount).replace(",", ".")}",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
+                        color = Color.DarkGray
                     )
                 }
-            }
-
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(activeBackgroundColor)
-            ) {
-                Text(
-                    text = "",
-                    modifier = modifier
-                        .fillMaxWidth(progress.coerceIn(0f, 1f))
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(activeColor)
-                        .padding(vertical = 0.5.dp)
-                )
-            }
-
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(activeBackgroundColor)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Warning,
-                    contentDescription = null,
-                    tint = activeColor
-                )
-                Text(
-                    text = statusText,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
-                    color = activeColor
+                ProgressBar(
+                    progress = progress.coerceIn(0f, 1f),
+                    trackColor = activeBackgroundColor,
+                    progressColor = activeColor
                 )
             }
         }

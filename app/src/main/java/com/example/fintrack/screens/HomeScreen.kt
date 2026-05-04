@@ -33,9 +33,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTextButton
+import com.example.fintrack.components.ProgressBar
 import com.example.fintrack.components.TransactionRow
-import com.example.fintrack.navigation.main.MainScreens
 import com.example.fintrack.core.quickActionItems
+import com.example.fintrack.navigation.main.MainScreens
 import com.example.fintrack.navigation.navigateAndClearBackStack
 
 @Composable
@@ -86,7 +87,6 @@ private fun BudgetHeader(
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             color = Color.White
         )
-
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -164,7 +164,6 @@ private fun BudgetDetails(
                 modifier = modifier.weight(1f)
             )
         }
-
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
                 modifier = modifier.fillMaxWidth(),
@@ -182,22 +181,11 @@ private fun BudgetDetails(
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(colorResource(id = R.color.progress_track))
-                    .padding(vertical = 2.dp)
-            ) {
-                Text(
-                    text = "",
-                    modifier = modifier
-                        .fillMaxWidth(expense.toFloat() / income.toFloat())
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(colorResource(id = R.color.bottom_bar_fab))
-                        .padding(vertical = 2.dp)
-                )
-            }
+            ProgressBar(
+                progress = expense.toFloat() / income.toFloat(),
+                trackColor = colorResource(id = R.color.progress_track),
+                progressColor = colorResource(id = R.color.bottom_bar_fab)
+            )
         }
     }
 }
@@ -211,7 +199,6 @@ private fun BudgetDetailsInfoItem(
     modifier: Modifier = Modifier
 ) {
     val borderWidth = 3.dp
-
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
