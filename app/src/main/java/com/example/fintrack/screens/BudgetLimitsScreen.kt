@@ -9,39 +9,66 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.components.EditIconButton
+import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditScaffold
+import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.ProgressBar
+import com.example.fintrack.core.expenseCategories
 
 @Composable
 fun BudgetLimitsScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    var showManageDialog by remember { mutableStateOf(false) }
+
+    if (showManageDialog) {
+        ManageLimitsDialog(
+            onDismiss = { showManageDialog = false }
+        )
+    }
+
     EditScaffold(
         title = stringResource(id = R.string.title_budget_limits),
         navController = navController
@@ -57,11 +84,21 @@ fun BudgetLimitsScreen(
                 totalBudget = 14000,
                 usedBudget = 11240
             )
-            Text(
-                text = stringResource(id = R.string.label_category_limits),
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                modifier = modifier.padding(top = 4.dp)
-            )
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_category_limits),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                EditTextButton(
+                    text = "Düzenle",
+                    onClick = { showManageDialog = true },
+                    color = colorResource(id = R.color.bottom_bar_fab)
+                )
+            }
             CategoryLimitCard(
                 icon = Icons.Filled.ShoppingCart,
                 categoryName = "Market",
@@ -82,6 +119,139 @@ fun BudgetLimitsScreen(
             )
         }
     }
+}
+
+@Composable
+private fun ManageLimitsDialog(
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val amountStates = remember {
+        expenseCategories.map { it.labelResId to mutableStateOf("") }
+    }
+
+    val activeStates = remember {
+        expenseCategories.map { it.labelResId to mutableStateOf(false) }
+    }
+
+    val totalLimit by remember {
+        derivedStateOf {
+            expenseCategories.sumOf { category ->
+                val isActive = activeStates.first { it.first == category.labelResId }.second.value
+                val amount = amountStates.first { it.first == category.labelResId }.second.value.toIntOrNull() ?: 0
+                if (isActive) amount else 0
+            }
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Kategori Limitleri",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            )
+        },
+        text = {
+            Column(
+                modifier = modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                expenseCategories.forEach { category ->
+                    val isActive = activeStates.first { it.first == category.labelResId }.second
+                    val amount = amountStates.first { it.first == category.labelResId }.second
+
+                    Row(
+                        modifier = modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = category.icon,
+                            contentDescription = null,
+                            tint = if (isActive.value) colorResource(id = R.color.bottom_bar_fab) else Color.Gray,
+                            modifier = modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(
+                                    if (isActive.value) colorResource(id = R.color.quick_action_background)
+                                    else Color.LightGray.copy(alpha = 0.3f)
+                                )
+                                .padding(8.dp)
+                        )
+                        Text(
+                            text = stringResource(id = category.labelResId),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                            color = if (isActive.value) colorResource(id = R.color.text_primary) else Color.Gray,
+                            modifier = modifier.weight(1f)
+                        )
+                        EditOutlinedTextField(
+                            value = amount.value,
+                            onValueChange = { amount.value = it.filter { c -> c.isDigit() } },
+                            modifier = modifier.weight(1f),
+                            enabled = isActive.value,
+                            placeholder = {
+                                Text(
+                                    text = "0",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Gray
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    defaultKeyboardAction(ImeAction.Done)
+                                    keyboardController?.hide()
+                                }
+                            ),
+                            textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                        )
+                        EditIconButton(
+                            onClick = { isActive.value = !isActive.value },
+                            imageVector = if (isActive.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            tint = if (isActive.value) colorResource(id = R.color.bottom_bar_fab) else Color.Gray
+                        )
+                    }
+                }
+
+                HorizontalDivider(color = colorResource(id = R.color.divider_color))
+
+                Row(
+                    modifier = modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Toplam Limit",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = colorResource(id = R.color.text_primary)
+                    )
+                    Text(
+                        text = "₺${"%,d".format(totalLimit).replace(",", ".")}",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
+                        color = colorResource(id = R.color.bottom_bar_fab)
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            EditTextButton(
+                text = "Kaydet",
+                onClick = {}
+            )
+        },
+        dismissButton = {
+            EditTextButton(
+                text = stringResource(id = R.string.label_cancel),
+                onClick = onDismiss
+            )
+        }
+    )
 }
 
 @Composable
@@ -188,8 +358,6 @@ private fun CategoryLimitCard(
         isWarning -> colorResource(id = R.color.quick_action_background)
         else -> colorResource(id = R.color.transaction_income_background)
     }
-
-    val statusText = if (isOverLimit) "Limit aşıldı" else "Limitin %$percentage'si kullanıldı"
 
     Card(
         modifier = modifier.fillMaxWidth(),
