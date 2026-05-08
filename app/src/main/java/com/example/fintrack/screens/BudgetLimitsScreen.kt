@@ -78,7 +78,7 @@ fun BudgetLimitsScreen(
                 .fillMaxSize()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             BudgetCard(
                 totalBudget = 14000,
@@ -94,7 +94,7 @@ fun BudgetLimitsScreen(
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 EditTextButton(
-                    text = "Düzenle",
+                    text = stringResource(id = R.string.label_edit),
                     onClick = { showManageDialog = true },
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
@@ -151,7 +151,7 @@ private fun ManageLimitsDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Kategori Limitleri",
+                text = stringResource(id = R.string.label_category_limits),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
         },
@@ -227,7 +227,7 @@ private fun ManageLimitsDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Toplam Limit",
+                        text = stringResource(id = R.string.label_total_limit),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = colorResource(id = R.color.text_primary)
                     )
@@ -241,7 +241,7 @@ private fun ManageLimitsDialog(
         },
         confirmButton = {
             EditTextButton(
-                text = "Kaydet",
+                text = stringResource(id = R.string.label_save),
                 onClick = {}
             )
         },

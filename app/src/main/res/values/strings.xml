@@ -108,6 +108,17 @@
     <string name="label_used">Kullanılan</string>
     <string name="label_active_goals">Aktif Hedefler</string>
     <string name="label_category_limits">Kategori Limitleri</string>
+    <string name="goal_category_konut">Konut</string>
+    <string name="goal_category_tasit">Taşıt</string>
+    <string name="goal_category_seyahat">Seyahat</string>
+    <string name="goal_category_teknoloji">Teknoloji</string>
+    <string name="goal_category_emeklilik">Emeklilik</string>
+    <string name="label_new_goal">Yeni Hedef</string>
+    <string name="label_new_goal_add">Yeni Hedef Ekle</string>
+    <string name="label_add">Ekle</string>
+    <string name="label_goal_closer">Hedeflerinize 1 adım daha yaklaştınız.</string>
+    <string name="label_edit">Düzenle</string>
+    <string name="label_total_limit">Toplam Limit</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
