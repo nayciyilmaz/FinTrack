@@ -77,15 +77,16 @@ fun BudgetLimitsScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             BudgetCard(
                 totalBudget = 14000,
                 usedBudget = 11240
             )
             Row(
-                modifier = modifier.fillMaxWidth(),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -141,7 +142,9 @@ private fun ManageLimitsDialog(
         derivedStateOf {
             expenseCategories.sumOf { category ->
                 val isActive = activeStates.first { it.first == category.labelResId }.second.value
-                val amount = amountStates.first { it.first == category.labelResId }.second.value.toIntOrNull() ?: 0
+                val amount =
+                    amountStates.first { it.first == category.labelResId }.second.value.toIntOrNull()
+                        ?: 0
                 if (isActive) amount else 0
             }
         }
@@ -325,7 +328,9 @@ private fun BudgetCard(
             )
 
             Text(
-                text = "Bütçenin %$percentage'ini kullandın · ₺${"%,d".format(remaining).replace(",", ".")} kaldı",
+                text = "Bütçenin %$percentage'ini kullandın · ₺${
+                    "%,d".format(remaining).replace(",", ".")
+                } kaldı",
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = Color.White.copy(alpha = 0.85f)
             )
@@ -360,7 +365,9 @@ private fun CategoryLimitCard(
     }
 
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)

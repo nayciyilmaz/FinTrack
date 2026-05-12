@@ -233,8 +233,8 @@ private fun QuickActions(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(top = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             text = stringResource(id = R.string.quick_actions_title),
@@ -296,8 +296,8 @@ private fun RecentTransactions(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(top = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Row(
             modifier = modifier.fillMaxWidth(),
