@@ -124,6 +124,28 @@
     <string name="label_fintrack_assistant">FinTrack Asistan</string>
     <string name="label_financial_health_score">Finansal Sağlık Skoru</string>
     <string name="label_risk_level">Risk Seviyesi</string>
+    <string name="quick_question_category_expense">Harcama</string>
+    <string name="quick_question_category_analysis">Analiz</string>
+    <string name="quick_question_category_budget">Bütçe ve Limitler</string>
+    <string name="quick_question_category_savings">Tasarruf ve Hedefler</string>
+    <string name="quick_question_category_general">Genel Analiz</string>
+    <string name="quick_question_expense_1">Geçen aya göre harcamam nasıl değişti?</string>
+    <string name="quick_question_expense_2">Günlük ortalama harcamam ne kadar?</string>
+    <string name="quick_question_expense_3">Kalan bütçemle ayı kapatabilir miyim?</string>
+    <string name="quick_question_analysis_1">Hangi kategoride en fazla artış var?</string>
+    <string name="quick_question_analysis_2">Geçen aya göre hangi kategoride daha az harcadım?</string>
+    <string name="quick_question_analysis_3">Harcama trendim nasıl gidiyor?</string>
+    <string name="quick_question_budget_1">Hangi kategoriye limit koymam gerekir?</string>
+    <string name="quick_question_budget_2">Tüm kategori limitlerimin durumu nedir?</string>
+    <string name="quick_question_savings_1">Aylık gelirimin yüzde kaçını tasarruf ediyorum?</string>
+    <string name="quick_question_savings_2">Tasarrufumu artırmak için ne yapmalıyım?</string>
+    <string name="quick_question_savings_3">Hedeflerime ulaşmak için aylık ne kadar biriktirmeliyim?</string>
+    <string name="quick_question_general_1">Finansal sağlık skorumu nasıl artırabilirim?</string>
+    <string name="quick_question_general_2">Risk seviyemi nasıl düşürebilirim?</string>
+    <string name="quick_question_general_3">Nerede tasarruf edebilirim?</string>
+    <string name="quick_question_general_4">Harcamalarımı nasıl azaltabilirim?</string>
+    <string name="quick_question_general_5">Finansal alışkanlıklarım hakkında ne düşünüyorsun?</string>
+    <string name="quick_question_general_6">Bu ay finansal açıdan iyi mi gidiyorum?</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
