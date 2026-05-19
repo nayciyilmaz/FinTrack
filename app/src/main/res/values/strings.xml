@@ -146,6 +146,21 @@
     <string name="quick_question_general_4">Harcamalarımı nasıl azaltabilirim?</string>
     <string name="quick_question_general_5">Finansal alışkanlıklarım hakkında ne düşünüyorsun?</string>
     <string name="quick_question_general_6">Bu ay finansal açıdan iyi mi gidiyorum?</string>
+    <string name="report_content_transaction_summary">İşlem Özeti</string>
+    <string name="report_content_transaction_summary_desc">Tüm gelir ve giderler</string>
+    <string name="report_content_category_analysis">Kategori Analizi</string>
+    <string name="report_content_category_analysis_desc">Harcama dağılımı</string>
+    <string name="report_content_spending_trend">Harcama Trendi</string>
+    <string name="report_content_spending_trend_desc">Dönem içi harcama grafiği</string>
+    <string name="report_content_budget_limits_desc">Kategori limit durumları</string>
+    <string name="report_content_savings_goals_desc">Tasarruf ve hedef ilerlemeleri</string>
+    <string name="report_period">Rapor Dönemi</string>
+    <string name="report_content">Rapor İçeriği</string>
+    <string name="report_create_pdf">PDF Oluştur ve İndir</string>
+    <string name="report_title">Raporlar</string>
+    <string name="report_subtitle">PDF olarak dışa aktar</string>
+    <string name="report_total_income">Toplam Gelir</string>
+    <string name="report_total_expense">Toplam Gider</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
