@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.advisor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,7 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTextButton
-import com.example.fintrack.core.quickQuestions
+import com.example.fintrack.constants.quickQuestions
 
 @Composable
 fun AiAdvisorScreen(

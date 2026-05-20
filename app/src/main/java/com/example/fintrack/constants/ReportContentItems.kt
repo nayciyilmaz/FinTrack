@@ -1,4 +1,4 @@
-package com.example.fintrack.core
+package com.example.fintrack.constants
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List

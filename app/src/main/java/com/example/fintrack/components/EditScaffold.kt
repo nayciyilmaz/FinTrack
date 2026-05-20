@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.fintrack.R
-import com.example.fintrack.navigation.main.MainScreens
+import com.example.fintrack.navigation.FinTrackScreens
 import com.example.fintrack.navigation.bottomBarRoutes
 import com.example.fintrack.navigation.bottomNavItems
 import com.example.fintrack.navigation.navigateAndClearBackStack
@@ -113,8 +113,8 @@ private fun EditBottomAppBar(
                             onClick = {
                                 navigateAndClearBackStack(
                                     navController = navController,
-                                    destination = MainScreens.AddTransactionScreen.route,
-                                    popUpToRoute = MainScreens.HomeScreen.route,
+                                    destination = FinTrackScreens.AddTransactionScreen.route,
+                                    popUpToRoute = FinTrackScreens.HomeScreen.route,
                                     inclusive = false
                                 )
                             },
@@ -141,8 +141,8 @@ private fun EditBottomAppBar(
                             navigateAndClearBackStack(
                                 navController = navController,
                                 destination = item.route,
-                                popUpToRoute = MainScreens.HomeScreen.route,
-                                inclusive = item.route == MainScreens.HomeScreen.route
+                                popUpToRoute = FinTrackScreens.HomeScreen.route,
+                                inclusive = item.route == FinTrackScreens.HomeScreen.route
                             )
                         }
                     },

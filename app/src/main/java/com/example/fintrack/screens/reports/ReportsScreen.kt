@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.reports
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
@@ -42,7 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.components.EditButton
 import com.example.fintrack.components.EditScaffold
-import com.example.fintrack.core.reportContentItems
+import com.example.fintrack.constants.reportContentItems
 import com.example.fintrack.model.ReportContentItem
 
 @Composable

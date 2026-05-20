@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

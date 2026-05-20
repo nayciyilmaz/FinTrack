@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.forgot_password
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,7 +53,7 @@ import com.example.fintrack.components.EditIconButton
 import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.WaveBackground
-import com.example.fintrack.navigation.auth.AuthScreens
+import com.example.fintrack.navigation.FinTrackScreens
 import com.example.fintrack.navigation.navigateAndClearBackStack
 
 @Composable
@@ -87,13 +87,12 @@ fun ForgotPasswordScreen(
                 color = colorResource(id = R.color.sign_in_title),
                 modifier = modifier.padding(bottom = 12.dp)
             )
-
             when {
                 !codeSent -> EmailSection(
                     email = email,
                     onEmailChange = { email = it },
                     onSendClick = { codeSent = true },
-                    onSignInClick = { navController.navigate(AuthScreens.SignInScreen.route) }
+                    onSignInClick = { navController.navigate(FinTrackScreens.SignInScreen.route) }
                 )
                 !passwordReset -> CodeSection(
                     codeDigits = codeDigits,
@@ -113,8 +112,8 @@ fun ForgotPasswordScreen(
                     onSaveClick = {
                         navigateAndClearBackStack(
                             navController = navController,
-                            destination = AuthScreens.SignInScreen.route,
-                            popUpToRoute = AuthScreens.ForgotPasswordScreen.route,
+                            destination = FinTrackScreens.SignInScreen.route,
+                            popUpToRoute = FinTrackScreens.ForgotPasswordScreen.route,
                             inclusive = true
                         )
                     },
@@ -141,7 +140,6 @@ private fun EmailSection(
         textAlign = TextAlign.Center,
         modifier = modifier.padding(bottom = 8.dp)
     )
-
     EditOutlinedTextField(
         value = email,
         onValueChange = onEmailChange,
@@ -166,7 +164,6 @@ private fun EmailSection(
             onDone = { focusManager.clearFocus() }
         )
     )
-
     EditButton(
         onClick = onSendClick,
         text = stringResource(id = R.string.forgot_password_send),
@@ -174,7 +171,6 @@ private fun EmailSection(
             .fillMaxWidth()
             .padding(top = 16.dp)
     )
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -208,7 +204,6 @@ private fun CodeSection(
         textAlign = TextAlign.Center,
         modifier = modifier.padding(bottom = 24.dp)
     )
-
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
@@ -250,7 +245,6 @@ private fun CodeSection(
             )
         }
     }
-
     EditButton(
         onClick = onConfirmClick,
         text = stringResource(id = R.string.forgot_password_confirm),
@@ -258,7 +252,6 @@ private fun CodeSection(
             .fillMaxWidth()
             .padding(top = 32.dp)
     )
-
     EditTextButton(
         onClick = onBackClick,
         text = stringResource(id = R.string.forgot_password_go_back),
@@ -288,7 +281,6 @@ private fun NewPasswordSection(
         textAlign = TextAlign.Center,
         modifier = modifier.padding(bottom = 8.dp)
     )
-
     EditOutlinedTextField(
         value = newPassword,
         onValueChange = onNewPasswordChange,
@@ -317,7 +309,6 @@ private fun NewPasswordSection(
             imeAction = ImeAction.Next
         )
     )
-
     EditOutlinedTextField(
         value = newPasswordRepeat,
         onValueChange = onNewPasswordRepeatChange,
@@ -349,7 +340,6 @@ private fun NewPasswordSection(
             onDone = { focusManager.clearFocus() }
         )
     )
-
     EditButton(
         onClick = onSaveClick,
         text = stringResource(id = R.string.forgot_password_save),
@@ -357,7 +347,6 @@ private fun NewPasswordSection(
             .fillMaxWidth()
             .padding(top = 20.dp)
     )
-
     EditTextButton(
         onClick = onBackClick,
         text = stringResource(id = R.string.forgot_password_go_back),

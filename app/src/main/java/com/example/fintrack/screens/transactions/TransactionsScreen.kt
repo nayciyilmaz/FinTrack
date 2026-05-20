@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.transactions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

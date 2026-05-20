@@ -6,25 +6,24 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SmartToy
 import com.example.fintrack.R
-import com.example.fintrack.navigation.main.MainScreens
 import com.example.fintrack.model.NavigationItem
 
 val bottomBarRoutes = setOf(
-    MainScreens.HomeScreen.route,
-    MainScreens.SpendingAnalysisScreen.route,
-    MainScreens.AddTransactionScreen.route,
-    MainScreens.AiAdvisorScreen.route,
-    MainScreens.ProfileScreen.route
+    FinTrackScreens.HomeScreen.route,
+    FinTrackScreens.SpendingAnalysisScreen.route,
+    FinTrackScreens.AddTransactionScreen.route,
+    FinTrackScreens.AiAdvisorScreen.route,
+    FinTrackScreens.ProfileScreen.route
 )
 
 val bottomNavItems = listOf(
     NavigationItem(
-        route = MainScreens.HomeScreen.route,
+        route = FinTrackScreens.HomeScreen.route,
         icon = Icons.Filled.Home,
         labelResId = R.string.nav_home
     ),
     NavigationItem(
-        route = MainScreens.SpendingAnalysisScreen.route,
+        route = FinTrackScreens.SpendingAnalysisScreen.route,
         icon = Icons.Filled.Analytics,
         labelResId = R.string.nav_analysis
     ),
@@ -34,12 +33,12 @@ val bottomNavItems = listOf(
         labelResId = R.string.nav_home
     ),
     NavigationItem(
-        route = MainScreens.AiAdvisorScreen.route,
+        route = FinTrackScreens.AiAdvisorScreen.route,
         icon = Icons.Filled.SmartToy,
         labelResId = R.string.nav_ai_advisor
     ),
     NavigationItem(
-        route = MainScreens.ProfileScreen.route,
+        route = FinTrackScreens.ProfileScreen.route,
         icon = Icons.Filled.Person,
         labelResId = R.string.nav_profile
     )

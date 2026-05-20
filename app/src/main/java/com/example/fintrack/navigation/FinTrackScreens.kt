@@ -1,6 +1,9 @@
-package com.example.fintrack.navigation.main
+package com.example.fintrack.navigation
 
-enum class MainScreens(val route: String) {
+enum class FinTrackScreens(val route: String) {
+    SignInScreen("sign_in_screen"),
+    SignUpScreen("sign_up_screen"),
+    ForgotPasswordScreen("forgot_password_screen"),
     HomeScreen("home_screen"),
     TransactionsScreen("transactions_screen"),
     AddTransactionScreen("add_transaction_screen"),

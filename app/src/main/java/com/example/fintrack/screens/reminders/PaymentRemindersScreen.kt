@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.reminders
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

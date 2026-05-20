@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.budget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +54,7 @@ import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.ProgressBar
-import com.example.fintrack.core.expenseCategories
+import com.example.fintrack.constants.expenseCategories
 
 @Composable
 fun BudgetLimitsScreen(

@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.transaction_add
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -47,6 +47,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -65,8 +66,8 @@ import com.example.fintrack.components.EditOutlinedTextField
 import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTimePicker
 import com.example.fintrack.components.TransactionTypeSelector
-import com.example.fintrack.core.expenseCategories
-import com.example.fintrack.core.incomeCategories
+import com.example.fintrack.constants.expenseCategories
+import com.example.fintrack.constants.incomeCategories
 import com.example.fintrack.model.TransactionCategory
 import com.example.fintrack.util.dateFormatter
 import com.example.fintrack.util.timeFormatter
@@ -552,7 +553,7 @@ private fun RecurringPaymentSection(
 
 @Composable
 private fun RecurringPaymentRow(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     title: String,
     description: String,
     checked: Boolean,

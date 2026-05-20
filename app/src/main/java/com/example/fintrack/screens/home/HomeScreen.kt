@@ -1,4 +1,4 @@
-package com.example.fintrack.screens
+package com.example.fintrack.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,8 +35,8 @@ import com.example.fintrack.components.EditScaffold
 import com.example.fintrack.components.EditTextButton
 import com.example.fintrack.components.ProgressBar
 import com.example.fintrack.components.TransactionRow
-import com.example.fintrack.core.quickActionItems
-import com.example.fintrack.navigation.main.MainScreens
+import com.example.fintrack.constants.quickActionItems
+import com.example.fintrack.navigation.FinTrackScreens
 import com.example.fintrack.navigation.navigateAndClearBackStack
 
 @Composable
@@ -259,7 +259,7 @@ private fun QuickActions(
                                 navigateAndClearBackStack(
                                     navController = navController,
                                     destination = item.route,
-                                    popUpToRoute = MainScreens.HomeScreen.route,
+                                    popUpToRoute = FinTrackScreens.HomeScreen.route,
                                     inclusive = false
                                 )
                             }
@@ -312,8 +312,8 @@ private fun RecentTransactions(
                 onClick = {
                     navigateAndClearBackStack(
                         navController = navController,
-                        destination = MainScreens.TransactionsScreen.route,
-                        popUpToRoute = MainScreens.HomeScreen.route,
+                        destination = FinTrackScreens.TransactionsScreen.route,
+                        popUpToRoute = FinTrackScreens.HomeScreen.route,
                         inclusive = false
                     )
                 },
