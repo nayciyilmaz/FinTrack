@@ -45,7 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
-import com.example.fintrack.constants.quickQuestions
+import com.example.fintrack.core.constants.quickQuestions
 
 @Composable
 fun AiAdvisorScreen(

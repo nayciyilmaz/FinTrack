@@ -66,11 +66,11 @@ import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTimePicker
 import com.example.fintrack.presentation.components.TransactionTypeSelector
-import com.example.fintrack.constants.expenseCategories
-import com.example.fintrack.constants.incomeCategories
+import com.example.fintrack.core.constants.expenseCategories
+import com.example.fintrack.core.constants.incomeCategories
 import com.example.fintrack.model.TransactionCategory
-import com.example.fintrack.util.dateFormatter
-import com.example.fintrack.util.timeFormatter
+import com.example.fintrack.core.util.dateFormatter
+import com.example.fintrack.core.util.timeFormatter
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth

@@ -1,4 +1,4 @@
-package com.example.fintrack.constants
+package com.example.fintrack.core.constants
 
 import com.example.fintrack.R
 import com.example.fintrack.model.QuickQuestion

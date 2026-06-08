@@ -1,4 +1,4 @@
-package com.example.fintrack.constants
+package com.example.fintrack.core.constants
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance

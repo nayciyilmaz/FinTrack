@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.fintrack.R
-import com.example.fintrack.util.monthFormatter
+import com.example.fintrack.core.util.monthFormatter
 import java.time.LocalDate
 import java.time.YearMonth
 

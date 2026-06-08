@@ -55,7 +55,7 @@ import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
-import com.example.fintrack.constants.goalCategories
+import com.example.fintrack.core.constants.goalCategories
 import com.example.fintrack.model.GoalCategory
 
 @Composable

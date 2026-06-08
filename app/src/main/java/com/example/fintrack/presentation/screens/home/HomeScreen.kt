@@ -35,7 +35,7 @@ import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
 import com.example.fintrack.presentation.components.TransactionRow
-import com.example.fintrack.constants.quickActionItems
+import com.example.fintrack.core.constants.quickActionItems
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
 

@@ -1,4 +1,4 @@
-package com.example.fintrack.util
+package com.example.fintrack.core.util
 
 import java.time.format.DateTimeFormatter
 import java.util.Locale
