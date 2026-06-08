@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.fintrack.navigation.FinTrackNavigation
+import com.example.fintrack.presentation.navigation.FinTrackNavigation
 import com.example.fintrack.ui.theme.FinTrackTheme
 
 class MainActivity : ComponentActivity() {

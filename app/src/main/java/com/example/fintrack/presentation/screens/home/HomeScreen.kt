@@ -1,0 +1,361 @@
+package com.example.fintrack.presentation.screens.home
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.fintrack.R
+import com.example.fintrack.presentation.components.EditScaffold
+import com.example.fintrack.presentation.components.EditTextButton
+import com.example.fintrack.presentation.components.ProgressBar
+import com.example.fintrack.presentation.components.TransactionRow
+import com.example.fintrack.constants.quickActionItems
+import com.example.fintrack.presentation.navigation.FinTrackScreens
+import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
+
+@Composable
+fun HomeScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    EditScaffold(
+        title = stringResource(id = R.string.title_home),
+        navController = navController
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            BudgetHeader(
+                remainingBalance = 7500,
+                dailyLimit = 312
+            )
+            BudgetDetails(
+                income = 25000,
+                expense = 17500
+            )
+            QuickActions(navController = navController)
+            RecentTransactions(navController = navController)
+        }
+    }
+}
+
+@Composable
+private fun BudgetHeader(
+    remainingBalance: Int,
+    dailyLimit: Int,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+            .background(colorResource(id = R.color.bottom_bar_fab))
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Text(
+            text = "Nisan 2026",
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            color = Color.White
+        )
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            BudgetHeaderInfoItem(
+                label = stringResource(id = R.string.label_remaining_balance),
+                value = "₺$remainingBalance",
+                modifier = modifier.weight(1f)
+            )
+            BudgetHeaderInfoItem(
+                label = stringResource(id = R.string.label_daily_limit),
+                value = "₺$dailyLimit",
+                modifier = modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun BudgetHeaderInfoItem(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White.copy(alpha = 0.2f))
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+            color = Color.White.copy(alpha = 0.8f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+private fun BudgetDetails(
+    income: Int,
+    expense: Int,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
+            .background(Color.White)
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            BudgetDetailsInfoItem(
+                label = stringResource(id = R.string.label_income),
+                value = "₺$income",
+                valueColor = colorResource(id = R.color.income_green),
+                borderColor = colorResource(id = R.color.income_green),
+                modifier = modifier.weight(1f)
+            )
+            BudgetDetailsInfoItem(
+                label = stringResource(id = R.string.label_expense),
+                value = "₺$expense",
+                valueColor = colorResource(id = R.color.expense_red),
+                borderColor = colorResource(id = R.color.expense_red),
+                modifier = modifier.weight(1f)
+            )
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_spending_rate),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                    color = colorResource(id = R.color.text_tertiary)
+                )
+                Text(
+                    text = "%${(expense * 100) / income} harcandı",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    color = colorResource(id = R.color.bottom_bar_fab)
+                )
+            }
+            ProgressBar(
+                progress = expense.toFloat() / income.toFloat(),
+                trackColor = colorResource(id = R.color.progress_track),
+                progressColor = colorResource(id = R.color.bottom_bar_fab)
+            )
+        }
+    }
+}
+
+@Composable
+private fun BudgetDetailsInfoItem(
+    label: String,
+    value: String,
+    valueColor: Color,
+    borderColor: Color,
+    modifier: Modifier = Modifier
+) {
+    val borderWidth = 3.dp
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(colorResource(id = R.color.surface_gray))
+            .drawBehind {
+                drawRect(
+                    color = borderColor,
+                    size = size.copy(width = borderWidth.toPx())
+                )
+            }
+            .padding(start = borderWidth + 13.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+            color = colorResource(id = R.color.text_quaternary)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium),
+            color = valueColor
+        )
+    }
+}
+
+@Composable
+private fun QuickActions(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.quick_actions_title),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+        )
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(28.dp))
+                .background(Color.White)
+                .padding(horizontal = 20.dp, vertical = 4.dp)
+        ) {
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                quickActionItems.forEach { item ->
+                    Column(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable {
+                                navigateAndClearBackStack(
+                                    navController = navController,
+                                    destination = item.route,
+                                    popUpToRoute = FinTrackScreens.HomeScreen.route,
+                                    inclusive = false
+                                )
+                            }
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null,
+                            tint = colorResource(id = item.iconTintRes),
+                            modifier = modifier
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(colorResource(id = item.iconBackgroundColorRes))
+                                .padding(14.dp)
+                        )
+                        Text(
+                            text = stringResource(id = item.labelResId),
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
+                            color = colorResource(id = R.color.text_tertiary)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecentTransactions(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = R.string.label_recent_transactions),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            EditTextButton(
+                onClick = {
+                    navigateAndClearBackStack(
+                        navController = navController,
+                        destination = FinTrackScreens.TransactionsScreen.route,
+                        popUpToRoute = FinTrackScreens.HomeScreen.route,
+                        inclusive = false
+                    )
+                },
+                text = stringResource(id = R.string.label_all_transactions),
+                color = Color.Black
+            )
+        }
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(28.dp))
+                .background(Color.White)
+                .padding(horizontal = 20.dp, vertical = 4.dp)
+        ) {
+            TransactionRow(
+                icon = Icons.Filled.ShoppingCart,
+                title = "Market Alışverişi",
+                dateTime = "14 Mar 2026 · 18:45",
+                amount = "-₺300",
+                remainingBalance = "Kalan: ₺7.500",
+                amountColor = colorResource(id = R.color.expense_red),
+                iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
+                iconTint = colorResource(id = R.color.expense_red),
+                showDivider = true
+            )
+            TransactionRow(
+                icon = Icons.Filled.AttachMoney,
+                title = "Maaş Ödemesi",
+                dateTime = "01 Mar 2026 · 09:00",
+                amount = "+₺25.000",
+                remainingBalance = "Kalan: ₺7.800",
+                amountColor = colorResource(id = R.color.income_green),
+                iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
+                iconTint = colorResource(id = R.color.income_green),
+                showDivider = false
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(navController = rememberNavController())
+}
