@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PieChart
 import com.example.fintrack.R
 import com.example.fintrack.presentation.navigation.FinTrackScreens
-import com.example.fintrack.model.QuickActionItem
+import com.example.fintrack.domain.model.QuickActionItem
 
 val quickActionItems = listOf(
     QuickActionItem(

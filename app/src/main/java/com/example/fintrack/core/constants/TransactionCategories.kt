@@ -22,8 +22,8 @@ import androidx.compose.material.icons.filled.Theaters
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Work
 import com.example.fintrack.R
-import com.example.fintrack.model.GoalCategory
-import com.example.fintrack.model.TransactionCategory
+import com.example.fintrack.domain.model.GoalCategory
+import com.example.fintrack.domain.model.TransactionCategory
 
 val expenseCategories = listOf(
     TransactionCategory(R.string.category_market, Icons.Filled.ShoppingCart),

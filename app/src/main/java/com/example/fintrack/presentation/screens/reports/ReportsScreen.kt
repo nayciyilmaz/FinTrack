@@ -42,7 +42,7 @@ import com.example.fintrack.R
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.core.constants.reportContentItems
-import com.example.fintrack.model.ReportContentItem
+import com.example.fintrack.domain.model.ReportContentItem
 
 @Composable
 fun ReportsScreen(

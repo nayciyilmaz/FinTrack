@@ -56,7 +56,7 @@ import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
 import com.example.fintrack.core.constants.goalCategories
-import com.example.fintrack.model.GoalCategory
+import com.example.fintrack.domain.model.GoalCategory
 
 @Composable
 fun SavingsGoalsScreen(

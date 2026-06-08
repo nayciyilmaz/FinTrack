@@ -1,7 +1,7 @@
 package com.example.fintrack.core.constants
 
 import com.example.fintrack.R
-import com.example.fintrack.model.QuickQuestion
+import com.example.fintrack.domain.model.QuickQuestion
 
 val quickQuestions = listOf(
     QuickQuestion(R.string.quick_question_expense_1, R.string.quick_question_category_expense),
