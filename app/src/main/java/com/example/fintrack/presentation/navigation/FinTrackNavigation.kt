@@ -22,7 +22,7 @@ import com.example.fintrack.presentation.screens.transactions.TransactionsScreen
 fun FinTrackNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = FinTrackScreens.HomeScreen.route) {
+    NavHost(navController = navController, startDestination = FinTrackScreens.SignInScreen.route) {
         composable(route = FinTrackScreens.SignInScreen.route) {
             SignInScreen(navController = navController)
         }
