@@ -26,10 +26,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -43,6 +42,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
@@ -50,6 +50,7 @@ import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditIconButton
 import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditTextButton
+import com.example.fintrack.presentation.components.ValidationErrorText
 import com.example.fintrack.presentation.components.WaveBackground
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
@@ -57,12 +58,23 @@ import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
 @Composable
 fun SignInScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
+    val actionState by viewModel.actionState.collectAsState()
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(actionState.isSuccess) {
+        if (actionState.isSuccess) {
+            navigateAndClearBackStack(
+                navController = navController,
+                destination = FinTrackScreens.HomeScreen.route,
+                popUpToRoute = FinTrackScreens.SignInScreen.route,
+                inclusive = true
+            )
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         WaveBackground()
@@ -80,56 +92,62 @@ fun SignInScreen(
                 color = colorResource(id = R.color.sign_in_title),
                 modifier = modifier.padding(bottom = 20.dp)
             )
-            EditOutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                label = {
-                    Text(text = stringResource(id = R.string.sign_in_email))
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Email,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.icon_orange)
+            Column(modifier = modifier.fillMaxWidth()) {
+                EditOutlinedTextField(
+                    value = uiState.email,
+                    onValueChange = viewModel::onEmailChange,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    label = {
+                        Text(text = stringResource(id = R.string.sign_in_email))
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Email,
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.icon_orange)
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
                     )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
                 )
-            )
-            EditOutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                modifier = modifier.fillMaxWidth(),
-                label = {
-                    Text(text = stringResource(id = R.string.sign_in_password))
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.icon_orange)
+                uiState.validationErrors.emailError?.let { ValidationErrorText(error = it) }
+            }
+            Column(modifier = modifier.fillMaxWidth()) {
+                EditOutlinedTextField(
+                    value = uiState.password,
+                    onValueChange = viewModel::onPasswordChange,
+                    modifier = modifier.fillMaxWidth(),
+                    label = {
+                        Text(text = stringResource(id = R.string.sign_in_password))
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Lock,
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.icon_orange)
+                        )
+                    },
+                    trailingIcon = {
+                        EditIconButton(
+                            onClick = viewModel::togglePasswordVisibility,
+                            imageVector = if (uiState.isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                        )
+                    },
+                    visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
                     )
-                },
-                trailingIcon = {
-                    EditIconButton(
-                        onClick = { passwordVisible = !passwordVisible },
-                        imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    )
-                },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
                 )
-            )
+                uiState.validationErrors.passwordError?.let { ValidationErrorText(error = it) }
+            }
             EditTextButton(
                 onClick = { navController.navigate(FinTrackScreens.ForgotPasswordScreen.route) },
                 text = stringResource(id = R.string.sign_in_forgot_password),
@@ -139,14 +157,7 @@ fun SignInScreen(
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
             )
             EditButton(
-                onClick = {
-                    navigateAndClearBackStack(
-                        navController = navController,
-                        destination = FinTrackScreens.HomeScreen.route,
-                        popUpToRoute = FinTrackScreens.SignInScreen.route,
-                        inclusive = true
-                    )
-                },
+                onClick = viewModel::login,
                 text = stringResource(id = R.string.sign_in_title),
                 modifier = modifier.fillMaxWidth()
             )

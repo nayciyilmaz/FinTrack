@@ -1,6 +1,7 @@
 package com.example.fintrack.di
 
 import com.example.fintrack.domain.repository.AuthRepository
+import com.example.fintrack.domain.usecase.LoginUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
 import dagger.Module
 import dagger.Provides
@@ -16,4 +17,9 @@ object DomainModule {
     @Singleton
     fun provideRegisterUseCase(authRepository: AuthRepository): RegisterUseCase =
         RegisterUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideLoginUseCase(authRepository: AuthRepository): LoginUseCase =
+        LoginUseCase(authRepository)
 }
