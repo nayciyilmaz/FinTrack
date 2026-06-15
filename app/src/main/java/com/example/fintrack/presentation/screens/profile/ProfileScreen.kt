@@ -1,21 +1,54 @@
 package com.example.fintrack.presentation.screens.profile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.TextFields
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
 
 @Composable
@@ -30,12 +63,367 @@ fun ProfileScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .verticalScroll(rememberScrollState())
         ) {
-            Text("Profil Sayfası")
+            ProfileHeader()
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(
+                    modifier = modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    StatCard(
+                        value = "247",
+                        label = stringResource(id = R.string.profile_stat_total_transactions),
+                        modifier = modifier.weight(1f)
+                    )
+                    StatCard(
+                        value = "5",
+                        label = stringResource(id = R.string.profile_stat_active_goals),
+                        modifier = modifier.weight(1f)
+                    )
+                    StatCard(
+                        value = "8 Ay",
+                        label = stringResource(id = R.string.profile_stat_usage),
+                        modifier = modifier.weight(1f)
+                    )
+                }
+                Text(
+                    text = stringResource(id = R.string.profile_section_account_info),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Color.Black,
+                    modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
+                )
+                AccountInfoCard()
+                Text(
+                    text = stringResource(id = R.string.profile_section_app_settings),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Color.Black,
+                    modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
+                )
+                AppSettingsCard()
+                EditButton(
+                    onClick = {},
+                    text = stringResource(id = R.string.profile_logout),
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                        .border(
+                            0.5.dp,
+                            colorResource(id = R.color.expense_red).copy(alpha = 0.3f),
+                            RoundedCornerShape(12.dp)
+                        ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = colorResource(id = R.color.expense_red)
+                    ),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Medium,
+                        color = colorResource(id = R.color.expense_red)
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileHeader(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(colorResource(id = R.color.bottom_bar_fab))
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Box(
+                modifier = modifier
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.2f))
+                    .border(1.5.dp, Color.White, CircleShape)
+                    .padding(28.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "AY",
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White
+                )
+            }
+            Text(
+                text = "Ahmet Yılmaz",
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                color = Color.White
+            )
+            Text(
+                text = "ahmet.yilmaz@gmail.com",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.85f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatCard(
+    value: String,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White)
+            .padding(vertical = 14.dp, horizontal = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            color = colorResource(id = R.color.bottom_bar_fab)
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = colorResource(id = R.color.text_quaternary)
+        )
+    }
+}
+
+@Composable
+private fun AccountInfoCard(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White)
+    ) {
+        InfoRow(
+            icon = Icons.Filled.Person,
+            title = stringResource(id = R.string.profile_full_name),
+            subtitle = "Ahmet Yılmaz",
+            onClick = {}
+        )
+        HorizontalDivider(
+            modifier = modifier.padding(horizontal = 16.dp),
+            color = colorResource(id = R.color.divider_color)
+        )
+        InfoRow(
+            icon = Icons.Filled.Email,
+            title = stringResource(id = R.string.sign_in_email),
+            subtitle = "ahmet.yilmaz@gmail.com",
+            onClick = {}
+        )
+        HorizontalDivider(
+            modifier = modifier.padding(horizontal = 16.dp),
+            color = colorResource(id = R.color.divider_color)
+        )
+        InfoRow(
+            icon = Icons.Filled.Lock,
+            title = stringResource(id = R.string.profile_change_password),
+            subtitle = "Son değişiklik 3 ay önce",
+            onClick = {}
+        )
+    }
+}
+
+@Composable
+private fun InfoRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(colorResource(id = R.color.quick_action_background))
+                .padding(9.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = colorResource(id = R.color.icon_orange)
+            )
+        }
+        Column(modifier = modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                color = colorResource(id = R.color.text_primary)
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.DarkGray
+            )
+        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = Color.Black.copy(alpha = 0.2f)
+        )
+    }
+}
+
+@Composable
+private fun AppSettingsCard(modifier: Modifier = Modifier) {
+    var isDarkMode by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White)
+    ) {
+        SettingRowWithValue(
+            icon = Icons.Filled.AccountBalance,
+            title = stringResource(id = R.string.profile_currency),
+            value = "₺ TRY",
+            onClick = {}
+        )
+        HorizontalDivider(
+            modifier = modifier.padding(horizontal = 16.dp),
+            color = colorResource(id = R.color.divider_color)
+        )
+        SettingRowWithValue(
+            icon = Icons.Filled.Language,
+            title = stringResource(id = R.string.profile_language),
+            value = "Türkçe",
+            onClick = {}
+        )
+        HorizontalDivider(
+            modifier = modifier.padding(horizontal = 16.dp),
+            color = colorResource(id = R.color.divider_color)
+        )
+        HorizontalDivider(
+            modifier = modifier.padding(horizontal = 16.dp),
+            color = colorResource(id = R.color.divider_color)
+        )
+        SettingRowWithValue(
+            icon = Icons.Filled.TextFields,
+            title = stringResource(id = R.string.profile_font_size),
+            value = "Orta",
+            onClick = {}
+        )
+        DarkModeRow(checked = isDarkMode, onCheckedChange = { isDarkMode = it })
+    }
+}
+
+@Composable
+private fun DarkModeRow(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(colorResource(id = R.color.quick_action_background))
+                .padding(9.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.DarkMode,
+                contentDescription = null,
+                tint = colorResource(id = R.color.icon_orange)
+            )
+        }
+        Text(
+            text = "Koyu Mod",
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+            color = colorResource(id = R.color.text_primary),
+            modifier = modifier.weight(1f)
+        )
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = colorResource(id = R.color.bottom_bar_fab),
+                uncheckedThumbColor = Color.White,
+                uncheckedTrackColor = colorResource(id = R.color.switch_unchecked_track),
+                uncheckedBorderColor = Color.Transparent
+            )
+        )
+    }
+}
+
+@Composable
+private fun SettingRowWithValue(
+    icon: ImageVector,
+    title: String,
+    value: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(colorResource(id = R.color.quick_action_background))
+                .padding(9.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = colorResource(id = R.color.icon_orange)
+            )
+        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+            color = colorResource(id = R.color.text_primary),
+            modifier = modifier.weight(1f)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.DarkGray
+            )
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = Color.Black.copy(alpha = 0.2f)
+            )
         }
     }
 }

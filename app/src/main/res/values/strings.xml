@@ -162,6 +162,18 @@
     <string name="report_total_income">Toplam Gelir</string>
     <string name="report_total_expense">Toplam Gider</string>
 
+    <string name="profile_stat_total_transactions">Toplam İşlem</string>
+    <string name="profile_stat_active_goals">Aktif Hedef</string>
+    <string name="profile_stat_usage">Kullanım</string>
+    <string name="profile_section_account_info">Hesap Bilgileri</string>
+    <string name="profile_full_name">Ad Soyad</string>
+    <string name="profile_change_password">Şifre Değiştir</string>
+    <string name="profile_currency">Para Birimi</string>
+    <string name="profile_language">Dil</string>
+    <string name="profile_font_size">Yazı Boyutu</string>
+    <string name="profile_section_app_settings">Uygulama Ayarları</string>
+    <string name="profile_logout">Çıkış Yap</string>
+
     <string-array name="week_days_short">
         <item>Pzt</item>
         <item>Sal</item>
