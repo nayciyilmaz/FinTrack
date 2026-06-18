@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -64,6 +65,7 @@ fun SignInScreen(
     val uiState by viewModel.uiState.collectAsState()
     val actionState by viewModel.actionState.collectAsState()
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
 
     LaunchedEffect(actionState.isSuccess) {
         if (actionState.isSuccess) {
@@ -162,7 +164,7 @@ fun SignInScreen(
                 modifier = modifier.fillMaxWidth()
             )
             OutlinedButton(
-                onClick = {},
+                onClick = { viewModel.launchGoogleSignIn(context) },
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),

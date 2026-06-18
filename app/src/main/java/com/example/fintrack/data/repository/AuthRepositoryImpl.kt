@@ -5,6 +5,7 @@ import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.data.mapper.AuthMapper
 import com.example.fintrack.data.remote.api.AuthService
 import com.example.fintrack.data.remote.dto.ErrorResponseDto
+import com.example.fintrack.data.remote.dto.GoogleAuthRequestDto
 import com.example.fintrack.data.remote.dto.LoginRequestDto
 import com.example.fintrack.data.remote.dto.RegisterRequestDto
 import com.example.fintrack.domain.model.User
@@ -68,6 +69,21 @@ class AuthRepositoryImpl @Inject constructor(
                 message = errorDto?.message ?: "Bir hata oluştu",
                 fieldErrors = fieldErrors
             )
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
+    override suspend fun loginWithGoogle(idToken: String): Resource<User> {
+        return try {
+            val response = authService.loginWithGoogle(GoogleAuthRequestDto(idToken = idToken))
+            tokenManager.saveToken(response.token)
+            Resource.Success(authMapper.toUser(response))
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(message = errorDto?.message ?: "Google ile giriş başarısız")
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: "Bir hata oluştu")
         }
