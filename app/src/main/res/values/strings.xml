@@ -78,6 +78,7 @@
     <string name="label_reminder">Hatırlatıcı</string>
     <string name="label_reminder_desc">Ödeme günü bildirim gönderir</string>
     <string name="label_save">Kaydet</string>
+    <string name="error_required_fields">Zorunlu alanları doldurunuz.</string>
     <string name="label_note">Not (İsteğe Bağlı)</string>
     <string name="label_photo">Fotoğraf (İsteğe Bağlı)</string>
     <string name="category_maas">Maaş</string>

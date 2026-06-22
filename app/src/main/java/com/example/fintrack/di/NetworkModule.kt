@@ -1,6 +1,7 @@
 package com.example.fintrack.di
 
 import com.example.fintrack.data.remote.api.AuthService
+import com.example.fintrack.data.remote.api.TransactionService
 import com.example.fintrack.data.remote.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
@@ -23,6 +24,7 @@ object NetworkModule {
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true
+        encodeDefaults = true
     }
 
     @Provides
@@ -50,4 +52,9 @@ object NetworkModule {
     @Singleton
     fun provideAuthService(retrofit: Retrofit): AuthService =
         retrofit.create(AuthService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTransactionService(retrofit: Retrofit): TransactionService =
+        retrofit.create(TransactionService::class.java)
 }

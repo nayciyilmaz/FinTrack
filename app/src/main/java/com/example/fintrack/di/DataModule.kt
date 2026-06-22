@@ -1,7 +1,9 @@
 package com.example.fintrack.di
 
 import com.example.fintrack.data.repository.AuthRepositoryImpl
+import com.example.fintrack.data.repository.TransactionRepositoryImpl
 import com.example.fintrack.domain.repository.AuthRepository
+import com.example.fintrack.domain.repository.TransactionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,8 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTransactionRepository(impl: TransactionRepositoryImpl): TransactionRepository
 }

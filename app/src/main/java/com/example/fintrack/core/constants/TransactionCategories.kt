@@ -26,28 +26,28 @@ import com.example.fintrack.domain.model.GoalCategory
 import com.example.fintrack.domain.model.TransactionCategory
 
 val expenseCategories = listOf(
-    TransactionCategory(R.string.category_market, Icons.Filled.ShoppingCart),
-    TransactionCategory(R.string.category_kira, Icons.Filled.Home),
-    TransactionCategory(R.string.category_ulasim, Icons.Filled.DirectionsBus),
-    TransactionCategory(R.string.category_eglence, Icons.Filled.Theaters),
-    TransactionCategory(R.string.category_fatura, Icons.Filled.ElectricBolt),
-    TransactionCategory(R.string.category_saglik, Icons.Filled.LocalHospital),
-    TransactionCategory(R.string.category_giyim, Icons.Filled.Checkroom),
-    TransactionCategory(R.string.category_spor, Icons.Filled.FitnessCenter),
-    TransactionCategory(R.string.category_egitim, Icons.Filled.MenuBook),
-    TransactionCategory(R.string.category_abonelik, Icons.Filled.Subscriptions),
-    TransactionCategory(R.string.category_diger, Icons.Filled.MoreHoriz)
+    TransactionCategory(R.string.category_market, Icons.Filled.ShoppingCart, "MARKET"),
+    TransactionCategory(R.string.category_kira, Icons.Filled.Home, "RENT"),
+    TransactionCategory(R.string.category_ulasim, Icons.Filled.DirectionsBus, "TRANSPORT"),
+    TransactionCategory(R.string.category_eglence, Icons.Filled.Theaters, "ENTERTAINMENT"),
+    TransactionCategory(R.string.category_fatura, Icons.Filled.ElectricBolt, "BILL"),
+    TransactionCategory(R.string.category_saglik, Icons.Filled.LocalHospital, "HEALTH"),
+    TransactionCategory(R.string.category_giyim, Icons.Filled.Checkroom, "CLOTHING"),
+    TransactionCategory(R.string.category_spor, Icons.Filled.FitnessCenter, "SPORT"),
+    TransactionCategory(R.string.category_egitim, Icons.Filled.MenuBook, "EDUCATION"),
+    TransactionCategory(R.string.category_abonelik, Icons.Filled.Subscriptions, "SUBSCRIPTION"),
+    TransactionCategory(R.string.category_diger, Icons.Filled.MoreHoriz, "OTHER")
 )
 
 val incomeCategories = listOf(
-    TransactionCategory(R.string.category_maas, Icons.Filled.Payments),
-    TransactionCategory(R.string.category_freelance, Icons.Filled.Work),
-    TransactionCategory(R.string.category_kira_geliri, Icons.Filled.Home),
-    TransactionCategory(R.string.category_yatirim, Icons.Filled.TrendingUp),
-    TransactionCategory(R.string.category_hediye, Icons.Filled.CardGiftcard),
-    TransactionCategory(R.string.category_bonus, Icons.Filled.Star),
-    TransactionCategory(R.string.category_faiz, Icons.Filled.AccountBalance),
-    TransactionCategory(R.string.category_diger_gelir, Icons.Filled.MoreHoriz)
+    TransactionCategory(R.string.category_maas, Icons.Filled.Payments, "SALARY"),
+    TransactionCategory(R.string.category_freelance, Icons.Filled.Work, "FREELANCE"),
+    TransactionCategory(R.string.category_kira_geliri, Icons.Filled.Home, "RENT_INCOME"),
+    TransactionCategory(R.string.category_yatirim, Icons.Filled.TrendingUp, "INVESTMENT"),
+    TransactionCategory(R.string.category_hediye, Icons.Filled.CardGiftcard, "GIFT"),
+    TransactionCategory(R.string.category_bonus, Icons.Filled.Star, "BONUS"),
+    TransactionCategory(R.string.category_faiz, Icons.Filled.AccountBalance, "INTEREST"),
+    TransactionCategory(R.string.category_diger_gelir, Icons.Filled.MoreHoriz, "OTHER_INCOME")
 )
 
 val goalCategories = listOf(

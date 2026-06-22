@@ -5,5 +5,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 data class TransactionCategory(
     @StringRes val labelResId: Int,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val key: String
 )
