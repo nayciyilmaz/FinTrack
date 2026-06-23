@@ -50,6 +50,10 @@ val incomeCategories = listOf(
     TransactionCategory(R.string.category_diger_gelir, Icons.Filled.MoreHoriz, "OTHER_INCOME")
 )
 
+private val allCategories = expenseCategories + incomeCategories
+fun categoryKeyToIcon(key: String) = allCategories.find { it.key == key }?.icon ?: Icons.Filled.MoreHoriz
+fun categoryKeyToLabelResId(key: String) = allCategories.find { it.key == key }?.labelResId ?: R.string.category_diger
+
 val goalCategories = listOf(
     GoalCategory(Icons.Filled.Home, R.string.goal_category_konut),
     GoalCategory(Icons.Filled.DirectionsCar, R.string.goal_category_tasit),

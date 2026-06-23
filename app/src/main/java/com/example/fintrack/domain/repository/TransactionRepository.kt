@@ -14,4 +14,10 @@ interface TransactionRepository {
         recurring: Boolean,
         reminder: Boolean
     ): Resource<Transaction>
+
+    suspend fun getTransactions(
+        type: String?,
+        startDate: String,
+        endDate: String
+    ): Resource<List<Transaction>>
 }
