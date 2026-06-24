@@ -32,6 +32,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.dateFormatter
+import java.time.LocalDate
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.PeriodSelector
 import com.example.fintrack.presentation.components.TransactionRow
@@ -139,7 +141,7 @@ private fun TransactionsContent(
                     TransactionRow(
                         icon = categoryKeyToIcon(item.transaction.category),
                         title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
-                        dateTime = "${item.transaction.date} · ${item.transaction.time}",
+                        dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter)} · ${item.transaction.time}",
                         amount = "${if (isIncome) "+" else "-"}₺${item.transaction.amount}",
                         remainingBalance = "Kalan: ₺%.2f".format(item.remainingBalance),
                         amountColor = if (isIncome)

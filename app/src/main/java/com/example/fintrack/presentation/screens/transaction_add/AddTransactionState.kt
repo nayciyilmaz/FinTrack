@@ -1,6 +1,5 @@
 package com.example.fintrack.presentation.screens.transaction_add
 
-import android.net.Uri
 import com.example.fintrack.domain.model.TransactionCategory
 import java.time.LocalDate
 import java.time.LocalTime
@@ -15,7 +14,6 @@ data class AddTransactionUiState(
     val tempSelectedDate: LocalDate? = null,
     val currentMonth: YearMonth = YearMonth.now(),
     val selectedTime: LocalTime? = null,
-    val selectedImageUri: Uri? = null,
     val isRecurring: Boolean = false,
     val isReminder: Boolean = false,
     val showDatePicker: Boolean = false,

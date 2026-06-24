@@ -1,6 +1,5 @@
 package com.example.fintrack.presentation.screens.transaction_add
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.Resource
@@ -99,10 +98,6 @@ class AddTransactionViewModel @Inject constructor(
             showTimePicker = false,
             showValidationError = false
         )
-    }
-
-    fun onImageChange(uri: Uri?) {
-        _uiState.value = _uiState.value.copy(selectedImageUri = uri)
     }
 
     fun onRecurringChange(value: Boolean) {
