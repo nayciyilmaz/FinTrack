@@ -38,6 +38,7 @@ import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.PeriodSelector
 import com.example.fintrack.presentation.components.TransactionRow
 import com.example.fintrack.presentation.components.TransactionTypeSelector
+import com.example.fintrack.presentation.navigation.FinTrackScreens
 
 @Composable
 fun TransactionsScreen(
@@ -80,6 +81,7 @@ fun TransactionsScreen(
             TransactionsContent(
                 uiState = uiState,
                 actionState = actionState,
+                navController = navController,
                 modifier = modifier
             )
         }
@@ -90,6 +92,7 @@ fun TransactionsScreen(
 private fun TransactionsContent(
     uiState: TransactionsUiState,
     actionState: TransactionsActionState,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     when {
@@ -156,7 +159,8 @@ private fun TransactionsContent(
                             colorResource(id = R.color.income_green)
                         else
                             colorResource(id = R.color.expense_red),
-                        showDivider = index < uiState.transactions.lastIndex
+                        showDivider = index < uiState.transactions.lastIndex,
+                        onClick = { navController.navigate(FinTrackScreens.UpdateTransactionScreen.route) }
                     )
                 }
             }

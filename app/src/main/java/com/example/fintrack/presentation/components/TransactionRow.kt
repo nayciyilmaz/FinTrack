@@ -1,6 +1,7 @@
 package com.example.fintrack.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,12 +34,14 @@ fun TransactionRow(
     iconBackgroundColor: Color,
     iconTint: Color,
     showDivider: Boolean,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
+                .clickable { onClick() }
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp)

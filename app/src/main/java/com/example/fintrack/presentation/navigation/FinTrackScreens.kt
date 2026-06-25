@@ -7,6 +7,7 @@ enum class FinTrackScreens(val route: String) {
     HomeScreen("home_screen"),
     TransactionsScreen("transactions_screen"),
     AddTransactionScreen("add_transaction_screen"),
+    UpdateTransactionScreen("update_transaction_screen"),
     SpendingAnalysisScreen("spending_analysis_screen"),
     SavingsGoalsScreen("savings_goals_screen"),
     BudgetLimitsScreen("budget_limits_screen"),

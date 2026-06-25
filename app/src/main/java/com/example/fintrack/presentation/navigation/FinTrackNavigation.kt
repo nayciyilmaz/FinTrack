@@ -16,6 +16,7 @@ import com.example.fintrack.presentation.screens.savings.SavingsGoalsScreen
 import com.example.fintrack.presentation.screens.sign_in.SignInScreen
 import com.example.fintrack.presentation.screens.sign_up.SignUpScreen
 import com.example.fintrack.presentation.screens.transaction_add.AddTransactionScreen
+import com.example.fintrack.presentation.screens.transaction_update.UpdateTransactionScreen
 import com.example.fintrack.presentation.screens.transactions.TransactionsScreen
 
 @Composable
@@ -40,6 +41,9 @@ fun FinTrackNavigation() {
         }
         composable(route = FinTrackScreens.AddTransactionScreen.route) {
             AddTransactionScreen(navController = navController)
+        }
+        composable(route = FinTrackScreens.UpdateTransactionScreen.route) {
+            UpdateTransactionScreen(navController = navController)
         }
         composable(route = FinTrackScreens.SpendingAnalysisScreen.route) {
             SpendingAnalysisScreen(navController = navController)
