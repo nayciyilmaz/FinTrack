@@ -20,4 +20,18 @@ interface TransactionRepository {
         startDate: String,
         endDate: String
     ): Resource<List<Transaction>>
+
+    suspend fun updateTransaction(
+        id: Long,
+        type: String,
+        category: String,
+        amount: Double,
+        note: String?,
+        date: String,
+        time: String,
+        recurring: Boolean,
+        reminder: Boolean
+    ): Resource<Transaction>
+
+    suspend fun deleteTransaction(id: Long): Resource<Unit>
 }

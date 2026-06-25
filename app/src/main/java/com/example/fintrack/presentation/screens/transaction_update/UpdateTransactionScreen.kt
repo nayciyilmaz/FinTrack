@@ -7,19 +7,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
@@ -27,7 +29,6 @@ import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.constants.incomeCategories
 import com.example.fintrack.core.util.dateFormatter
 import com.example.fintrack.core.util.timeFormatter
-import com.example.fintrack.domain.model.TransactionCategory
 import com.example.fintrack.presentation.components.AmountInput
 import com.example.fintrack.presentation.components.CategorySelector
 import com.example.fintrack.presentation.components.DateTimeSection
@@ -39,55 +40,68 @@ import com.example.fintrack.presentation.components.NoteInput
 import com.example.fintrack.presentation.components.RecurringPaymentSection
 import com.example.fintrack.presentation.components.TransactionTypeSelector
 import com.example.fintrack.presentation.components.ValidationErrorText
-import java.time.LocalDate
+import com.example.fintrack.presentation.navigation.FinTrackScreens
+import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
 import java.time.LocalTime
-import java.time.YearMonth
 
 @Composable
 fun UpdateTransactionScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: UpdateTransactionViewModel = hiltViewModel()
 ) {
-    var selectedTypeIndex by remember { mutableIntStateOf(0) }
-    var selectedCategory by remember { mutableStateOf<TransactionCategory?>(null) }
-    var amount by remember { mutableStateOf("") }
-    var note by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-    var tempSelectedDate by remember { mutableStateOf<LocalDate?>(null) }
-    var currentMonth by remember { mutableStateOf(YearMonth.now()) }
-    var selectedTime by remember { mutableStateOf<LocalTime?>(null) }
-    var isRecurring by remember { mutableStateOf(false) }
-    var isReminder by remember { mutableStateOf(false) }
-    var showDatePicker by remember { mutableStateOf(false) }
-    var showTimePicker by remember { mutableStateOf(false) }
-    var showValidationError by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val isIncome = uiState.selectedTypeIndex == 1
 
-    val isIncome = selectedTypeIndex == 1
+    LaunchedEffect(actionState.isSuccess) {
+        if (actionState.isSuccess) {
+            navigateAndClearBackStack(
+                navController = navController,
+                destination = FinTrackScreens.TransactionsScreen.route,
+                popUpToRoute = FinTrackScreens.TransactionsScreen.route,
+                inclusive = true
+            )
+        }
+    }
 
-    if (showDatePicker) {
-        EditDatePicker(
-            currentMonth = currentMonth,
-            tempSelectedDate = tempSelectedDate,
-            onMonthChange = { currentMonth = it },
-            onDateSelect = { tempSelectedDate = it },
-            onDismiss = { showDatePicker = false },
-            onConfirm = {
-                selectedDate = tempSelectedDate
-                showDatePicker = false
-                showValidationError = false
+    if (uiState.showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = viewModel::onDismissDeleteDialog,
+            title = { Text(text = stringResource(id = R.string.title_delete_dialog)) },
+            text = { Text(text = stringResource(id = R.string.message_delete_transaction)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.onDismissDeleteDialog()
+                    viewModel.deleteTransaction()
+                }) {
+                    Text(text = stringResource(id = R.string.label_confirm_action))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::onDismissDeleteDialog) {
+                    Text(text = stringResource(id = R.string.label_cancel))
+                }
             }
         )
     }
 
-    if (showTimePicker) {
+    if (uiState.showDatePicker) {
+        EditDatePicker(
+            currentMonth = uiState.currentMonth,
+            tempSelectedDate = uiState.tempSelectedDate,
+            onMonthChange = viewModel::onMonthChange,
+            onDateSelect = viewModel::onTempDateChange,
+            onDismiss = viewModel::onDatePickerDismiss,
+            onConfirm = viewModel::onDateConfirm
+        )
+    }
+
+    if (uiState.showTimePicker) {
         EditTimePicker(
-            initialTime = selectedTime ?: LocalTime.now(),
-            onDismiss = { showTimePicker = false },
-            onConfirm = {
-                selectedTime = it
-                showTimePicker = false
-                showValidationError = false
-            }
+            initialTime = uiState.selectedTime ?: LocalTime.now(),
+            onDismiss = viewModel::onTimePickerDismiss,
+            onConfirm = viewModel::onTimeConfirm
         )
     }
 
@@ -108,59 +122,42 @@ fun UpdateTransactionScreen(
                     stringResource(id = R.string.label_expense),
                     stringResource(id = R.string.label_income)
                 ),
-                selectedIndex = selectedTypeIndex,
-                onOptionSelected = {
-                    selectedTypeIndex = it
-                    selectedCategory = null
-                    amount = ""
-                    note = ""
-                }
+                selectedIndex = uiState.selectedTypeIndex,
+                onOptionSelected = viewModel::onTypeChange
             )
             CategorySelector(
                 categories = if (isIncome) incomeCategories else expenseCategories,
-                selectedCategory = selectedCategory,
-                onCategorySelected = {
-                    selectedCategory = it
-                    showValidationError = false
-                }
+                selectedCategory = uiState.selectedCategory,
+                onCategorySelected = viewModel::onCategoryChange
             )
             AmountInput(
-                amount = amount,
-                onAmountChange = {
-                    amount = it
-                    showValidationError = false
-                }
+                amount = uiState.amount,
+                onAmountChange = viewModel::onAmountChange
             )
             NoteInput(
-                note = note,
-                onNoteChange = { note = it }
+                note = uiState.note,
+                onNoteChange = viewModel::onNoteChange
             )
             DateTimeSection(
-                date = selectedDate?.format(dateFormatter) ?: "",
-                time = selectedTime?.format(timeFormatter) ?: "",
-                onDateClick = {
-                    tempSelectedDate = selectedDate ?: LocalDate.now()
-                    showDatePicker = true
-                },
-                onTimeClick = {
-                    selectedTime = selectedTime ?: LocalTime.now()
-                    showTimePicker = true
-                }
+                date = uiState.selectedDate?.format(dateFormatter) ?: "",
+                time = uiState.selectedTime?.format(timeFormatter) ?: "",
+                onDateClick = viewModel::onDatePickerShow,
+                onTimeClick = viewModel::onTimePickerShow
             )
             RecurringPaymentSection(
                 isIncome = isIncome,
-                isRecurring = isRecurring,
-                onRecurringChange = { isRecurring = it },
-                isReminder = isReminder,
-                onReminderChange = { isReminder = it }
+                isRecurring = uiState.isRecurring,
+                onRecurringChange = viewModel::onRecurringChange,
+                isReminder = uiState.isReminder,
+                onReminderChange = viewModel::onReminderChange
             )
-            if (showValidationError) {
+            if (uiState.showValidationError) {
                 ValidationErrorText(
                     error = stringResource(id = R.string.error_required_fields)
                 )
             }
             EditButton(
-                onClick = {},
+                onClick = viewModel::onShowDeleteDialog,
                 text = stringResource(id = R.string.label_delete),
                 modifier = modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -168,7 +165,7 @@ fun UpdateTransactionScreen(
                 )
             )
             EditButton(
-                onClick = {},
+                onClick = viewModel::updateTransaction,
                 text = stringResource(id = R.string.label_save),
                 modifier = modifier.fillMaxWidth()
             )

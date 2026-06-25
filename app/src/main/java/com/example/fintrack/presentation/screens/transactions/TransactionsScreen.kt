@@ -38,6 +38,7 @@ import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.PeriodSelector
 import com.example.fintrack.presentation.components.TransactionRow
 import com.example.fintrack.presentation.components.TransactionTypeSelector
+import android.net.Uri
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 
 @Composable
@@ -160,7 +161,20 @@ private fun TransactionsContent(
                         else
                             colorResource(id = R.color.expense_red),
                         showDivider = index < uiState.transactions.lastIndex,
-                        onClick = { navController.navigate(FinTrackScreens.UpdateTransactionScreen.route) }
+                        onClick = {
+                            val t = item.transaction
+                            val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
+                                "?transactionId=${t.id}" +
+                                "&type=${t.type}" +
+                                "&category=${t.category}" +
+                                "&amount=${t.amount.toLong()}" +
+                                "&date=${t.date}" +
+                                "&time=${Uri.encode(t.time)}" +
+                                "&isRecurring=${t.isRecurring}" +
+                                "&isReminder=${t.isReminder}" +
+                                "&note=${Uri.encode(t.note ?: "")}"
+                            navController.navigate(route)
+                        }
                     )
                 }
             }

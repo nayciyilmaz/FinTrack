@@ -1,9 +1,11 @@
 package com.example.fintrack.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.fintrack.presentation.screens.advisor.AiAdvisorScreen
 import com.example.fintrack.presentation.screens.analysis.SpendingAnalysisScreen
 import com.example.fintrack.presentation.screens.budget.BudgetLimitsScreen
@@ -42,7 +44,20 @@ fun FinTrackNavigation() {
         composable(route = FinTrackScreens.AddTransactionScreen.route) {
             AddTransactionScreen(navController = navController)
         }
-        composable(route = FinTrackScreens.UpdateTransactionScreen.route) {
+        composable(
+            route = "${FinTrackScreens.UpdateTransactionScreen.route}?transactionId={transactionId}&type={type}&category={category}&amount={amount}&date={date}&time={time}&isRecurring={isRecurring}&isReminder={isReminder}&note={note}",
+            arguments = listOf(
+                navArgument("transactionId") { type = NavType.LongType; defaultValue = 0L },
+                navArgument("type") { type = NavType.StringType; defaultValue = "EXPENSE" },
+                navArgument("category") { type = NavType.StringType; defaultValue = "" },
+                navArgument("amount") { type = NavType.StringType; defaultValue = "" },
+                navArgument("date") { type = NavType.StringType; defaultValue = "" },
+                navArgument("time") { type = NavType.StringType; defaultValue = "" },
+                navArgument("isRecurring") { type = NavType.StringType; defaultValue = "false" },
+                navArgument("isReminder") { type = NavType.StringType; defaultValue = "false" },
+                navArgument("note") { type = NavType.StringType; defaultValue = "" }
+            )
+        ) {
             UpdateTransactionScreen(navController = navController)
         }
         composable(route = FinTrackScreens.SpendingAnalysisScreen.route) {

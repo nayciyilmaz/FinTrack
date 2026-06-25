@@ -3,8 +3,10 @@ package com.example.fintrack.di
 import com.example.fintrack.domain.repository.AuthRepository
 import com.example.fintrack.domain.repository.TransactionRepository
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
+import com.example.fintrack.domain.usecase.DeleteTransactionUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GoogleSignInUseCase
+import com.example.fintrack.domain.usecase.UpdateTransactionUseCase
 import com.example.fintrack.domain.usecase.LoginUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
 import dagger.Module
@@ -41,4 +43,14 @@ object DomainModule {
     @Singleton
     fun provideGetTransactionsUseCase(transactionRepository: TransactionRepository): GetTransactionsUseCase =
         GetTransactionsUseCase(transactionRepository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateTransactionUseCase(transactionRepository: TransactionRepository): UpdateTransactionUseCase =
+        UpdateTransactionUseCase(transactionRepository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteTransactionUseCase(transactionRepository: TransactionRepository): DeleteTransactionUseCase =
+        DeleteTransactionUseCase(transactionRepository)
 }

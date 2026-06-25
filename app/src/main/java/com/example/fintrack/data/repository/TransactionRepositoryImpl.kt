@@ -68,6 +68,56 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateTransaction(
+        id: Long,
+        type: String,
+        category: String,
+        amount: Double,
+        note: String?,
+        date: String,
+        time: String,
+        recurring: Boolean,
+        reminder: Boolean
+    ): Resource<Transaction> {
+        return try {
+            val response = transactionService.updateTransaction(
+                id,
+                TransactionRequestDto(
+                    type = type,
+                    category = category,
+                    amount = amount,
+                    note = note,
+                    date = date,
+                    time = time,
+                    recurring = recurring,
+                    reminder = reminder
+                )
+            )
+            Resource.Success(response.toDomain())
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
+    override suspend fun deleteTransaction(id: Long): Resource<Unit> {
+        return try {
+            transactionService.deleteTransaction(id)
+            Resource.Success(Unit)
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
     private fun TransactionResponseDto.toDomain() = Transaction(
         id = id,
         type = type,
