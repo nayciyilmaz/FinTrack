@@ -1,5 +1,6 @@
 package com.example.fintrack.presentation.screens.home
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,13 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,9 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.core.constants.categoryKeyToIcon
+import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.dateFormatter
+import com.example.fintrack.presentation.screens.transactions.TransactionDisplayItem
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
@@ -38,12 +43,16 @@ import com.example.fintrack.presentation.components.TransactionRow
 import com.example.fintrack.core.constants.quickActionItems
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val recentTransactions by viewModel.recentTransactions.collectAsStateWithLifecycle()
+
     EditScaffold(
         title = stringResource(id = R.string.title_home),
         navController = navController
@@ -63,7 +72,10 @@ fun HomeScreen(
                 expense = 17500
             )
             QuickActions(navController = navController)
-            RecentTransactions(navController = navController)
+            RecentTransactions(
+                transactions = recentTransactions,
+                navController = navController
+            )
         }
     }
 }
@@ -290,6 +302,7 @@ private fun QuickActions(
 
 @Composable
 private fun RecentTransactions(
+    transactions: List<TransactionDisplayItem>,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -328,28 +341,43 @@ private fun RecentTransactions(
                 .background(Color.White)
                 .padding(horizontal = 20.dp, vertical = 4.dp)
         ) {
-            TransactionRow(
-                icon = Icons.Filled.ShoppingCart,
-                title = "Market Alışverişi",
-                dateTime = "14 Mar 2026 · 18:45",
-                amount = "-₺300",
-                remainingBalance = "Kalan: ₺7.500",
-                amountColor = colorResource(id = R.color.expense_red),
-                iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
-                iconTint = colorResource(id = R.color.expense_red),
-                showDivider = true
-            )
-            TransactionRow(
-                icon = Icons.Filled.AttachMoney,
-                title = "Maaş Ödemesi",
-                dateTime = "01 Mar 2026 · 09:00",
-                amount = "+₺25.000",
-                remainingBalance = "Kalan: ₺7.800",
-                amountColor = colorResource(id = R.color.income_green),
-                iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
-                iconTint = colorResource(id = R.color.income_green),
-                showDivider = false
-            )
+            transactions.forEachIndexed { index, item ->
+                val isIncome = item.transaction.type == "INCOME"
+                TransactionRow(
+                    icon = categoryKeyToIcon(item.transaction.category),
+                    title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
+                    dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter)} · ${item.transaction.time}",
+                    amount = "${if (isIncome) "+" else "-"}₺${item.transaction.amount}",
+                    remainingBalance = "Kalan: ₺%.2f".format(item.remainingBalance),
+                    amountColor = if (isIncome)
+                        colorResource(id = R.color.income_green)
+                    else
+                        colorResource(id = R.color.expense_red),
+                    iconBackgroundColor = if (isIncome)
+                        colorResource(id = R.color.transaction_income_background)
+                    else
+                        colorResource(id = R.color.transaction_expense_background),
+                    iconTint = if (isIncome)
+                        colorResource(id = R.color.income_green)
+                    else
+                        colorResource(id = R.color.expense_red),
+                    showDivider = index < transactions.lastIndex,
+                    onClick = {
+                        val t = item.transaction
+                        val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
+                            "?transactionId=${t.id}" +
+                            "&type=${t.type}" +
+                            "&category=${t.category}" +
+                            "&amount=${t.amount.toLong()}" +
+                            "&date=${t.date}" +
+                            "&time=${Uri.encode(t.time)}" +
+                            "&isRecurring=${t.isRecurring}" +
+                            "&isReminder=${t.isReminder}" +
+                            "&note=${Uri.encode(t.note ?: "")}"
+                        navController.navigate(route)
+                    }
+                )
+            }
         }
     }
 }

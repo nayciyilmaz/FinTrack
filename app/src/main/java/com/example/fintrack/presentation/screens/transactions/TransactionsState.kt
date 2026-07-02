@@ -4,7 +4,7 @@ import com.example.fintrack.domain.model.Transaction
 
 data class TransactionsUiState(
     val selectedFilterIndex: Int = 0,
-    val selectedPeriod: String = "Bu Ay",
+    val selectedPeriod: String = "Son 7 Gün",
     val transactions: List<TransactionDisplayItem> = emptyList()
 )
 

@@ -58,8 +58,8 @@ fun UpdateTransactionScreen(
         if (actionState.isSuccess) {
             navigateAndClearBackStack(
                 navController = navController,
-                destination = FinTrackScreens.TransactionsScreen.route,
-                popUpToRoute = FinTrackScreens.TransactionsScreen.route,
+                destination = FinTrackScreens.HomeScreen.route,
+                popUpToRoute = FinTrackScreens.HomeScreen.route,
                 inclusive = true
             )
         }
