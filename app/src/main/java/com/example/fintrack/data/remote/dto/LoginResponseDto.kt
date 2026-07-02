@@ -9,5 +9,6 @@ data class LoginResponseDto(
     @SerialName("first_name") val firstName: String,
     @SerialName("last_name") val lastName: String,
     val email: String,
-    val token: String
+    val token: String,
+    @SerialName("refresh_token") val refreshToken: String
 )

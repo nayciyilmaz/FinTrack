@@ -37,6 +37,7 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             )
             tokenManager.saveToken(response.token)
+            tokenManager.saveRefreshToken(response.refreshToken)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {
@@ -55,6 +56,7 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val response = authService.login(LoginRequestDto(email = email, password = password))
             tokenManager.saveToken(response.token)
+            tokenManager.saveRefreshToken(response.refreshToken)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {
@@ -78,6 +80,7 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val response = authService.loginWithGoogle(GoogleAuthRequestDto(idToken = idToken))
             tokenManager.saveToken(response.token)
+            tokenManager.saveRefreshToken(response.refreshToken)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {

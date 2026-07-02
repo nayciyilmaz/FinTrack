@@ -1,6 +1,10 @@
 package com.example.fintrack.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,10 +26,20 @@ import com.example.fintrack.presentation.screens.transaction_update.UpdateTransa
 import com.example.fintrack.presentation.screens.transactions.TransactionsScreen
 
 @Composable
-fun FinTrackNavigation() {
+fun FinTrackNavigation(viewModel: MainViewModel = hiltViewModel()) {
+    val destination by viewModel.destination.collectAsState()
+    val startDestination = destination ?: return
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = FinTrackScreens.SignInScreen.route) {
+    LaunchedEffect(Unit) {
+        viewModel.sessionExpired.collect {
+            navController.navigate(FinTrackScreens.SignInScreen.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(route = FinTrackScreens.SignInScreen.route) {
             SignInScreen(navController = navController)
         }
