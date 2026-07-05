@@ -5,6 +5,8 @@ data class SignUpUiState(
     val lastName: String = "",
     val email: String = "",
     val password: String = "",
+    val payday: String = "",
+    val salary: String = "",
     val isPasswordVisible: Boolean = false,
     val validationErrors: SignUpValidationErrors = SignUpValidationErrors()
 )

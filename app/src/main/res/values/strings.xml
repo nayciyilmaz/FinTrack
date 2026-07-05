@@ -30,6 +30,8 @@
     <string name="sign_up_first_name">İsim</string>
     <string name="sign_up_last_name">Soyisim</string>
     <string name="sign_up_have_account">Hesabınız var mı?</string>
+    <string name="sign_up_payday">Maaş Günü</string>
+    <string name="sign_up_salary">Tutar</string>
     <string name="forgot_password_title">Şifremi Unuttum</string>
     <string name="forgot_password_description">Şifrenizi sıfırlamak için e-mailinizi girin. Size şifre sıfırlama kodu göndereceğiz.</string>
     <string name="forgot_password_send">Gönder</string>

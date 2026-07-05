@@ -24,6 +24,7 @@ class TokenManager @Inject constructor(
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("auth_token")
         private val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
+        private val PAYDAY_KEY = stringPreferencesKey("payday")
     }
 
     private val _sessionExpired = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
@@ -41,10 +42,19 @@ class TokenManager @Inject constructor(
 
     fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { it[REFRESH_TOKEN_KEY] }
 
+    suspend fun savePayday(payday: Int) {
+        context.dataStore.edit { it[PAYDAY_KEY] = payday.toString() }
+    }
+
+    fun getPayday(): Flow<Int> = context.dataStore.data.map {
+        it[PAYDAY_KEY]?.toIntOrNull() ?: 1
+    }
+
     suspend fun clearAll() {
         context.dataStore.edit {
             it.remove(TOKEN_KEY)
             it.remove(REFRESH_TOKEN_KEY)
+            it.remove(PAYDAY_KEY)
         }
     }
 

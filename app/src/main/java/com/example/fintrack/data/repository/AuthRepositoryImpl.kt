@@ -25,7 +25,9 @@ class AuthRepositoryImpl @Inject constructor(
         firstName: String,
         lastName: String,
         email: String,
-        password: String
+        password: String,
+        payday: Int,
+        salary: Double
     ): Resource<User> {
         return try {
             val response = authService.register(
@@ -33,11 +35,14 @@ class AuthRepositoryImpl @Inject constructor(
                     firstName = firstName,
                     lastName = lastName,
                     email = email,
-                    password = password
+                    password = password,
+                    payday = payday,
+                    salary = salary
                 )
             )
             tokenManager.saveToken(response.token)
             tokenManager.saveRefreshToken(response.refreshToken)
+            tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {
@@ -57,6 +62,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authService.login(LoginRequestDto(email = email, password = password))
             tokenManager.saveToken(response.token)
             tokenManager.saveRefreshToken(response.refreshToken)
+            tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {
@@ -81,6 +87,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authService.loginWithGoogle(GoogleAuthRequestDto(idToken = idToken))
             tokenManager.saveToken(response.token)
             tokenManager.saveRefreshToken(response.refreshToken)
+            tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {

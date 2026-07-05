@@ -9,5 +9,7 @@ data class SignUpValidationErrors(
     val firstNameError: String? = null,
     val lastNameError: String? = null,
     val emailError: String? = null,
-    val passwordError: String? = null
+    val passwordError: String? = null,
+    val paydayError: String? = null,
+    val salaryError: String? = null
 )

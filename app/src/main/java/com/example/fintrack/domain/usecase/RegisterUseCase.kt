@@ -11,6 +11,8 @@ class RegisterUseCase(
         firstName: String,
         lastName: String,
         email: String,
-        password: String
-    ): Resource<User> = authRepository.register(firstName, lastName, email, password)
+        password: String,
+        payday: Int,
+        salary: Double
+    ): Resource<User> = authRepository.register(firstName, lastName, email, password, payday, salary)
 }

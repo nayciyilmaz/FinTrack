@@ -13,6 +13,7 @@ class AuthMapper @Inject constructor() {
         firstName = dto.firstName,
         lastName = dto.lastName,
         email = dto.email,
+        payday = dto.payday,
         token = dto.token
     )
 
@@ -21,6 +22,7 @@ class AuthMapper @Inject constructor() {
         firstName = dto.firstName,
         lastName = dto.lastName,
         email = dto.email,
+        payday = dto.payday,
         token = dto.token
     )
 }

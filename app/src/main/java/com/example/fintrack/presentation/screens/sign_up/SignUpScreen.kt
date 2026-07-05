@@ -13,8 +13,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -191,13 +193,64 @@ fun SignUpScreen(
                     visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
+                        imeAction = ImeAction.Next
                     )
                 )
                 uiState.validationErrors.passwordError?.let { ValidationErrorText(error = it) }
+            }
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    EditOutlinedTextField(
+                        value = uiState.payday,
+                        onValueChange = viewModel::onPaydayChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        label = {
+                            Text(text = stringResource(id = R.string.sign_up_payday))
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.CalendarMonth,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        )
+                    )
+                    uiState.validationErrors.paydayError?.let { ValidationErrorText(error = it) }
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    EditOutlinedTextField(
+                        value = uiState.salary,
+                        onValueChange = viewModel::onSalaryChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        label = {
+                            Text(text = stringResource(id = R.string.sign_up_salary))
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Payments,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Decimal,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { focusManager.clearFocus() }
+                        )
+                    )
+                    uiState.validationErrors.salaryError?.let { ValidationErrorText(error = it) }
+                }
             }
             EditButton(
                 onClick = viewModel::register,
