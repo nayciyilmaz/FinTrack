@@ -23,12 +23,17 @@ class HomeViewModel @Inject constructor(
     private val _recentTransactions = MutableStateFlow<List<TransactionDisplayItem>>(emptyList())
     val recentTransactions: StateFlow<List<TransactionDisplayItem>> = _recentTransactions.asStateFlow()
 
+    private val _actionState = MutableStateFlow(HomeActionState())
+    val actionState: StateFlow<HomeActionState> = _actionState.asStateFlow()
+
     init {
         loadRecentTransactions()
     }
 
     fun loadRecentTransactions() {
         viewModelScope.launch {
+            _actionState.value = HomeActionState(isLoading = true)
+
             val today = LocalDate.now()
             val formatter = DateTimeFormatter.ISO_LOCAL_DATE
             when (val result = getTransactionsUseCase(
@@ -39,8 +44,11 @@ class HomeViewModel @Inject constructor(
                 is Resource.Success -> {
                     val transactions = result.data ?: emptyList()
                     _recentTransactions.value = calculateDisplayItems(transactions).take(3)
+                    _actionState.value = HomeActionState()
                 }
-                is Resource.Error -> Unit
+                is Resource.Error -> {
+                    _actionState.value = HomeActionState(isError = true)
+                }
                 is Resource.Loading -> Unit
             }
         }

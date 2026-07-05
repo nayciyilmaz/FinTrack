@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -52,6 +54,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val recentTransactions by viewModel.recentTransactions.collectAsStateWithLifecycle()
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
 
     EditScaffold(
         title = stringResource(id = R.string.title_home),
@@ -74,6 +77,7 @@ fun HomeScreen(
             QuickActions(navController = navController)
             RecentTransactions(
                 transactions = recentTransactions,
+                actionState = actionState,
                 navController = navController
             )
         }
@@ -303,6 +307,7 @@ private fun QuickActions(
 @Composable
 private fun RecentTransactions(
     transactions: List<TransactionDisplayItem>,
+    actionState: HomeActionState,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -334,49 +339,107 @@ private fun RecentTransactions(
                 color = Color.Black
             )
         }
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(28.dp))
-                .background(Color.White)
-                .padding(horizontal = 20.dp, vertical = 4.dp)
-        ) {
-            transactions.forEachIndexed { index, item ->
-                val isIncome = item.transaction.type == "INCOME"
-                TransactionRow(
-                    icon = categoryKeyToIcon(item.transaction.category),
-                    title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
-                    dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter)} · ${item.transaction.time}",
-                    amount = "${if (isIncome) "+" else "-"}₺${item.transaction.amount}",
-                    remainingBalance = "Kalan: ₺%.2f".format(item.remainingBalance),
-                    amountColor = if (isIncome)
-                        colorResource(id = R.color.income_green)
-                    else
-                        colorResource(id = R.color.expense_red),
-                    iconBackgroundColor = if (isIncome)
-                        colorResource(id = R.color.transaction_income_background)
-                    else
-                        colorResource(id = R.color.transaction_expense_background),
-                    iconTint = if (isIncome)
-                        colorResource(id = R.color.income_green)
-                    else
-                        colorResource(id = R.color.expense_red),
-                    showDivider = index < transactions.lastIndex,
-                    onClick = {
-                        val t = item.transaction
-                        val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
-                            "?transactionId=${t.id}" +
-                            "&type=${t.type}" +
-                            "&category=${t.category}" +
-                            "&amount=${t.amount.toLong()}" +
-                            "&date=${t.date}" +
-                            "&time=${Uri.encode(t.time)}" +
-                            "&isRecurring=${t.isRecurring}" +
-                            "&isReminder=${t.isReminder}" +
-                            "&note=${Uri.encode(t.note ?: "")}"
-                        navController.navigate(route)
-                    }
+        RecentTransactionsContent(
+            transactions = transactions,
+            actionState = actionState,
+            navController = navController
+        )
+    }
+}
+
+@Composable
+private fun RecentTransactionsContent(
+    transactions: List<TransactionDisplayItem>,
+    actionState: HomeActionState,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    when {
+        actionState.isLoading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.bottom_bar_fab)
                 )
+            }
+        }
+        actionState.isError -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.error_general),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        transactions.isEmpty() -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_no_transactions),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        else -> {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp, vertical = 4.dp)
+            ) {
+                transactions.forEachIndexed { index, item ->
+                    val isIncome = item.transaction.type == "INCOME"
+                    TransactionRow(
+                        icon = categoryKeyToIcon(item.transaction.category),
+                        title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
+                        dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter)} · ${item.transaction.time}",
+                        amount = "${if (isIncome) "+" else "-"}₺${item.transaction.amount}",
+                        remainingBalance = "Kalan: ₺%.2f".format(item.remainingBalance),
+                        amountColor = if (isIncome)
+                            colorResource(id = R.color.income_green)
+                        else
+                            colorResource(id = R.color.expense_red),
+                        iconBackgroundColor = if (isIncome)
+                            colorResource(id = R.color.transaction_income_background)
+                        else
+                            colorResource(id = R.color.transaction_expense_background),
+                        iconTint = if (isIncome)
+                            colorResource(id = R.color.income_green)
+                        else
+                            colorResource(id = R.color.expense_red),
+                        showDivider = index < transactions.lastIndex,
+                        onClick = {
+                            val t = item.transaction
+                            val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
+                                "?transactionId=${t.id}" +
+                                "&type=${t.type}" +
+                                "&category=${t.category}" +
+                                "&amount=${t.amount.toLong()}" +
+                                "&date=${t.date}" +
+                                "&time=${Uri.encode(t.time)}" +
+                                "&isRecurring=${t.isRecurring}" +
+                                "&isReminder=${t.isReminder}" +
+                                "&note=${Uri.encode(t.note ?: "")}"
+                            navController.navigate(route)
+                        }
+                    )
+                }
             }
         }
     }

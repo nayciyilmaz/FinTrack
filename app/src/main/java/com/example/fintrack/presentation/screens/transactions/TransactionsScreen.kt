@@ -113,7 +113,7 @@ private fun TransactionsContent(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(id = R.string.error_required_fields),
+                    text = stringResource(id = R.string.error_general),
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(id = R.color.text_secondary)
                 )
