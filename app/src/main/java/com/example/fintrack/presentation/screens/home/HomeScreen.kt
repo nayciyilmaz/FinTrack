@@ -18,18 +18,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -55,6 +59,19 @@ fun HomeScreen(
 ) {
     val recentTransactions by viewModel.recentTransactions.collectAsStateWithLifecycle()
     val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadHomeData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     EditScaffold(
         title = stringResource(id = R.string.title_home),
@@ -67,12 +84,14 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             BudgetHeader(
-                remainingBalance = 7500,
-                dailyLimit = 312
+                periodText = actionState.periodText,
+                remainingBalance = actionState.remainingBalance,
+                dailyLimit = actionState.dailyLimit
             )
             BudgetDetails(
-                income = 25000,
-                expense = 17500
+                income = actionState.income,
+                expense = actionState.expense,
+                spendingRatio = actionState.spendingRatio
             )
             QuickActions(navController = navController)
             RecentTransactions(
@@ -86,6 +105,7 @@ fun HomeScreen(
 
 @Composable
 private fun BudgetHeader(
+    periodText: String,
     remainingBalance: Int,
     dailyLimit: Int,
     modifier: Modifier = Modifier
@@ -99,7 +119,7 @@ private fun BudgetHeader(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         Text(
-            text = "Nisan 2026",
+            text = periodText,
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             color = Color.White
         )
@@ -151,6 +171,7 @@ private fun BudgetHeaderInfoItem(
 private fun BudgetDetails(
     income: Int,
     expense: Int,
+    spendingRatio: Int,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -192,13 +213,13 @@ private fun BudgetDetails(
                     color = colorResource(id = R.color.text_tertiary)
                 )
                 Text(
-                    text = "%${(expense * 100) / income} harcandı",
+                    text = "%$spendingRatio harcandı",
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
             ProgressBar(
-                progress = expense.toFloat() / income.toFloat(),
+                progress = if (income > 0) minOf(expense.toFloat() / income.toFloat(), 1f) else 0f,
                 trackColor = colorResource(id = R.color.progress_track),
                 progressColor = colorResource(id = R.color.bottom_bar_fab)
             )
