@@ -105,7 +105,8 @@ private fun CategoryDistributionSection(
         )
         PeriodSelector(
             selectedPeriod = selectedPeriod,
-            onPeriodSelected = onPeriodSelected
+            onPeriodSelected = onPeriodSelected,
+            excludePeriods = listOf("Bu Ay", "Bu Yıl")
         )
     }
     Row(
@@ -170,23 +171,29 @@ private fun SpendingTrendSection(
             Pair("9", 380f), Pair("10", 290f), Pair("11", 610f), Pair("12", 180f),
             Pair("13", 540f), Pair("14", 360f), Pair("15", 450f)
         )
-        "Son 6 Ay" -> listOf(
-            Pair("Kas", 8200f), Pair("Ara", 12500f), Pair("Oca", 8500f),
-            Pair("Şub", 7200f), Pair("Mar", 9100f), Pair("Nis", 6800f)
+        "Son 1 Ay" -> listOf(
+            Pair("1.Hf", 2100f), Pair("2.Hf", 3400f), Pair("3.Hf", 1800f), Pair("4.Hf", 4200f)
         )
-        "Son 1 Yıl", "Bu Yıl" -> listOf(
-            Pair("Oca", 8500f), Pair("Şub", 7200f), Pair("Mar", 9100f),
-            Pair("Nis", 6800f), Pair("May", 11200f), Pair("Haz", 9800f),
-            Pair("Tem", 7600f), Pair("Ağu", 8900f), Pair("Eyl", 10200f),
-            Pair("Eki", 7400f), Pair("Kas", 9600f), Pair("Ara", 12500f)
+        "Son 3 Ay" -> listOf(
+            Pair("May", 9100f), Pair("Haz", 7200f), Pair("Tem", 8400f)
+        )
+        "Son 6 Ay" -> listOf(
+            Pair("Şub", 8200f), Pair("Mar", 12500f), Pair("Nis", 8500f),
+            Pair("May", 7200f), Pair("Haz", 9100f), Pair("Tem", 6800f)
+        )
+        "Son 1 Yıl" -> listOf(
+            Pair("Ağu", 8500f), Pair("Eyl", 7200f), Pair("Eki", 9100f),
+            Pair("Kas", 6800f), Pair("Ara", 11200f), Pair("Oca", 9800f),
+            Pair("Şub", 7600f), Pair("Mar", 8900f), Pair("Nis", 10200f),
+            Pair("May", 7400f), Pair("Haz", 9600f), Pair("Tem", 12500f)
         )
         else -> listOf(
             Pair("1.Hf", 2100f), Pair("2.Hf", 3400f), Pair("3.Hf", 1800f), Pair("4.Hf", 4200f)
         )
     }
 
-    val isMonthly = selectedPeriod == "Son 6 Ay" || selectedPeriod == "Son 1 Yıl" || selectedPeriod == "Bu Yıl"
-    val showSummary = selectedPeriod == "Son 7 Gün" || selectedPeriod == "Son 15 Gün" || isMonthly
+    val isWeekly = selectedPeriod == "Son 1 Ay"
+    val isMonthly = selectedPeriod == "Son 3 Ay" || selectedPeriod == "Son 6 Ay" || selectedPeriod == "Son 1 Yıl"
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -199,7 +206,8 @@ private fun SpendingTrendSection(
         )
         PeriodSelector(
             selectedPeriod = selectedPeriod,
-            onPeriodSelected = onPeriodSelected
+            onPeriodSelected = onPeriodSelected,
+            excludePeriods = listOf("Bu Ay", "Bu Yıl")
         )
     }
     Column(
@@ -235,12 +243,11 @@ private fun SpendingTrendSection(
         }
     }
 
-    if (showSummary) {
-        SpendingSummaryCards(
-            isMonthly = isMonthly,
-            selectedPeriod = selectedPeriod
-        )
-    }
+    SpendingSummaryCards(
+        isWeekly = isWeekly,
+        isMonthly = isMonthly,
+        selectedPeriod = selectedPeriod
+    )
 }
 
 @Composable
@@ -277,35 +284,56 @@ private fun BarChart(
 
 @Composable
 private fun SpendingSummaryCards(
+    isWeekly: Boolean,
     isMonthly: Boolean,
     selectedPeriod: String,
     modifier: Modifier = Modifier
 ) {
-    val highLabel = if (isMonthly) "En Çok Harcanan Ay" else "En Çok Harcanan Gün"
-    val lowLabel = if (isMonthly) "En Az Harcanan Ay" else "En Az Harcanan Gün"
+    val highLabel = when {
+        isMonthly -> "En Çok Harcanan Ay"
+        isWeekly -> "En Çok Harcanan Hafta"
+        else -> "En Çok Harcanan Gün"
+    }
+    val lowLabel = when {
+        isMonthly -> "En Az Harcanan Ay"
+        isWeekly -> "En Az Harcanan Hafta"
+        else -> "En Az Harcanan Gün"
+    }
 
     val highDate = when (selectedPeriod) {
         "Son 7 Gün" -> "12 Nisan, Cumartesi"
         "Son 15 Gün" -> "6 Nisan, Pazartesi"
-        "Son 6 Ay" -> "Aralık 2025"
-        else -> "Mayıs 2025"
+        "Son 1 Ay" -> "2. Hafta"
+        "Son 3 Ay" -> "Mayıs 2026"
+        "Son 6 Ay" -> "Mart 2026"
+        "Son 1 Yıl" -> "Aralık 2025"
+        else -> "Mayıs 2026"
     }
     val lowDate = when (selectedPeriod) {
         "Son 7 Gün" -> "7 Nisan, Salı"
         "Son 15 Gün" -> "4 Nisan, Cuma"
-        "Son 6 Ay" -> "Nisan 2026"
-        else -> "Nisan 2026"
+        "Son 1 Ay" -> "3. Hafta"
+        "Son 3 Ay" -> "Haziran 2026"
+        "Son 6 Ay" -> "Temmuz 2026"
+        "Son 1 Yıl" -> "Kasım 2025"
+        else -> "Haziran 2026"
     }
     val highAmount = when (selectedPeriod) {
         "Son 7 Gün" -> "₺1.840"
         "Son 15 Gün" -> "₺2.150"
+        "Son 1 Ay" -> "₺4.200"
+        "Son 3 Ay" -> "₺9.100"
         "Son 6 Ay" -> "₺12.500"
+        "Son 1 Yıl" -> "₺12.500"
         else -> "₺12.500"
     }
     val lowAmount = when (selectedPeriod) {
         "Son 7 Gün" -> "₺95"
         "Son 15 Gün" -> "₺120"
+        "Son 1 Ay" -> "₺1.800"
+        "Son 3 Ay" -> "₺7.200"
         "Son 6 Ay" -> "₺6.800"
+        "Son 1 Yıl" -> "₺6.800"
         else -> "₺6.800"
     }
 

@@ -32,9 +32,11 @@ import com.example.fintrack.R
 fun PeriodSelector(
     selectedPeriod: String,
     onPeriodSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    excludePeriods: List<String> = emptyList()
 ) {
     val periods = stringArrayResource(id = R.array.transaction_periods)
+        .filter { it !in excludePeriods }
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
