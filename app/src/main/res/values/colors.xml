@@ -23,4 +23,10 @@
     <color name="divider_color">#FFDADADA</color>
     <color name="switch_unchecked_track">#FFDDDDDD</color>
     <color name="budget_used_amount">#FFFFE0B2</color>
+    <integer-array name="chart_colors">
+        <item>0xFFE65100</item>
+        <item>0xFF1565C0</item>
+        <item>0xFF2E7D32</item>
+        <item>0xFF6A1B9A</item>
+    </integer-array>
 </resources>
