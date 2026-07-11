@@ -337,7 +337,6 @@ private fun DonutChart(
         modifier = modifier
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            if (totalPercentage == 0f) return@Canvas
             val strokeWidth = size.minDimension * 0.14f
             val radius = (size.minDimension - strokeWidth) / 2f
             val topLeft = Offset(
@@ -345,6 +344,19 @@ private fun DonutChart(
                 (size.height - radius * 2) / 2f
             )
             val arcSize = Size(radius * 2, radius * 2)
+
+            if (totalPercentage == 0f) {
+                drawArc(
+                    color = Color.Black,
+                    startAngle = 0f,
+                    sweepAngle = 360f,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = arcSize,
+                    style = Stroke(width = strokeWidth)
+                )
+                return@Canvas
+            }
             var startAngle = -90f
 
             percentages.forEachIndexed { index, percentage ->
