@@ -1,11 +1,14 @@
 package com.example.fintrack.di
 
 import com.example.fintrack.domain.repository.AuthRepository
+import com.example.fintrack.domain.repository.BudgetRepository
 import com.example.fintrack.domain.repository.TransactionRepository
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import com.example.fintrack.domain.usecase.DeleteTransactionUseCase
+import com.example.fintrack.domain.usecase.GetBudgetsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GoogleSignInUseCase
+import com.example.fintrack.domain.usecase.SaveBudgetsUseCase
 import com.example.fintrack.domain.usecase.UpdateTransactionUseCase
 import com.example.fintrack.domain.usecase.LoginUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
@@ -53,4 +56,14 @@ object DomainModule {
     @Singleton
     fun provideDeleteTransactionUseCase(transactionRepository: TransactionRepository): DeleteTransactionUseCase =
         DeleteTransactionUseCase(transactionRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetBudgetsUseCase(budgetRepository: BudgetRepository): GetBudgetsUseCase =
+        GetBudgetsUseCase(budgetRepository)
+
+    @Provides
+    @Singleton
+    fun provideSaveBudgetsUseCase(budgetRepository: BudgetRepository): SaveBudgetsUseCase =
+        SaveBudgetsUseCase(budgetRepository)
 }

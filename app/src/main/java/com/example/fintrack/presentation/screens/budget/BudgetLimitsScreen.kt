@@ -2,6 +2,7 @@ package com.example.fintrack.presentation.screens.budget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,19 +14,18 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsBus
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,28 +44,51 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.core.constants.categoryKeyToIcon
+import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.presentation.components.EditIconButton
 import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
-import com.example.fintrack.core.constants.expenseCategories
 
 @Composable
 fun BudgetLimitsScreen(
     navController: NavController,
+    viewModel: BudgetLimitsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
     var showManageDialog by remember { mutableStateOf(false) }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     if (showManageDialog) {
         ManageLimitsDialog(
-            onDismiss = { showManageDialog = false }
+            actionState = actionState,
+            onDismiss = { showManageDialog = false },
+            onSave = { budgets ->
+                viewModel.saveBudgets(budgets)
+                showManageDialog = false
+            }
         )
     }
 
@@ -80,8 +103,8 @@ fun BudgetLimitsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             BudgetCard(
-                totalBudget = 14000,
-                usedBudget = 11240
+                totalBudget = actionState.income,
+                usedBudget = actionState.expense
             )
             Row(
                 modifier = modifier
@@ -100,42 +123,95 @@ fun BudgetLimitsScreen(
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
-            CategoryLimitCard(
-                icon = Icons.Filled.ShoppingCart,
-                categoryName = "Market",
-                usedAmount = 1740,
-                limitAmount = 2000
-            )
-            CategoryLimitCard(
-                icon = Icons.Filled.Home,
-                categoryName = "Kira",
-                usedAmount = 9900,
-                limitAmount = 9000
-            )
-            CategoryLimitCard(
-                icon = Icons.Filled.DirectionsBus,
-                categoryName = "Ulaşım",
-                usedAmount = 150,
-                limitAmount = 800
-            )
+            BudgetLimitsContent(actionState = actionState)
+        }
+    }
+}
+
+@Composable
+private fun BudgetLimitsContent(
+    actionState: BudgetLimitsActionState,
+    modifier: Modifier = Modifier
+) {
+    when {
+        actionState.isLoading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.bottom_bar_fab)
+                )
+            }
+        }
+        actionState.isError -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.error_general),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        actionState.budgets.isEmpty() -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_no_budgets),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        else -> {
+            actionState.budgets.forEach { budget ->
+                val usedAmount = actionState.categoryExpenses[budget.category] ?: 0
+                CategoryLimitCard(
+                    icon = categoryKeyToIcon(budget.category),
+                    categoryName = stringResource(id = categoryKeyToLabelResId(budget.category)),
+                    usedAmount = usedAmount,
+                    limitAmount = budget.limitAmount.toInt()
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun ManageLimitsDialog(
+    actionState: BudgetLimitsActionState,
     onDismiss: () -> Unit,
+    onSave: (List<Pair<String, Double>>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val amountStates = remember {
-        expenseCategories.map { it.labelResId to mutableStateOf("") }
+    val amountStates = remember(actionState.budgets) {
+        expenseCategories.map { category ->
+            val existingBudget = actionState.budgets.find { it.category == category.key }
+            category.labelResId to mutableStateOf(
+                existingBudget?.limitAmount?.toInt()?.toString() ?: ""
+            )
+        }
     }
 
-    val activeStates = remember {
-        expenseCategories.map { it.labelResId to mutableStateOf(false) }
+    val activeStates = remember(actionState.budgets) {
+        expenseCategories.map { category ->
+            val isActive = actionState.budgets.any { it.category == category.key }
+            category.labelResId to mutableStateOf(isActive)
+        }
     }
 
     val totalLimit by remember {
@@ -240,12 +316,32 @@ private fun ManageLimitsDialog(
                         color = colorResource(id = R.color.bottom_bar_fab)
                     )
                 }
+
+                if (totalLimit > actionState.income) {
+                    Text(
+                        text = stringResource(id = R.string.warning_budget_exceeds_income),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                        color = colorResource(id = R.color.expense_red)
+                    )
+                }
             }
         },
         confirmButton = {
             EditTextButton(
                 text = stringResource(id = R.string.label_save),
-                onClick = {}
+                onClick = {
+                    if (totalLimit > actionState.income) return@EditTextButton
+                    val budgetsToSave = expenseCategories.mapNotNull { category ->
+                        val isActive = activeStates.first { it.first == category.labelResId }.second.value
+                        val amount = amountStates.first { it.first == category.labelResId }.second.value.toDoubleOrNull()
+                        if (isActive && amount != null && amount > 0) {
+                            category.key to amount
+                        } else {
+                            null
+                        }
+                    }
+                    onSave(budgetsToSave)
+                }
             )
         },
         dismissButton = {
@@ -263,7 +359,7 @@ private fun BudgetCard(
     usedBudget: Int,
     modifier: Modifier = Modifier
 ) {
-    val progress = usedBudget.toFloat() / totalBudget.toFloat()
+    val progress = if (totalBudget > 0) usedBudget.toFloat() / totalBudget.toFloat() else 0f
     val remaining = totalBudget - usedBudget
     val percentage = (progress * 100).toInt()
 
@@ -322,7 +418,7 @@ private fun BudgetCard(
             }
 
             ProgressBar(
-                progress = progress,
+                progress = progress.coerceIn(0f, 1f),
                 trackColor = Color.White.copy(alpha = 0.2f),
                 progressColor = Color.White.copy(alpha = 0.85f)
             )
@@ -440,10 +536,4 @@ private fun CategoryLimitCard(
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun BudgetLimitsScreenPreview() {
-    BudgetLimitsScreen(navController = rememberNavController())
 }
