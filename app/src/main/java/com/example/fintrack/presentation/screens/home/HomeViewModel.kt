@@ -27,9 +27,6 @@ class HomeViewModel @Inject constructor(
     private val tokenManager: TokenManager
 ) : ViewModel() {
 
-    private val _recentTransactions = MutableStateFlow<List<TransactionDisplayItem>>(emptyList())
-    val recentTransactions: StateFlow<List<TransactionDisplayItem>> = _recentTransactions.asStateFlow()
-
     private val _actionState = MutableStateFlow(HomeActionState())
     val actionState: StateFlow<HomeActionState> = _actionState.asStateFlow()
 
@@ -73,14 +70,14 @@ class HomeViewModel @Inject constructor(
                 val dailyLimit = if (remainingBalance > 0 && daysRemaining > 0) remainingBalance / daysRemaining else 0
                 val spendingRatio = if (income > 0) (expense * 100) / income else 0
 
-                _recentTransactions.value = calculateDisplayItems(recentTransactions).take(3)
                 _actionState.value = HomeActionState(
                     periodText = periodText,
                     remainingBalance = remainingBalance,
                     dailyLimit = dailyLimit,
                     income = income,
                     expense = expense,
-                    spendingRatio = spendingRatio
+                    spendingRatio = spendingRatio,
+                    recentTransactions = calculateDisplayItems(recentTransactions).take(3)
                 )
             } else {
                 _actionState.value = HomeActionState(isError = true)

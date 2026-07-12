@@ -26,11 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,9 +63,9 @@ fun BudgetLimitsScreen(
     viewModel: BudgetLimitsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val actionState by viewModel.actionState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
-    var showManageDialog by remember { mutableStateOf(false) }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -81,14 +77,14 @@ fun BudgetLimitsScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    if (showManageDialog) {
+    if (uiState.showManageDialog) {
         ManageLimitsDialog(
-            actionState = actionState,
-            onDismiss = { showManageDialog = false },
-            onSave = { budgets ->
-                viewModel.saveBudgets(budgets)
-                showManageDialog = false
-            }
+            uiState = uiState,
+            income = actionState.income,
+            onAmountChange = viewModel::onDialogAmountChange,
+            onActiveToggle = viewModel::onDialogActiveToggle,
+            onDismiss = viewModel::onDismissManageDialog,
+            onSave = viewModel::saveDialogBudgets
         )
     }
 
@@ -119,7 +115,7 @@ fun BudgetLimitsScreen(
                 )
                 EditTextButton(
                     text = stringResource(id = R.string.label_edit),
-                    onClick = { showManageDialog = true },
+                    onClick = viewModel::onShowManageDialog,
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
@@ -190,41 +186,15 @@ private fun BudgetLimitsContent(
 
 @Composable
 private fun ManageLimitsDialog(
-    actionState: BudgetLimitsActionState,
+    uiState: BudgetLimitsUiState,
+    income: Int,
+    onAmountChange: (String, String) -> Unit,
+    onActiveToggle: (String) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (List<Pair<String, Double>>) -> Unit,
+    onSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val amountStates = remember(actionState.budgets) {
-        expenseCategories.map { category ->
-            val existingBudget = actionState.budgets.find { it.category == category.key }
-            category.labelResId to mutableStateOf(
-                existingBudget?.limitAmount?.toInt()?.toString() ?: ""
-            )
-        }
-    }
-
-    val activeStates = remember(actionState.budgets) {
-        expenseCategories.map { category ->
-            val isActive = actionState.budgets.any { it.category == category.key }
-            category.labelResId to mutableStateOf(isActive)
-        }
-    }
-
-    val totalLimit by remember {
-        derivedStateOf {
-            expenseCategories.sumOf { category ->
-                val isActive = activeStates.first { it.first == category.labelResId }.second.value
-                val amount =
-                    amountStates.first { it.first == category.labelResId }.second.value.toIntOrNull()
-                        ?: 0
-                if (isActive) amount else 0
-            }
-        }
-    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -240,8 +210,8 @@ private fun ManageLimitsDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 expenseCategories.forEach { category ->
-                    val isActive = activeStates.first { it.first == category.labelResId }.second
-                    val amount = amountStates.first { it.first == category.labelResId }.second
+                    val isActive = uiState.dialogActiveStates[category.key] ?: false
+                    val amount = uiState.dialogAmounts[category.key] ?: ""
 
                     Row(
                         modifier = modifier.fillMaxWidth(),
@@ -251,11 +221,11 @@ private fun ManageLimitsDialog(
                         Icon(
                             imageVector = category.icon,
                             contentDescription = null,
-                            tint = if (isActive.value) colorResource(id = R.color.bottom_bar_fab) else Color.Gray,
+                            tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray,
                             modifier = modifier
                                 .clip(RoundedCornerShape(10.dp))
                                 .background(
-                                    if (isActive.value) colorResource(id = R.color.quick_action_background)
+                                    if (isActive) colorResource(id = R.color.quick_action_background)
                                     else Color.LightGray.copy(alpha = 0.3f)
                                 )
                                 .padding(8.dp)
@@ -263,14 +233,14 @@ private fun ManageLimitsDialog(
                         Text(
                             text = stringResource(id = category.labelResId),
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                            color = if (isActive.value) colorResource(id = R.color.text_primary) else Color.Gray,
+                            color = if (isActive) colorResource(id = R.color.text_primary) else Color.Gray,
                             modifier = modifier.weight(1f)
                         )
                         EditOutlinedTextField(
-                            value = amount.value,
-                            onValueChange = { amount.value = it.filter { c -> c.isDigit() } },
+                            value = amount,
+                            onValueChange = { onAmountChange(category.key, it) },
                             modifier = modifier.weight(1f),
-                            enabled = isActive.value,
+                            enabled = isActive,
                             placeholder = {
                                 Text(
                                     text = "0",
@@ -291,9 +261,9 @@ private fun ManageLimitsDialog(
                             textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
                         )
                         EditIconButton(
-                            onClick = { isActive.value = !isActive.value },
-                            imageVector = if (isActive.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                            tint = if (isActive.value) colorResource(id = R.color.bottom_bar_fab) else Color.Gray
+                            onClick = { onActiveToggle(category.key) },
+                            imageVector = if (isActive) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray
                         )
                     }
                 }
@@ -311,13 +281,13 @@ private fun ManageLimitsDialog(
                         color = colorResource(id = R.color.text_primary)
                     )
                     Text(
-                        text = "₺${"%,d".format(totalLimit).replace(",", ".")}",
+                        text = "₺${"%,d".format(uiState.totalLimit).replace(",", ".")}",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = colorResource(id = R.color.bottom_bar_fab)
                     )
                 }
 
-                if (totalLimit > actionState.income) {
+                if (uiState.totalLimit > income) {
                     Text(
                         text = stringResource(id = R.string.warning_budget_exceeds_income),
                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
@@ -329,19 +299,7 @@ private fun ManageLimitsDialog(
         confirmButton = {
             EditTextButton(
                 text = stringResource(id = R.string.label_save),
-                onClick = {
-                    if (totalLimit > actionState.income) return@EditTextButton
-                    val budgetsToSave = expenseCategories.mapNotNull { category ->
-                        val isActive = activeStates.first { it.first == category.labelResId }.second.value
-                        val amount = amountStates.first { it.first == category.labelResId }.second.value.toDoubleOrNull()
-                        if (isActive && amount != null && amount > 0) {
-                            category.key to amount
-                        } else {
-                            null
-                        }
-                    }
-                    onSave(budgetsToSave)
-                }
+                onClick = onSave
             )
         },
         dismissButton = {

@@ -24,36 +24,30 @@ class SpendingAnalysisViewModel @Inject constructor(
     private val locale = Locale("tr")
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
-    private val _selectedCategoryPeriod = MutableStateFlow("Son 1 Ay")
-    val selectedCategoryPeriod: StateFlow<String> = _selectedCategoryPeriod.asStateFlow()
+    private val _uiState = MutableStateFlow(SpendingAnalysisUiState())
+    val uiState: StateFlow<SpendingAnalysisUiState> = _uiState.asStateFlow()
 
-    private val _selectedTrendPeriod = MutableStateFlow("Son 7 Gün")
-    val selectedTrendPeriod: StateFlow<String> = _selectedTrendPeriod.asStateFlow()
-
-    private val _categoryState = MutableStateFlow(SpendingAnalysisState())
-    val categoryState: StateFlow<SpendingAnalysisState> = _categoryState.asStateFlow()
-
-    private val _trendState = MutableStateFlow(SpendingAnalysisState())
-    val trendState: StateFlow<SpendingAnalysisState> = _trendState.asStateFlow()
+    private val _actionState = MutableStateFlow(SpendingAnalysisActionState())
+    val actionState: StateFlow<SpendingAnalysisActionState> = _actionState.asStateFlow()
 
     init {
-        loadCategoryDistribution(_selectedCategoryPeriod.value)
-        loadSpendingTrend(_selectedTrendPeriod.value)
+        loadCategoryDistribution(_uiState.value.selectedCategoryPeriod)
+        loadSpendingTrend(_uiState.value.selectedTrendPeriod)
     }
 
     fun onCategoryPeriodChanged(period: String) {
-        _selectedCategoryPeriod.value = period
+        _uiState.value = _uiState.value.copy(selectedCategoryPeriod = period)
         loadCategoryDistribution(period)
     }
 
     fun onTrendPeriodChanged(period: String) {
-        _selectedTrendPeriod.value = period
+        _uiState.value = _uiState.value.copy(selectedTrendPeriod = period)
         loadSpendingTrend(period)
     }
 
     private fun loadCategoryDistribution(period: String) {
         viewModelScope.launch {
-            _categoryState.value = _categoryState.value.copy(isLoading = true, isError = false)
+            _actionState.value = _actionState.value.copy(isCategoryLoading = true, isCategoryError = false)
 
             val (startDate, endDate) = periodToDateRange(period)
             val result = getTransactionsUseCase(
@@ -65,12 +59,16 @@ class SpendingAnalysisViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     val transactions = result.data ?: emptyList()
-                    _categoryState.value = SpendingAnalysisState(
+                    _actionState.value = _actionState.value.copy(
+                        isCategoryLoading = false,
                         categoryDistribution = calculateCategoryDistribution(transactions)
                     )
                 }
                 is Resource.Error -> {
-                    _categoryState.value = SpendingAnalysisState(isError = true)
+                    _actionState.value = _actionState.value.copy(
+                        isCategoryLoading = false,
+                        isCategoryError = true
+                    )
                 }
                 is Resource.Loading -> {}
             }
@@ -79,7 +77,7 @@ class SpendingAnalysisViewModel @Inject constructor(
 
     private fun loadSpendingTrend(period: String) {
         viewModelScope.launch {
-            _trendState.value = _trendState.value.copy(isLoading = true, isError = false)
+            _actionState.value = _actionState.value.copy(isTrendLoading = true, isTrendError = false)
 
             val (startDate, endDate) = periodToDateRange(period)
             val result = getTransactionsUseCase(
@@ -93,14 +91,18 @@ class SpendingAnalysisViewModel @Inject constructor(
                     val transactions = result.data ?: emptyList()
                     val trendData = calculateSpendingTrend(transactions, period, startDate, endDate)
                     val (high, low) = calculateSummary(trendData, period)
-                    _trendState.value = SpendingAnalysisState(
+                    _actionState.value = _actionState.value.copy(
+                        isTrendLoading = false,
                         spendingTrend = trendData,
                         summaryHigh = high,
                         summaryLow = low
                     )
                 }
                 is Resource.Error -> {
-                    _trendState.value = SpendingAnalysisState(isError = true)
+                    _actionState.value = _actionState.value.copy(
+                        isTrendLoading = false,
+                        isTrendError = true
+                    )
                 }
                 is Resource.Loading -> {}
             }

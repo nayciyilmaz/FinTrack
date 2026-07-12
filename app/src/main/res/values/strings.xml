@@ -78,8 +78,6 @@
     <string name="label_date_time">Tarih ve Saat</string>
     <string name="label_date">Tarih</string>
     <string name="label_time">Saat</string>
-    <string name="label_photo_select">Fotoğraf Seç</string>
-    <string name="label_photo_description">Galeriden bir fotoğraf ekleyin</string>
     <string name="label_recurring_payment">Düzenli ödeme</string>
     <string name="label_recurring_payment_desc">Her ay otomatik ödeme yapar</string>
     <string name="label_reminder">Hatırlatıcı</string>
@@ -92,7 +90,6 @@
     <string name="warning_budget_exceeds_income">Toplam limit gelirinizi aşıyor.</string>
     <string name="label_no_goals">Henüz bir tasarruf hedefi eklemediniz.</string>
     <string name="label_note">Not (İsteğe Bağlı)</string>
-    <string name="label_photo">Fotoğraf (İsteğe Bağlı)</string>
     <string name="category_maas">Maaş</string>
     <string name="category_freelance">Freelance</string>
     <string name="category_kira_geliri">Kira Geliri</string>

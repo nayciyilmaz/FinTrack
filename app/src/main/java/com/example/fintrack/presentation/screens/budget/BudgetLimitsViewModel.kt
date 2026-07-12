@@ -2,6 +2,7 @@ package com.example.fintrack.presentation.screens.budget
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.usecase.GetBudgetsUseCase
@@ -25,6 +26,9 @@ class BudgetLimitsViewModel @Inject constructor(
     private val saveBudgetsUseCase: SaveBudgetsUseCase,
     private val tokenManager: TokenManager
 ) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(BudgetLimitsUiState())
+    val uiState: StateFlow<BudgetLimitsUiState> = _uiState.asStateFlow()
 
     private val _actionState = MutableStateFlow(BudgetLimitsActionState())
     val actionState: StateFlow<BudgetLimitsActionState> = _actionState.asStateFlow()
@@ -77,7 +81,64 @@ class BudgetLimitsViewModel @Inject constructor(
         }
     }
 
-    fun saveBudgets(budgets: List<Pair<String, Double>>) {
+    fun onShowManageDialog() {
+        val budgets = _actionState.value.budgets
+        val amounts = expenseCategories.associate { category ->
+            val existing = budgets.find { it.category == category.key }
+            category.key to (existing?.limitAmount?.toInt()?.toString() ?: "")
+        }
+        val activeStates = expenseCategories.associate { category ->
+            category.key to budgets.any { it.category == category.key }
+        }
+        _uiState.value = BudgetLimitsUiState(
+            showManageDialog = true,
+            dialogAmounts = amounts,
+            dialogActiveStates = activeStates,
+            totalLimit = calculateTotalLimit(amounts, activeStates)
+        )
+    }
+
+    fun onDismissManageDialog() {
+        _uiState.value = _uiState.value.copy(showManageDialog = false)
+    }
+
+    fun onDialogAmountChange(categoryKey: String, value: String) {
+        val filtered = value.filter { it.isDigit() }
+        val newAmounts = _uiState.value.dialogAmounts.toMutableMap().apply { put(categoryKey, filtered) }
+        _uiState.value = _uiState.value.copy(
+            dialogAmounts = newAmounts,
+            totalLimit = calculateTotalLimit(newAmounts, _uiState.value.dialogActiveStates)
+        )
+    }
+
+    fun onDialogActiveToggle(categoryKey: String) {
+        val current = _uiState.value.dialogActiveStates[categoryKey] ?: false
+        val newActiveStates = _uiState.value.dialogActiveStates.toMutableMap().apply { put(categoryKey, !current) }
+        _uiState.value = _uiState.value.copy(
+            dialogActiveStates = newActiveStates,
+            totalLimit = calculateTotalLimit(_uiState.value.dialogAmounts, newActiveStates)
+        )
+    }
+
+    fun saveDialogBudgets() {
+        val state = _uiState.value
+        if (state.totalLimit > _actionState.value.income) return
+
+        val budgetsToSave = expenseCategories.mapNotNull { category ->
+            val isActive = state.dialogActiveStates[category.key] ?: false
+            val amount = state.dialogAmounts[category.key]?.toDoubleOrNull()
+            if (isActive && amount != null && amount > 0) {
+                category.key to amount
+            } else {
+                null
+            }
+        }
+
+        _uiState.value = _uiState.value.copy(showManageDialog = false)
+        saveBudgets(budgetsToSave)
+    }
+
+    private fun saveBudgets(budgets: List<Pair<String, Double>>) {
         viewModelScope.launch {
             _actionState.value = _actionState.value.copy(isSaving = true)
 
@@ -93,6 +154,13 @@ class BudgetLimitsViewModel @Inject constructor(
                 }
                 is Resource.Loading -> Unit
             }
+        }
+    }
+
+    private fun calculateTotalLimit(amounts: Map<String, String>, activeStates: Map<String, Boolean>): Int {
+        return amounts.entries.sumOf { (key, amount) ->
+            val isActive = activeStates[key] ?: false
+            if (isActive) amount.toIntOrNull() ?: 0 else 0
         }
     }
 

@@ -57,7 +57,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val recentTransactions by viewModel.recentTransactions.collectAsStateWithLifecycle()
     val actionState by viewModel.actionState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -95,7 +94,7 @@ fun HomeScreen(
             )
             QuickActions(navController = navController)
             RecentTransactions(
-                transactions = recentTransactions,
+                transactions = actionState.recentTransactions,
                 actionState = actionState,
                 navController = navController
             )

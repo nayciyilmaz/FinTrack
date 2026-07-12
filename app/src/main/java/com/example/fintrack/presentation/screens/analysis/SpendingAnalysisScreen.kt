@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
@@ -52,10 +52,8 @@ fun SpendingAnalysisScreen(
     viewModel: SpendingAnalysisViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    val selectedCategoryPeriod by viewModel.selectedCategoryPeriod.collectAsState()
-    val selectedTrendPeriod by viewModel.selectedTrendPeriod.collectAsState()
-    val categoryState by viewModel.categoryState.collectAsState()
-    val trendState by viewModel.trendState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
 
     EditScaffold(
         title = stringResource(id = R.string.title_spending_analysis),
@@ -69,15 +67,15 @@ fun SpendingAnalysisScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             CategoryDistributionSection(
-                items = categoryState.categoryDistribution,
-                selectedPeriod = selectedCategoryPeriod,
+                items = actionState.categoryDistribution,
+                selectedPeriod = uiState.selectedCategoryPeriod,
                 onPeriodSelected = viewModel::onCategoryPeriodChanged
             )
             SpendingTrendSection(
-                trendData = trendState.spendingTrend,
-                summaryHigh = trendState.summaryHigh,
-                summaryLow = trendState.summaryLow,
-                selectedPeriod = selectedTrendPeriod,
+                trendData = actionState.spendingTrend,
+                summaryHigh = actionState.summaryHigh,
+                summaryLow = actionState.summaryLow,
+                selectedPeriod = uiState.selectedTrendPeriod,
                 onPeriodSelected = viewModel::onTrendPeriodChanged
             )
         }
