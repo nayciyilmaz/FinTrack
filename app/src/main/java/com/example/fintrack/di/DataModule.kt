@@ -2,9 +2,11 @@ package com.example.fintrack.di
 
 import com.example.fintrack.data.repository.AuthRepositoryImpl
 import com.example.fintrack.data.repository.BudgetRepositoryImpl
+import com.example.fintrack.data.repository.SavingsGoalRepositoryImpl
 import com.example.fintrack.data.repository.TransactionRepositoryImpl
 import com.example.fintrack.domain.repository.AuthRepository
 import com.example.fintrack.domain.repository.BudgetRepository
+import com.example.fintrack.domain.repository.SavingsGoalRepository
 import com.example.fintrack.domain.repository.TransactionRepository
 import dagger.Binds
 import dagger.Module
@@ -27,4 +29,8 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindBudgetRepository(impl: BudgetRepositoryImpl): BudgetRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSavingsGoalRepository(impl: SavingsGoalRepositoryImpl): SavingsGoalRepository
 }

@@ -16,24 +16,21 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BeachAccess
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,37 +43,62 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.core.constants.goalCategories
+import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
-import com.example.fintrack.core.constants.goalCategories
-import com.example.fintrack.domain.model.GoalCategory
+import com.example.fintrack.presentation.components.ValidationErrorText
 
 @Composable
 fun SavingsGoalsScreen(
     navController: NavController,
+    viewModel: SavingsGoalsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    var showAddDialog by remember { mutableStateOf(false) }
-    var showDetailDialog by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    if (showAddDialog) {
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    if (uiState.showAddDialog) {
         AddGoalDialog(
-            onDismiss = { showAddDialog = false },
-            onConfirm = { showAddDialog = false }
+            uiState = uiState,
+            onGoalNameChange = viewModel::onGoalNameChange,
+            onTargetAmountChange = viewModel::onTargetAmountChange,
+            onCategoryChange = viewModel::onCategoryChange,
+            onDismiss = viewModel::dismissAddDialog,
+            onConfirm = viewModel::addGoal
         )
     }
 
-    if (showDetailDialog) {
+    uiState.selectedGoal?.let { goal ->
         GoalDetailDialog(
-            onDismiss = { showDetailDialog = false },
-            onConfirm = { showDetailDialog = false }
+            goal = goal,
+            uiState = uiState,
+            onAddAmountChange = viewModel::onAddAmountChange,
+            onNewTargetAmountChange = viewModel::onNewTargetAmountChange,
+            onDismiss = viewModel::dismissGoalDetail,
+            onUpdate = viewModel::updateGoal,
+            onDelete = viewModel::deleteGoal
         )
     }
 
@@ -91,8 +113,8 @@ fun SavingsGoalsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             SavingsCard(
-                lastMonthSavings = 8500,
-                totalSavings = 42300
+                lastMonthSavings = actionState.lastMonthSavings,
+                totalSavings = actionState.totalSavings
             )
             Row(
                 modifier = modifier
@@ -107,51 +129,89 @@ fun SavingsGoalsScreen(
                 )
                 EditTextButton(
                     text = stringResource(id = R.string.label_new_goal),
-                    onClick = { showAddDialog = true },
+                    onClick = viewModel::showAddDialog,
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
-            GoalCard(
-                icon = Icons.Filled.Home,
-                goalName = "Ev Peşinatı",
-                goalType = "Konut",
-                currentAmount = 750000,
-                targetAmount = 1000000,
-                estimatedDate = "Tem. 2027",
-                onClick = { showDetailDialog = true }
-            )
-            GoalCard(
-                icon = Icons.Filled.DirectionsCar,
-                goalName = "Araba",
-                goalType = "Taşıt",
-                currentAmount = 180000,
-                targetAmount = 600000,
-                estimatedDate = "Mar. 2028",
-                onClick = { showDetailDialog = true }
-            )
-            GoalCard(
-                icon = Icons.Filled.BeachAccess,
-                goalName = "Tatil",
-                goalType = "Seyahat",
-                currentAmount = 12000,
-                targetAmount = 30000,
-                estimatedDate = "Haz. 2026",
-                onClick = { showDetailDialog = true }
+            SavingsGoalsContent(
+                actionState = actionState,
+                onGoalClick = viewModel::selectGoal
             )
         }
     }
 }
 
 @Composable
+private fun SavingsGoalsContent(
+    actionState: SavingsGoalsActionState,
+    onGoalClick: (SavingsGoal) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when {
+        actionState.isLoading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.bottom_bar_fab)
+                )
+            }
+        }
+        actionState.isError -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.error_general),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        actionState.goals.isEmpty() -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_no_goals),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        else -> {
+            actionState.goals.forEach { goal ->
+                GoalCard(
+                    icon = goalCategoryIcon(goal.category),
+                    goal = goal,
+                    estimatedDate = actionState.estimatedDates[goal.id],
+                    onClick = { onGoalClick(goal) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun AddGoalDialog(
+    uiState: SavingsGoalsUiState,
+    onGoalNameChange: (String) -> Unit,
+    onTargetAmountChange: (String) -> Unit,
+    onCategoryChange: (Int, String) -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var goalName by remember { mutableStateOf("") }
-    var targetAmount by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf<GoalCategory?>(null) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -166,78 +226,90 @@ private fun AddGoalDialog(
                 modifier = modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = stringResource(id = R.string.label_category),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = colorResource(id = R.color.text_primary)
-                )
-                Row(
-                    modifier = modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    goalCategories.forEach { category ->
-                        val isSelected = selectedCategory?.nameResId == category.nameResId
-                        Column(
-                            modifier = modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(
-                                    if (isSelected) colorResource(id = R.color.bottom_bar_fab)
-                                    else colorResource(id = R.color.quick_action_background)
-                                )
-                                .clickable { selectedCategory = category }
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(
-                                imageVector = category.icon,
-                                contentDescription = null,
-                                tint = if (isSelected) Color.White else colorResource(id = R.color.bottom_bar_fab),
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.label_category),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = colorResource(id = R.color.text_primary)
+                    )
+                    Row(
+                        modifier = modifier
+                            .padding(top = 8.dp)
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        goalCategories.forEach { category ->
+                            val isSelected = uiState.selectedCategoryResId == category.nameResId
+                            val categoryName = stringResource(id = category.nameResId)
+                            Column(
                                 modifier = modifier
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .clip(RoundedCornerShape(12.dp))
                                     .background(
-                                        if (isSelected) Color.White.copy(alpha = 0.2f)
-                                        else Color.White
+                                        if (isSelected) colorResource(id = R.color.bottom_bar_fab)
+                                        else colorResource(id = R.color.quick_action_background)
                                     )
-                                    .padding(6.dp)
-                            )
-                            Text(
-                                text = stringResource(id = category.nameResId),
-                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
-                                color = if (isSelected) Color.White else colorResource(id = R.color.bottom_bar_fab)
-                            )
+                                    .clickable { onCategoryChange(category.nameResId, categoryName) }
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = category.icon,
+                                    contentDescription = null,
+                                    tint = if (isSelected) Color.White else colorResource(id = R.color.bottom_bar_fab),
+                                    modifier = modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(
+                                            if (isSelected) Color.White.copy(alpha = 0.2f)
+                                            else Color.White
+                                        )
+                                        .padding(6.dp)
+                                )
+                                Text(
+                                    text = categoryName,
+                                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
+                                    color = if (isSelected) Color.White else colorResource(id = R.color.bottom_bar_fab)
+                                )
+                            }
                         }
                     }
+                    uiState.categoryError?.let { ValidationErrorText(error = it) }
                 }
-                EditOutlinedTextField(
-                    value = goalName,
-                    onValueChange = { goalName = it },
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = "Hedef Adı") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            defaultKeyboardAction(ImeAction.Done)
-                            keyboardController?.hide()
-                        }
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.goalName,
+                        onValueChange = onGoalNameChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = "Hedef Adı") },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                defaultKeyboardAction(ImeAction.Done)
+                                keyboardController?.hide()
+                            }
+                        )
                     )
-                )
-                EditOutlinedTextField(
-                    value = targetAmount,
-                    onValueChange = { targetAmount = it.filter { c -> c.isDigit() } },
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = "Hedef Tutar") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            defaultKeyboardAction(ImeAction.Done)
-                            keyboardController?.hide()
-                        }
+                    uiState.nameError?.let { ValidationErrorText(error = it) }
+                }
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.targetAmount,
+                        onValueChange = onTargetAmountChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = "Hedef Tutar") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                defaultKeyboardAction(ImeAction.Done)
+                                keyboardController?.hide()
+                            }
+                        )
                     )
-                )
+                    uiState.amountError?.let { ValidationErrorText(error = it) }
+                }
             }
         },
         confirmButton = {
@@ -257,13 +329,16 @@ private fun AddGoalDialog(
 
 @Composable
 private fun GoalDetailDialog(
+    goal: SavingsGoal,
+    uiState: SavingsGoalsUiState,
+    onAddAmountChange: (String) -> Unit,
+    onNewTargetAmountChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onUpdate: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var addAmount by remember { mutableStateOf("") }
-    var newTargetAmount by remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -278,7 +353,7 @@ private fun GoalDetailDialog(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Home,
+                        imageVector = goalCategoryIcon(goal.category),
                         contentDescription = null,
                         tint = colorResource(id = R.color.bottom_bar_fab),
                         modifier = modifier
@@ -288,11 +363,11 @@ private fun GoalDetailDialog(
                     )
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(
-                            text = "Ev Peşinatı",
+                            text = goal.name,
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
                         )
                         Text(
-                            text = "Konut",
+                            text = goal.category,
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.DarkGray
                         )
@@ -302,7 +377,7 @@ private fun GoalDetailDialog(
                     modifier = modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(colorResource(id = R.color.transaction_expense_background))
-                        .clickable {}
+                        .clickable { onDelete() }
                         .padding(8.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -320,8 +395,8 @@ private fun GoalDetailDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 EditOutlinedTextField(
-                    value = addAmount,
-                    onValueChange = { addAmount = it.filter { c -> c.isDigit() } },
+                    value = uiState.addAmount,
+                    onValueChange = onAddAmountChange,
                     modifier = modifier.fillMaxWidth(),
                     label = { Text(text = "Üzerine Para Ekle") },
                     keyboardOptions = KeyboardOptions(
@@ -336,8 +411,8 @@ private fun GoalDetailDialog(
                     )
                 )
                 EditOutlinedTextField(
-                    value = newTargetAmount,
-                    onValueChange = { newTargetAmount = it.filter { c -> c.isDigit() } },
+                    value = uiState.newTargetAmount,
+                    onValueChange = onNewTargetAmountChange,
                     modifier = modifier.fillMaxWidth(),
                     label = { Text(text = "Hedef Tutarı Güncelle") },
                     keyboardOptions = KeyboardOptions(
@@ -351,12 +426,13 @@ private fun GoalDetailDialog(
                         }
                     )
                 )
+                uiState.updateError?.let { ValidationErrorText(error = it) }
             }
         },
         confirmButton = {
             EditTextButton(
                 text = stringResource(id = R.string.label_save),
-                onClick = onConfirm
+                onClick = onUpdate
             )
         },
         dismissButton = {
@@ -374,7 +450,7 @@ private fun SavingsCard(
     totalSavings: Int,
     modifier: Modifier = Modifier
 ) {
-    val percentage = ((lastMonthSavings.toFloat() / totalSavings.toFloat()) * 100).toInt()
+    val percentage = if (totalSavings != 0) ((lastMonthSavings.toFloat() / totalSavings.toFloat()) * 100).toInt() else 0
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -468,15 +544,12 @@ private fun SavingsCard(
 @Composable
 private fun GoalCard(
     icon: ImageVector,
-    goalName: String,
-    goalType: String,
-    currentAmount: Int,
-    targetAmount: Int,
-    estimatedDate: String,
+    goal: SavingsGoal,
+    estimatedDate: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val progress = (currentAmount.toFloat() / targetAmount.toFloat()).coerceIn(0f, 1f)
+    val progress = if (goal.targetAmount > 0) (goal.currentAmount / goal.targetAmount).toFloat() else 0f
     val percentage = (progress * 100).toInt()
 
     Card(
@@ -513,12 +586,12 @@ private fun GoalCard(
                     )
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(
-                            text = goalName,
+                            text = goal.name,
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = colorResource(id = R.color.text_primary)
                         )
                         Text(
-                            text = goalType,
+                            text = goal.category,
                             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
                             color = Color.DarkGray
                         )
@@ -546,12 +619,12 @@ private fun GoalCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "₺${"%,d".format(currentAmount).replace(",", ".")}",
+                        text = "₺${"%,d".format(goal.currentAmount.toInt()).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = colorResource(id = R.color.text_primary)
                     )
                     Text(
-                        text = "₺${"%,d".format(targetAmount).replace(",", ".")}",
+                        text = "₺${"%,d".format(goal.targetAmount.toInt()).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                         color = Color.DarkGray
                     )
@@ -578,7 +651,11 @@ private fun GoalCard(
                     tint = colorResource(id = R.color.bottom_bar_fab)
                 )
                 Text(
-                    text = "%$percentage tamamlandı · Tahmini Bitiş: $estimatedDate",
+                    text = if (estimatedDate != null) {
+                        "%$percentage tamamlandı · Tahmini Bitiş: $estimatedDate"
+                    } else {
+                        "%$percentage tamamlandı"
+                    },
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
@@ -587,8 +664,12 @@ private fun GoalCard(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SavingsGoalsScreenPreview() {
-    SavingsGoalsScreen(navController = rememberNavController())
+private fun goalCategoryIcon(category: String): ImageVector {
+    goalCategories.forEach { goalCategory ->
+        if (stringResource(id = goalCategory.nameResId) == category) {
+            return goalCategory.icon
+        }
+    }
+    return Icons.Filled.MoreHoriz
 }

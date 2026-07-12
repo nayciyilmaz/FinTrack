@@ -90,6 +90,7 @@
     <string name="label_no_transactions">Gösterilecek işlem bulunamadı.</string>
     <string name="label_no_budgets">Henüz bir kategori limiti belirlemediniz.</string>
     <string name="warning_budget_exceeds_income">Toplam limit gelirinizi aşıyor.</string>
+    <string name="label_no_goals">Henüz bir tasarruf hedefi eklemediniz.</string>
     <string name="label_note">Not (İsteğe Bağlı)</string>
     <string name="label_photo">Fotoğraf (İsteğe Bağlı)</string>
     <string name="category_maas">Maaş</string>

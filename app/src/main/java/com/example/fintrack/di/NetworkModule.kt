@@ -2,6 +2,7 @@ package com.example.fintrack.di
 
 import com.example.fintrack.data.remote.api.AuthService
 import com.example.fintrack.data.remote.api.BudgetService
+import com.example.fintrack.data.remote.api.SavingsGoalService
 import com.example.fintrack.data.remote.api.TransactionService
 import com.example.fintrack.data.remote.interceptor.AuthInterceptor
 import com.example.fintrack.data.remote.interceptor.TokenAuthenticator
@@ -68,4 +69,9 @@ object NetworkModule {
     @Singleton
     fun provideBudgetService(retrofit: Retrofit): BudgetService =
         retrofit.create(BudgetService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSavingsGoalService(retrofit: Retrofit): SavingsGoalService =
+        retrofit.create(SavingsGoalService::class.java)
 }
