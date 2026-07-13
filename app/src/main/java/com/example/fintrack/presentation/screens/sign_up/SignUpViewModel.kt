@@ -1,11 +1,14 @@
 package com.example.fintrack.presentation.screens.sign_up
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
-    private val addTransactionUseCase: AddTransactionUseCase
+    private val addTransactionUseCase: AddTransactionUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -149,7 +153,7 @@ class SignUpViewModel @Inject constructor(
                 salaryError = fieldErrors["salary"]
             )
         } else {
-            SignUpValidationErrors(emailError = message ?: "Kayıt başarısız.")
+            SignUpValidationErrors(emailError = message ?: context.getString(R.string.sign_up_error_generic))
         }
     }
 }

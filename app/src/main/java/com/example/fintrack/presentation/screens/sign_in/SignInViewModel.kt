@@ -8,12 +8,14 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.BuildConfig
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.GoogleSignInUseCase
 import com.example.fintrack.domain.usecase.LoginUseCase
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val googleSignInUseCase: GoogleSignInUseCase
+    private val googleSignInUseCase: GoogleSignInUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignInUiState())
@@ -106,7 +109,7 @@ class SignInViewModel @Inject constructor(
                 }
             } catch (e: GetCredentialException) {
                 _uiState.value = _uiState.value.copy(
-                    validationErrors = SignInValidationErrors(emailError = "Google ile giriş iptal edildi.")
+                    validationErrors = SignInValidationErrors(emailError = context.getString(R.string.sign_in_error_google_cancelled))
                 )
                 _actionState.value = SignInActionState(isLoading = false)
             }
@@ -123,7 +126,7 @@ class SignInViewModel @Inject constructor(
                 passwordError = fieldErrors["password"]
             )
         } else {
-            SignInValidationErrors(emailError = message ?: "Giriş başarısız.")
+            SignInValidationErrors(emailError = message ?: context.getString(R.string.sign_in_error_generic))
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -195,6 +197,7 @@ private fun ManageLimitsDialog(
     modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val categoryListMaxHeight = (LocalConfiguration.current.screenHeightDp * 0.55f).dp
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -205,66 +208,70 @@ private fun ManageLimitsDialog(
             )
         },
         text = {
-            Column(
-                modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                expenseCategories.forEach { category ->
-                    val isActive = uiState.dialogActiveStates[category.key] ?: false
-                    val amount = uiState.dialogAmounts[category.key] ?: ""
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(
+                    modifier = modifier
+                        .heightIn(max = categoryListMaxHeight)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    expenseCategories.forEach { category ->
+                        val isActive = uiState.dialogActiveStates[category.key] ?: false
+                        val amount = uiState.dialogAmounts[category.key] ?: ""
 
-                    Row(
-                        modifier = modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            imageVector = category.icon,
-                            contentDescription = null,
-                            tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray,
-                            modifier = modifier
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(
-                                    if (isActive) colorResource(id = R.color.quick_action_background)
-                                    else Color.LightGray.copy(alpha = 0.3f)
-                                )
-                                .padding(8.dp)
-                        )
-                        Text(
-                            text = stringResource(id = category.labelResId),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                            color = if (isActive) colorResource(id = R.color.text_primary) else Color.Gray,
-                            modifier = modifier.weight(1f)
-                        )
-                        EditOutlinedTextField(
-                            value = amount,
-                            onValueChange = { onAmountChange(category.key, it) },
-                            modifier = modifier.weight(1f),
-                            enabled = isActive,
-                            placeholder = {
-                                Text(
-                                    text = "0",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color.Gray
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    defaultKeyboardAction(ImeAction.Done)
-                                    keyboardController?.hide()
-                                }
-                            ),
-                            textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
-                        )
-                        EditIconButton(
-                            onClick = { onActiveToggle(category.key) },
-                            imageVector = if (isActive) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                            tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray
-                        )
+                        Row(
+                            modifier = modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = category.icon,
+                                contentDescription = null,
+                                tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray,
+                                modifier = modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(
+                                        if (isActive) colorResource(id = R.color.quick_action_background)
+                                        else Color.LightGray.copy(alpha = 0.3f)
+                                    )
+                                    .padding(8.dp)
+                            )
+                            Text(
+                                text = stringResource(id = category.labelResId),
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                                color = if (isActive) colorResource(id = R.color.text_primary) else Color.Gray,
+                                modifier = modifier.weight(1f)
+                            )
+                            EditOutlinedTextField(
+                                value = amount,
+                                onValueChange = { onAmountChange(category.key, it) },
+                                modifier = modifier.weight(1f),
+                                enabled = isActive,
+                                placeholder = {
+                                    Text(
+                                        text = "0",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color.Gray
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        defaultKeyboardAction(ImeAction.Done)
+                                        keyboardController?.hide()
+                                    }
+                                ),
+                                textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                            )
+                            EditIconButton(
+                                onClick = { onActiveToggle(category.key) },
+                                imageVector = if (isActive) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray
+                            )
+                        }
                     }
                 }
 
@@ -457,7 +464,7 @@ private fun CategoryLimitCard(
                             color = colorResource(id = R.color.text_primary)
                         )
                         Text(
-                            text = if (isOverLimit) "Limit Aşıldı" else if (isWarning) "Uyarı" else "Normal",
+                            text = if (isOverLimit) stringResource(id = R.string.budget_status_exceeded) else if (isWarning) stringResource(id = R.string.budget_status_warning) else stringResource(id = R.string.budget_status_normal),
                             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
                             color = activeColor
                         )

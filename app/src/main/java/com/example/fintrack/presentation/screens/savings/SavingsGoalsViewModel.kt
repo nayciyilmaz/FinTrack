@@ -1,7 +1,9 @@
 package com.example.fintrack.presentation.screens.savings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
@@ -11,6 +13,7 @@ import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.UpdateSavingsGoalUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +34,8 @@ class SavingsGoalsViewModel @Inject constructor(
     private val addSavingsGoalUseCase: AddSavingsGoalUseCase,
     private val updateSavingsGoalUseCase: UpdateSavingsGoalUseCase,
     private val deleteSavingsGoalUseCase: DeleteSavingsGoalUseCase,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SavingsGoalsUiState())
@@ -156,16 +160,16 @@ class SavingsGoalsViewModel @Inject constructor(
         var updated = state
 
         if (state.selectedCategoryName == null) {
-            updated = updated.copy(categoryError = "Kategori seçiniz.")
+            updated = updated.copy(categoryError = context.getString(R.string.savings_goal_error_category_required))
             hasError = true
         }
         if (state.goalName.isBlank()) {
-            updated = updated.copy(nameError = "Hedef adı gereklidir.")
+            updated = updated.copy(nameError = context.getString(R.string.savings_goal_error_name_required))
             hasError = true
         }
         val amount = state.targetAmount.toDoubleOrNull()
         if (amount == null || amount <= 0) {
-            updated = updated.copy(amountError = "Geçerli bir tutar giriniz.")
+            updated = updated.copy(amountError = context.getString(R.string.savings_goal_error_invalid_amount))
             hasError = true
         }
         if (hasError) {
@@ -204,15 +208,15 @@ class SavingsGoalsViewModel @Inject constructor(
         val newTarget = state.newTargetAmount.toDoubleOrNull()
 
         if (add == null && newTarget == null) {
-            _uiState.value = state.copy(updateError = "En az bir alan doldurunuz.")
+            _uiState.value = state.copy(updateError = context.getString(R.string.savings_goal_error_fields_required))
             return
         }
         if (add != null && add <= 0) {
-            _uiState.value = state.copy(updateError = "Geçerli bir tutar giriniz.")
+            _uiState.value = state.copy(updateError = context.getString(R.string.savings_goal_error_invalid_amount))
             return
         }
         if (newTarget != null && newTarget <= 0) {
-            _uiState.value = state.copy(updateError = "Geçerli bir hedef tutarı giriniz.")
+            _uiState.value = state.copy(updateError = context.getString(R.string.savings_goal_error_invalid_target_amount))
             return
         }
 

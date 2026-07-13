@@ -66,7 +66,7 @@ fun SignUpScreen(
 
     LaunchedEffect(actionState.isSuccess) {
         if (actionState.isSuccess) {
-            Toast.makeText(context, "Kayıt başarıyla tamamlandı.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.sign_up_success_message), Toast.LENGTH_SHORT).show()
             navigateAndClearBackStack(
                 navController = navController,
                 destination = FinTrackScreens.SignInScreen.route,

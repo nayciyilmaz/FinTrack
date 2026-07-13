@@ -280,7 +280,7 @@ private fun AddGoalDialog(
                         value = uiState.goalName,
                         onValueChange = onGoalNameChange,
                         modifier = modifier.fillMaxWidth(),
-                        label = { Text(text = "Hedef Adı") },
+                        label = { Text(text = stringResource(id = R.string.savings_goal_name_label)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(
                             onDone = {
@@ -296,7 +296,7 @@ private fun AddGoalDialog(
                         value = uiState.targetAmount,
                         onValueChange = onTargetAmountChange,
                         modifier = modifier.fillMaxWidth(),
-                        label = { Text(text = "Hedef Tutar") },
+                        label = { Text(text = stringResource(id = R.string.savings_goal_amount_label)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
@@ -398,7 +398,7 @@ private fun GoalDetailDialog(
                     value = uiState.addAmount,
                     onValueChange = onAddAmountChange,
                     modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = "Üzerine Para Ekle") },
+                    label = { Text(text = stringResource(id = R.string.savings_goal_add_amount_label)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -414,7 +414,7 @@ private fun GoalDetailDialog(
                     value = uiState.newTargetAmount,
                     onValueChange = onNewTargetAmountChange,
                     modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = "Hedef Tutarı Güncelle") },
+                    label = { Text(text = stringResource(id = R.string.savings_goal_update_amount_label)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
