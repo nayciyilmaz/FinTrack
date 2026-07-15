@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -70,7 +72,8 @@ class ProfileViewModel @Inject constructor(
                         activeGoalsCount = goals.size,
                         usageDays = usageDays,
                         usageMonths = usageMonths,
-                        showUsageInDays = usageDays < 90
+                        showUsageInDays = usageDays < 90,
+                        passwordChangedAtDisplay = formatPasswordChangedAt(profile.passwordChangedAt)
                     )
                 } else {
                     _actionState.value = ProfileActionState(isError = true)
@@ -79,5 +82,13 @@ class ProfileViewModel @Inject constructor(
                 _actionState.value = ProfileActionState(isError = true)
             }
         }
+    }
+
+    private fun formatPasswordChangedAt(dateTime: java.time.LocalDateTime): String {
+        val locale = Locale("tr")
+        val month = dateTime.month.getDisplayName(TextStyle.FULL, locale)
+            .replaceFirstChar { it.uppercase(locale) }
+        val time = "%02d:%02d".format(dateTime.hour, dateTime.minute)
+        return "${dateTime.dayOfMonth} $month ${dateTime.year}, $time"
     }
 }

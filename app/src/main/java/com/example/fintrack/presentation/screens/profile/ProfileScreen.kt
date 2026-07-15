@@ -126,7 +126,8 @@ fun ProfileScreen(
                 )
                 AccountInfoCard(
                     fullName = "${actionState.firstName} ${actionState.lastName}".trim(),
-                    email = actionState.email
+                    email = actionState.email,
+                    passwordChangedAtDisplay = actionState.passwordChangedAtDisplay
                 )
                 Text(
                     text = stringResource(id = R.string.profile_section_app_settings),
@@ -237,6 +238,7 @@ private fun StatCard(
 private fun AccountInfoCard(
     fullName: String,
     email: String,
+    passwordChangedAtDisplay: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -268,7 +270,7 @@ private fun AccountInfoCard(
         InfoRow(
             icon = Icons.Filled.Lock,
             title = stringResource(id = R.string.profile_change_password),
-            subtitle = "Son değişiklik 3 ay önce",
+            subtitle = stringResource(id = R.string.profile_password_last_changed, passwordChangedAtDisplay),
             onClick = {}
         )
     }
@@ -353,15 +355,15 @@ private fun AppSettingsCard(modifier: Modifier = Modifier) {
             modifier = modifier.padding(horizontal = 16.dp),
             color = colorResource(id = R.color.divider_color)
         )
-        HorizontalDivider(
-            modifier = modifier.padding(horizontal = 16.dp),
-            color = colorResource(id = R.color.divider_color)
-        )
         SettingRowWithValue(
             icon = Icons.Filled.TextFields,
             title = stringResource(id = R.string.profile_font_size),
             value = "Orta",
             onClick = {}
+        )
+        HorizontalDivider(
+            modifier = modifier.padding(horizontal = 16.dp),
+            color = colorResource(id = R.color.divider_color)
         )
         DarkModeRow(checked = isDarkMode, onCheckedChange = { isDarkMode = it })
     }

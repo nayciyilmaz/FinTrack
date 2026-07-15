@@ -9,6 +9,7 @@ import com.example.fintrack.domain.repository.UserProfileRepository
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -34,6 +35,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         firstName = firstName,
         lastName = lastName,
         email = email,
-        createdAt = LocalDate.parse(createdAt.substring(0, 10))
+        createdAt = LocalDate.parse(createdAt.substring(0, 10)),
+        passwordChangedAt = LocalDateTime.parse(passwordChangedAt)
     )
 }

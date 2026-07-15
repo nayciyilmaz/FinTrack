@@ -11,5 +11,6 @@ data class ProfileActionState(
     val activeGoalsCount: Int = 0,
     val usageDays: Int = 0,
     val usageMonths: Int = 0,
-    val showUsageInDays: Boolean = true
+    val showUsageInDays: Boolean = true,
+    val passwordChangedAtDisplay: String = ""
 )

@@ -196,6 +196,7 @@
     <string name="profile_stat_usage">Kullanım</string>
     <string name="profile_usage_months_value">%1$d Ay</string>
     <string name="profile_usage_days_value">%1$d Gün</string>
+    <string name="profile_password_last_changed">Son değişiklik: %1$s</string>
     <string name="profile_section_account_info">Hesap Bilgileri</string>
     <string name="profile_full_name">Ad Soyad</string>
     <string name="profile_change_password">Şifre Değiştir</string>
