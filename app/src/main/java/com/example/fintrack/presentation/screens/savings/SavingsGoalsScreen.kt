@@ -98,7 +98,9 @@ fun SavingsGoalsScreen(
             onNewTargetAmountChange = viewModel::onNewTargetAmountChange,
             onDismiss = viewModel::dismissGoalDetail,
             onUpdate = viewModel::updateGoal,
-            onDelete = viewModel::deleteGoal
+            onRequestDelete = viewModel::onRequestDeleteConfirm,
+            onCancelDelete = viewModel::onCancelDeleteConfirm,
+            onConfirmDelete = viewModel::deleteGoal
         )
     }
 
@@ -335,7 +337,9 @@ private fun GoalDetailDialog(
     onNewTargetAmountChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onUpdate: () -> Unit,
-    onDelete: () -> Unit,
+    onRequestDelete: () -> Unit,
+    onCancelDelete: () -> Unit,
+    onConfirmDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -373,73 +377,103 @@ private fun GoalDetailDialog(
                         )
                     }
                 }
-                Box(
-                    modifier = modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(colorResource(id = R.color.transaction_expense_background))
-                        .clickable { onDelete() }
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.expense_red)
-                    )
+                if (!uiState.isConfirmingDelete) {
+                    Box(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(colorResource(id = R.color.transaction_expense_background))
+                            .clickable { onRequestDelete() }
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.expense_red)
+                        )
+                    }
                 }
             }
         },
         text = {
-            Column(
-                modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                EditOutlinedTextField(
-                    value = uiState.addAmount,
-                    onValueChange = onAddAmountChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.savings_goal_add_amount_label)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            defaultKeyboardAction(ImeAction.Done)
-                            keyboardController?.hide()
-                        }
+            if (uiState.isConfirmingDelete) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.message_delete_goal),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = colorResource(id = R.color.text_primary)
                     )
-                )
-                EditOutlinedTextField(
-                    value = uiState.newTargetAmount,
-                    onValueChange = onNewTargetAmountChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.savings_goal_update_amount_label)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            defaultKeyboardAction(ImeAction.Done)
-                            keyboardController?.hide()
-                        }
+                    Row(
+                        modifier = modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        EditTextButton(
+                            text = stringResource(id = R.string.label_cancel),
+                            onClick = onCancelDelete
+                        )
+                        EditTextButton(
+                            text = stringResource(id = R.string.label_confirm_action),
+                            onClick = onConfirmDelete,
+                            color = colorResource(id = R.color.expense_red)
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    EditOutlinedTextField(
+                        value = uiState.addAmount,
+                        onValueChange = onAddAmountChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.savings_goal_add_amount_label)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                defaultKeyboardAction(ImeAction.Done)
+                                keyboardController?.hide()
+                            }
+                        )
                     )
-                )
-                uiState.updateError?.let { ValidationErrorText(error = it) }
+                    EditOutlinedTextField(
+                        value = uiState.newTargetAmount,
+                        onValueChange = onNewTargetAmountChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.savings_goal_update_amount_label)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                defaultKeyboardAction(ImeAction.Done)
+                                keyboardController?.hide()
+                            }
+                        )
+                    )
+                    uiState.updateError?.let { ValidationErrorText(error = it) }
+                }
             }
         },
         confirmButton = {
-            EditTextButton(
-                text = stringResource(id = R.string.label_save),
-                onClick = onUpdate
-            )
+            if (!uiState.isConfirmingDelete) {
+                EditTextButton(
+                    text = stringResource(id = R.string.label_save),
+                    onClick = onUpdate
+                )
+            }
         },
         dismissButton = {
-            EditTextButton(
-                text = stringResource(id = R.string.label_cancel),
-                onClick = onDismiss
-            )
+            if (!uiState.isConfirmingDelete) {
+                EditTextButton(
+                    text = stringResource(id = R.string.label_cancel),
+                    onClick = onDismiss
+                )
+            }
         }
     )
 }

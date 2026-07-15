@@ -93,6 +93,14 @@ class SavingsGoalsViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(selectedGoal = null)
     }
 
+    fun onRequestDeleteConfirm() {
+        _uiState.value = _uiState.value.copy(isConfirmingDelete = true)
+    }
+
+    fun onCancelDeleteConfirm() {
+        _uiState.value = _uiState.value.copy(isConfirmingDelete = false)
+    }
+
     fun loadData() {
         viewModelScope.launch {
             _actionState.value = _actionState.value.copy(isLoading = true, isError = false)

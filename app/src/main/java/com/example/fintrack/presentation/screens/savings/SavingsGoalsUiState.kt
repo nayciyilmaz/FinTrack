@@ -14,5 +14,6 @@ data class SavingsGoalsUiState(
     val amountError: String? = null,
     val addAmount: String = "",
     val newTargetAmount: String = "",
-    val updateError: String? = null
+    val updateError: String? = null,
+    val isConfirmingDelete: Boolean = false
 )

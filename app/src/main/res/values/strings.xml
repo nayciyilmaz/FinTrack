@@ -11,6 +11,7 @@
     <string name="label_delete">Sil</string>
     <string name="title_delete_dialog">Silme İşlemi</string>
     <string name="message_delete_transaction">İşlemi silmek istediğinizden emin misiniz?</string>
+    <string name="message_delete_goal">Bu hedefi silmek istediğinizden emin misiniz?</string>
     <string name="label_confirm_action">Onayla</string>
     <string name="title_spending_analysis">Analiz</string>
     <string name="title_savings_goals">Tasarruf ve Hedefler</string>
