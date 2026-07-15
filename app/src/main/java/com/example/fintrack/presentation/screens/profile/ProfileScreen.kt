@@ -31,6 +31,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,13 +41,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
@@ -54,8 +58,22 @@ import com.example.fintrack.presentation.components.EditScaffold
 @Composable
 fun ProfileScreen(
     navController: NavController,
+    viewModel: ProfileViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     EditScaffold(
         title = stringResource(id = R.string.title_profile),
         navController = navController
@@ -65,7 +83,11 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            ProfileHeader()
+            ProfileHeader(
+                initials = actionState.initials,
+                fullName = "${actionState.firstName} ${actionState.lastName}".trim(),
+                email = actionState.email
+            )
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -77,17 +99,21 @@ fun ProfileScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     StatCard(
-                        value = "247",
+                        value = actionState.transactionCount.toString(),
                         label = stringResource(id = R.string.profile_stat_total_transactions),
                         modifier = modifier.weight(1f)
                     )
                     StatCard(
-                        value = "5",
+                        value = actionState.activeGoalsCount.toString(),
                         label = stringResource(id = R.string.profile_stat_active_goals),
                         modifier = modifier.weight(1f)
                     )
                     StatCard(
-                        value = "8 Ay",
+                        value = if (actionState.showUsageInDays) {
+                            stringResource(id = R.string.profile_usage_days_value, actionState.usageDays)
+                        } else {
+                            stringResource(id = R.string.profile_usage_months_value, actionState.usageMonths)
+                        },
                         label = stringResource(id = R.string.profile_stat_usage),
                         modifier = modifier.weight(1f)
                     )
@@ -98,7 +124,10 @@ fun ProfileScreen(
                     color = Color.Black,
                     modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
                 )
-                AccountInfoCard()
+                AccountInfoCard(
+                    fullName = "${actionState.firstName} ${actionState.lastName}".trim(),
+                    email = actionState.email
+                )
                 Text(
                     text = stringResource(id = R.string.profile_section_app_settings),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -132,7 +161,12 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileHeader(modifier: Modifier = Modifier) {
+private fun ProfileHeader(
+    initials: String,
+    fullName: String,
+    email: String,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -153,18 +187,18 @@ private fun ProfileHeader(modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "AY",
+                    text = initials,
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     color = Color.White
                 )
             }
             Text(
-                text = "Ahmet Yılmaz",
+                text = fullName,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 color = Color.White
             )
             Text(
-                text = "ahmet.yilmaz@gmail.com",
+                text = email,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = 0.85f)
             )
@@ -200,7 +234,11 @@ private fun StatCard(
 }
 
 @Composable
-private fun AccountInfoCard(modifier: Modifier = Modifier) {
+private fun AccountInfoCard(
+    fullName: String,
+    email: String,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -210,7 +248,7 @@ private fun AccountInfoCard(modifier: Modifier = Modifier) {
         InfoRow(
             icon = Icons.Filled.Person,
             title = stringResource(id = R.string.profile_full_name),
-            subtitle = "Ahmet Yılmaz",
+            subtitle = fullName,
             onClick = {}
         )
         HorizontalDivider(
@@ -220,7 +258,7 @@ private fun AccountInfoCard(modifier: Modifier = Modifier) {
         InfoRow(
             icon = Icons.Filled.Email,
             title = stringResource(id = R.string.sign_in_email),
-            subtitle = "ahmet.yilmaz@gmail.com",
+            subtitle = email,
             onClick = {}
         )
         HorizontalDivider(
@@ -426,10 +464,4 @@ private fun SettingRowWithValue(
             )
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ProfileScreenPreview() {
-    ProfileScreen(navController = rememberNavController())
 }

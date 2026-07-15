@@ -4,10 +4,12 @@ import com.example.fintrack.data.repository.AuthRepositoryImpl
 import com.example.fintrack.data.repository.BudgetRepositoryImpl
 import com.example.fintrack.data.repository.SavingsGoalRepositoryImpl
 import com.example.fintrack.data.repository.TransactionRepositoryImpl
+import com.example.fintrack.data.repository.UserProfileRepositoryImpl
 import com.example.fintrack.domain.repository.AuthRepository
 import com.example.fintrack.domain.repository.BudgetRepository
 import com.example.fintrack.domain.repository.SavingsGoalRepository
 import com.example.fintrack.domain.repository.TransactionRepository
+import com.example.fintrack.domain.repository.UserProfileRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,8 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindSavingsGoalRepository(impl: SavingsGoalRepositoryImpl): SavingsGoalRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserProfileRepository(impl: UserProfileRepositoryImpl): UserProfileRepository
 }

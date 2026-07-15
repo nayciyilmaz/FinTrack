@@ -389,9 +389,11 @@ private fun BudgetCard(
             )
 
             Text(
-                text = "Bütçenin %$percentage'ini kullandın · ₺${
+                text = stringResource(
+                    id = R.string.budget_usage_summary,
+                    percentage,
                     "%,d".format(remaining).replace(",", ".")
-                } kaldı",
+                ),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = Color.White.copy(alpha = 0.85f)
             )

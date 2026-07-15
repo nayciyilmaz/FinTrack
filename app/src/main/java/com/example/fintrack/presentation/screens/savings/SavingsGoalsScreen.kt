@@ -526,7 +526,7 @@ private fun SavingsCard(
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(
-                        text = "Toplam tasarrufun %$percentage'i bu aya ait.",
+                        text = stringResource(id = R.string.savings_goal_monthly_share, percentage),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = Color.White
                     )

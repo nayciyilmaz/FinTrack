@@ -23,10 +23,12 @@
     <string name="savings_goal_error_invalid_amount">Geçerli bir tutar giriniz.</string>
     <string name="savings_goal_error_fields_required">En az bir alan doldurunuz.</string>
     <string name="savings_goal_error_invalid_target_amount">Geçerli bir hedef tutarı giriniz.</string>
+    <string name="savings_goal_monthly_share">Toplam tasarrufun %%%1$d\'i bu aya ait.</string>
     <string name="title_budget_limits">Bütçe ve Limitler</string>
     <string name="budget_status_exceeded">Limit Aşıldı</string>
     <string name="budget_status_warning">Uyarı</string>
     <string name="budget_status_normal">Normal</string>
+    <string name="budget_usage_summary">Bütçenin %%%1$d\'ini kullandın · ₺%2$s kaldı</string>
     <string name="title_payment_reminders">Hatırlatıcılar</string>
     <string name="title_reports">Raporlar</string>
     <string name="title_profile">Profil</string>
@@ -191,6 +193,8 @@
     <string name="profile_stat_total_transactions">Toplam İşlem</string>
     <string name="profile_stat_active_goals">Aktif Hedef</string>
     <string name="profile_stat_usage">Kullanım</string>
+    <string name="profile_usage_months_value">%1$d Ay</string>
+    <string name="profile_usage_days_value">%1$d Gün</string>
     <string name="profile_section_account_info">Hesap Bilgileri</string>
     <string name="profile_full_name">Ad Soyad</string>
     <string name="profile_change_password">Şifre Değiştir</string>

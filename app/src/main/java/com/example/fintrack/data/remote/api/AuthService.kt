@@ -5,7 +5,9 @@ import com.example.fintrack.data.remote.dto.LoginRequestDto
 import com.example.fintrack.data.remote.dto.LoginResponseDto
 import com.example.fintrack.data.remote.dto.RegisterRequestDto
 import com.example.fintrack.data.remote.dto.RegisterResponseDto
+import com.example.fintrack.data.remote.dto.UserProfileResponseDto
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AuthService {
@@ -17,4 +19,7 @@ interface AuthService {
 
     @POST("api/auth/google")
     suspend fun loginWithGoogle(@Body request: GoogleAuthRequestDto): LoginResponseDto
+
+    @GET("api/users/me")
+    suspend fun getCurrentUser(): UserProfileResponseDto
 }
