@@ -1,8 +1,12 @@
 package com.example.fintrack.data.repository
 
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.data.remote.api.AuthService
 import com.example.fintrack.data.remote.dto.ErrorResponseDto
+import com.example.fintrack.data.remote.dto.UpdateEmailRequestDto
+import com.example.fintrack.data.remote.dto.UpdateNameRequestDto
+import com.example.fintrack.data.remote.dto.UpdatePasswordRequestDto
 import com.example.fintrack.data.remote.dto.UserProfileResponseDto
 import com.example.fintrack.domain.model.UserProfile
 import com.example.fintrack.domain.repository.UserProfileRepository
@@ -14,6 +18,7 @@ import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
     private val authService: AuthService,
+    private val tokenManager: TokenManager,
     private val json: Json
 ) : UserProfileRepository {
 
@@ -26,6 +31,52 @@ class UserProfileRepositoryImpl @Inject constructor(
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
             Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
+    override suspend fun updateName(firstName: String, lastName: String): Resource<UserProfile> {
+        return try {
+            val response = authService.updateName(UpdateNameRequestDto(firstName = firstName, lastName = lastName))
+            Resource.Success(response.toDomain())
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu", fieldErrors = errorDto?.fieldErrors)
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
+    override suspend fun updateEmail(email: String): Resource<String> {
+        return try {
+            val response = authService.updateEmail(UpdateEmailRequestDto(email = email))
+            tokenManager.saveToken(response.token)
+            tokenManager.saveRefreshToken(response.refreshToken)
+            Resource.Success(response.email)
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu", fieldErrors = errorDto?.fieldErrors)
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
+    override suspend fun updatePassword(currentPassword: String, newPassword: String): Resource<UserProfile> {
+        return try {
+            val response = authService.updatePassword(
+                UpdatePasswordRequestDto(currentPassword = currentPassword, newPassword = newPassword)
+            )
+            Resource.Success(response.toDomain())
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu", fieldErrors = errorDto?.fieldErrors)
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: "Bir hata oluştu")
         }

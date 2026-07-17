@@ -1,13 +1,19 @@
 package com.example.fintrack.presentation.screens.profile
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GetUserProfileUseCase
 import com.example.fintrack.domain.usecase.LogoutUseCase
+import com.example.fintrack.domain.usecase.UpdateUserEmailUseCase
+import com.example.fintrack.domain.usecase.UpdateUserNameUseCase
+import com.example.fintrack.domain.usecase.UpdateUserPasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +31,11 @@ class ProfileViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getTransactionsUseCase: GetTransactionsUseCase,
     private val getSavingsGoalsUseCase: GetSavingsGoalsUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val logoutUseCase: LogoutUseCase,
+    private val updateUserNameUseCase: UpdateUserNameUseCase,
+    private val updateUserEmailUseCase: UpdateUserEmailUseCase,
+    private val updateUserPasswordUseCase: UpdateUserPasswordUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _actionState = MutableStateFlow(ProfileActionState())
@@ -58,27 +68,27 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onFirstNameInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(firstNameInput = value)
+        _uiState.value = _uiState.value.copy(firstNameInput = value, firstNameError = null)
     }
 
     fun onLastNameInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(lastNameInput = value)
+        _uiState.value = _uiState.value.copy(lastNameInput = value, lastNameError = null)
     }
 
     fun onEmailInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(emailInput = value)
+        _uiState.value = _uiState.value.copy(emailInput = value, emailError = null)
     }
 
     fun onCurrentPasswordInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(currentPasswordInput = value)
+        _uiState.value = _uiState.value.copy(currentPasswordInput = value, currentPasswordError = null)
     }
 
     fun onNewPasswordInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(newPasswordInput = value)
+        _uiState.value = _uiState.value.copy(newPasswordInput = value, newPasswordError = null)
     }
 
     fun onConfirmPasswordInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(confirmPasswordInput = value)
+        _uiState.value = _uiState.value.copy(confirmPasswordInput = value, confirmPasswordError = null)
     }
 
     fun toggleCurrentPasswordVisibility() {
@@ -157,10 +167,7 @@ class ProfileViewModel @Inject constructor(
                 val goals = goalsResult.data ?: emptyList()
 
                 if (profile != null) {
-                    val initials = buildString {
-                        profile.firstName.firstOrNull()?.let { append(it.uppercaseChar()) }
-                        profile.lastName.firstOrNull()?.let { append(it.uppercaseChar()) }
-                    }
+                    val initials = computeInitials(profile.firstName, profile.lastName)
                     val usageDays = ChronoUnit.DAYS.between(profile.createdAt, today).toInt().coerceAtLeast(0)
                     val usageMonths = ChronoUnit.MONTHS.between(profile.createdAt, today).toInt().coerceAtLeast(0)
 
@@ -197,6 +204,102 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(showLogoutConfirmDialog = false)
         viewModelScope.launch {
             logoutUseCase()
+        }
+    }
+
+    fun onUpdateName() {
+        val firstName = _uiState.value.firstNameInput.trim()
+        val lastName = _uiState.value.lastNameInput.trim()
+
+        viewModelScope.launch {
+            when (val result = updateUserNameUseCase(firstName, lastName)) {
+                is Resource.Success -> {
+                    val profile = result.data
+                    if (profile != null) {
+                        _actionState.value = _actionState.value.copy(
+                            firstName = profile.firstName,
+                            lastName = profile.lastName,
+                            initials = computeInitials(profile.firstName, profile.lastName)
+                        )
+                    }
+                    _uiState.value = _uiState.value.copy(activeDialog = null)
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        firstNameError = result.fieldErrors?.get("first_name"),
+                        lastNameError = result.fieldErrors?.get("last_name") ?: result.message.takeIf { result.fieldErrors.isNullOrEmpty() }
+                    )
+                }
+                is Resource.Loading -> Unit
+            }
+        }
+    }
+
+    fun onUpdateEmail() {
+        val email = _uiState.value.emailInput.trim()
+
+        if (email == _actionState.value.email) {
+            _uiState.value = _uiState.value.copy(activeDialog = null)
+            return
+        }
+
+        viewModelScope.launch {
+            when (val result = updateUserEmailUseCase(email)) {
+                is Resource.Success -> {
+                    val newEmail = result.data
+                    if (newEmail != null) {
+                        _actionState.value = _actionState.value.copy(email = newEmail)
+                    }
+                    _uiState.value = _uiState.value.copy(activeDialog = null)
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        emailError = result.fieldErrors?.get("email") ?: result.message
+                    )
+                }
+                is Resource.Loading -> Unit
+            }
+        }
+    }
+
+    fun onUpdatePassword() {
+        val currentPassword = _uiState.value.currentPasswordInput
+        val newPassword = _uiState.value.newPasswordInput
+        val confirmPassword = _uiState.value.confirmPasswordInput
+
+        if (newPassword != confirmPassword) {
+            _uiState.value = _uiState.value.copy(
+                confirmPasswordError = context.getString(R.string.profile_password_mismatch)
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            when (val result = updateUserPasswordUseCase(currentPassword, newPassword)) {
+                is Resource.Success -> {
+                    val profile = result.data
+                    if (profile != null) {
+                        _actionState.value = _actionState.value.copy(
+                            passwordChangedAtDisplay = formatPasswordChangedAt(profile.passwordChangedAt)
+                        )
+                    }
+                    _uiState.value = _uiState.value.copy(activeDialog = null)
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        currentPasswordError = result.fieldErrors?.get("current_password") ?: result.message,
+                        newPasswordError = result.fieldErrors?.get("new_password")
+                    )
+                }
+                is Resource.Loading -> Unit
+            }
+        }
+    }
+
+    private fun computeInitials(firstName: String, lastName: String): String {
+        return buildString {
+            firstName.firstOrNull()?.let { append(it.uppercaseChar()) }
+            lastName.firstOrNull()?.let { append(it.uppercaseChar()) }
         }
     }
 

@@ -18,6 +18,9 @@ import com.example.fintrack.domain.usecase.LogoutUseCase
 import com.example.fintrack.domain.usecase.SaveBudgetsUseCase
 import com.example.fintrack.domain.usecase.UpdateSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.UpdateTransactionUseCase
+import com.example.fintrack.domain.usecase.UpdateUserEmailUseCase
+import com.example.fintrack.domain.usecase.UpdateUserNameUseCase
+import com.example.fintrack.domain.usecase.UpdateUserPasswordUseCase
 import com.example.fintrack.domain.usecase.LoginUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
 import dagger.Module
@@ -104,4 +107,19 @@ object DomainModule {
     @Singleton
     fun provideLogoutUseCase(authRepository: AuthRepository): LogoutUseCase =
         LogoutUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateUserNameUseCase(userProfileRepository: UserProfileRepository): UpdateUserNameUseCase =
+        UpdateUserNameUseCase(userProfileRepository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateUserEmailUseCase(userProfileRepository: UserProfileRepository): UpdateUserEmailUseCase =
+        UpdateUserEmailUseCase(userProfileRepository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateUserPasswordUseCase(userProfileRepository: UserProfileRepository): UpdateUserPasswordUseCase =
+        UpdateUserPasswordUseCase(userProfileRepository)
 }

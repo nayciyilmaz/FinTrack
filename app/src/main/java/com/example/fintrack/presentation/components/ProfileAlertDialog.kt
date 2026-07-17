@@ -49,7 +49,7 @@ fun ProfileDialogHost(
                 onFirstNameChange = viewModel::onFirstNameInputChange,
                 onLastNameChange = viewModel::onLastNameInputChange,
                 onDismiss = viewModel::onDismissDialog,
-                onUpdate = {}
+                onUpdate = viewModel::onUpdateName
             )
         }
         ProfileDialogType.EMAIL -> {
@@ -57,7 +57,7 @@ fun ProfileDialogHost(
                 uiState = uiState,
                 onEmailChange = viewModel::onEmailInputChange,
                 onDismiss = viewModel::onDismissDialog,
-                onUpdate = {}
+                onUpdate = viewModel::onUpdateEmail
             )
         }
         ProfileDialogType.PASSWORD -> {
@@ -70,7 +70,7 @@ fun ProfileDialogHost(
                 onToggleNewPasswordVisibility = viewModel::toggleNewPasswordVisibility,
                 onToggleConfirmPasswordVisibility = viewModel::toggleConfirmPasswordVisibility,
                 onDismiss = viewModel::onDismissDialog,
-                onUpdate = {}
+                onUpdate = viewModel::onUpdatePassword
             )
         }
         null -> Unit
@@ -99,40 +99,46 @@ fun NameEditDialog(
                 modifier = modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                EditOutlinedTextField(
-                    value = uiState.firstNameInput,
-                    onValueChange = onFirstNameChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.sign_up_first_name)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Person,
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.icon_orange)
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.firstNameInput,
+                        onValueChange = onFirstNameChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.sign_up_first_name)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Person,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
                     )
-                )
-                EditOutlinedTextField(
-                    value = uiState.lastNameInput,
-                    onValueChange = onLastNameChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.sign_up_last_name)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Person,
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.icon_orange)
+                    uiState.firstNameError?.let { ValidationErrorText(error = it) }
+                }
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.lastNameInput,
+                        onValueChange = onLastNameChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.sign_up_last_name)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Person,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
                     )
-                )
+                    uiState.lastNameError?.let { ValidationErrorText(error = it) }
+                }
             }
         },
         confirmButton = {
@@ -171,23 +177,26 @@ fun EmailEditDialog(
                 modifier = modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                EditOutlinedTextField(
-                    value = uiState.emailInput,
-                    onValueChange = onEmailChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.sign_in_email)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Email,
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.icon_orange)
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.emailInput,
+                        onValueChange = onEmailChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.sign_in_email)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Email,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Done
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Done
                     )
-                )
+                    uiState.emailError?.let { ValidationErrorText(error = it) }
+                }
             }
         },
         confirmButton = {
@@ -231,78 +240,87 @@ fun PasswordEditDialog(
                 modifier = modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                EditOutlinedTextField(
-                    value = uiState.currentPasswordInput,
-                    onValueChange = onCurrentPasswordChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.profile_current_password_label)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.icon_orange)
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.currentPasswordInput,
+                        onValueChange = onCurrentPasswordChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.profile_current_password_label)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        trailingIcon = {
+                            EditIconButton(
+                                onClick = onToggleCurrentPasswordVisibility,
+                                imageVector = if (uiState.isCurrentPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            )
+                        },
+                        visualTransformation = if (uiState.isCurrentPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next
                         )
-                    },
-                    trailingIcon = {
-                        EditIconButton(
-                            onClick = onToggleCurrentPasswordVisibility,
-                            imageVector = if (uiState.isCurrentPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                        )
-                    },
-                    visualTransformation = if (uiState.isCurrentPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
                     )
-                )
-                EditOutlinedTextField(
-                    value = uiState.newPasswordInput,
-                    onValueChange = onNewPasswordChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.forgot_password_new_password_label)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.icon_orange)
+                    uiState.currentPasswordError?.let { ValidationErrorText(error = it) }
+                }
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.newPasswordInput,
+                        onValueChange = onNewPasswordChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.forgot_password_new_password_label)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        trailingIcon = {
+                            EditIconButton(
+                                onClick = onToggleNewPasswordVisibility,
+                                imageVector = if (uiState.isNewPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            )
+                        },
+                        visualTransformation = if (uiState.isNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next
                         )
-                    },
-                    trailingIcon = {
-                        EditIconButton(
-                            onClick = onToggleNewPasswordVisibility,
-                            imageVector = if (uiState.isNewPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                        )
-                    },
-                    visualTransformation = if (uiState.isNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
                     )
-                )
-                EditOutlinedTextField(
-                    value = uiState.confirmPasswordInput,
-                    onValueChange = onConfirmPasswordChange,
-                    modifier = modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.forgot_password_new_password_repeat)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.icon_orange)
+                    uiState.newPasswordError?.let { ValidationErrorText(error = it) }
+                }
+                Column {
+                    EditOutlinedTextField(
+                        value = uiState.confirmPasswordInput,
+                        onValueChange = onConfirmPasswordChange,
+                        modifier = modifier.fillMaxWidth(),
+                        label = { Text(text = stringResource(id = R.string.forgot_password_new_password_repeat)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.icon_orange)
+                            )
+                        },
+                        trailingIcon = {
+                            EditIconButton(
+                                onClick = onToggleConfirmPasswordVisibility,
+                                imageVector = if (uiState.isConfirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            )
+                        },
+                        visualTransformation = if (uiState.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
                         )
-                    },
-                    trailingIcon = {
-                        EditIconButton(
-                            onClick = onToggleConfirmPasswordVisibility,
-                            imageVector = if (uiState.isConfirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                        )
-                    },
-                    visualTransformation = if (uiState.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
                     )
-                )
+                    uiState.confirmPasswordError?.let { ValidationErrorText(error = it) }
+                }
             }
         },
         confirmButton = {

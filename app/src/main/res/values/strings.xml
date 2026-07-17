@@ -218,6 +218,7 @@
     <string name="profile_section_app_settings">Uygulama Ayarları</string>
     <string name="profile_logout">Çıkış Yap</string>
     <string name="profile_logout_confirm_message">Çıkış yapmak istediğinizden emin misiniz?</string>
+    <string name="profile_password_mismatch">Şifreler eşleşmiyor.</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
