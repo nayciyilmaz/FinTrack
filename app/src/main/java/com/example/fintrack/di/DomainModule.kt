@@ -14,6 +14,7 @@ import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GetUserProfileUseCase
 import com.example.fintrack.domain.usecase.GoogleSignInUseCase
+import com.example.fintrack.domain.usecase.LogoutUseCase
 import com.example.fintrack.domain.usecase.SaveBudgetsUseCase
 import com.example.fintrack.domain.usecase.UpdateSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.UpdateTransactionUseCase
@@ -98,4 +99,9 @@ object DomainModule {
     @Singleton
     fun provideGetUserProfileUseCase(userProfileRepository: UserProfileRepository): GetUserProfileUseCase =
         GetUserProfileUseCase(userProfileRepository)
+
+    @Provides
+    @Singleton
+    fun provideLogoutUseCase(authRepository: AuthRepository): LogoutUseCase =
+        LogoutUseCase(authRepository)
 }

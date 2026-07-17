@@ -6,6 +6,7 @@ import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GetUserProfileUseCase
+import com.example.fintrack.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getTransactionsUseCase: GetTransactionsUseCase,
-    private val getSavingsGoalsUseCase: GetSavingsGoalsUseCase
+    private val getSavingsGoalsUseCase: GetSavingsGoalsUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _actionState = MutableStateFlow(ProfileActionState())
@@ -180,6 +182,21 @@ class ProfileViewModel @Inject constructor(
             } else {
                 _actionState.value = ProfileActionState(isError = true)
             }
+        }
+    }
+
+    fun onRequestLogout() {
+        _uiState.value = _uiState.value.copy(showLogoutConfirmDialog = true)
+    }
+
+    fun onCancelLogout() {
+        _uiState.value = _uiState.value.copy(showLogoutConfirmDialog = false)
+    }
+
+    fun onConfirmLogout() {
+        _uiState.value = _uiState.value.copy(showLogoutConfirmDialog = false)
+        viewModelScope.launch {
+            logoutUseCase()
         }
     }
 

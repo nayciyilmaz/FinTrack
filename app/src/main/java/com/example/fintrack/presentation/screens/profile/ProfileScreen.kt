@@ -52,6 +52,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.fintrack.R
+import com.example.fintrack.presentation.components.EditAlertDialog
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.ProfileDialogHost
@@ -79,6 +80,16 @@ fun ProfileScreen(
 
     ProfileDialogHost(uiState = uiState, viewModel = viewModel)
     SettingsDialogHost(uiState = uiState, viewModel = viewModel)
+
+    if (uiState.showLogoutConfirmDialog) {
+        EditAlertDialog(
+            title = stringResource(id = R.string.profile_logout),
+            message = stringResource(id = R.string.profile_logout_confirm_message),
+            onDismiss = viewModel::onCancelLogout,
+            onConfirm = viewModel::onConfirmLogout,
+            confirmColor = colorResource(id = R.color.expense_red)
+        )
+    }
 
     EditScaffold(
         title = stringResource(id = R.string.title_profile),
@@ -150,7 +161,7 @@ fun ProfileScreen(
                     onFontSizeClick = viewModel::onShowFontSizeDialog
                 )
                 EditButton(
-                    onClick = {},
+                    onClick = viewModel::onRequestLogout,
                     text = stringResource(id = R.string.profile_logout),
                     modifier = modifier
                         .fillMaxWidth()

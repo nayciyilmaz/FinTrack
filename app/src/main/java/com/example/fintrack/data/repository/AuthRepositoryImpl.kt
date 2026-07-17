@@ -98,4 +98,14 @@ class AuthRepositoryImpl @Inject constructor(
             Resource.Error(message = e.message ?: "Bir hata oluştu")
         }
     }
+
+    override suspend fun logout(): Resource<Unit> {
+        try {
+            authService.logout()
+        } catch (e: Exception) {
+        }
+        tokenManager.clearAll()
+        tokenManager.notifySessionExpired()
+        return Resource.Success(Unit)
+    }
 }

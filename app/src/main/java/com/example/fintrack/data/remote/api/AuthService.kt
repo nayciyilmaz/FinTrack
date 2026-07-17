@@ -22,4 +22,7 @@ interface AuthService {
 
     @GET("api/users/me")
     suspend fun getCurrentUser(): UserProfileResponseDto
+
+    @POST("api/users/me/logout")
+    suspend fun logout()
 }

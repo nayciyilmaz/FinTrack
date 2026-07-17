@@ -22,5 +22,6 @@ data class ProfileUiState(
     val activeSettingsDialog: SettingsDialogType? = null,
     val selectedCurrencyOption: String = "",
     val selectedLanguageOption: String = "",
-    val selectedFontSizeOption: String = ""
+    val selectedFontSizeOption: String = "",
+    val showLogoutConfirmDialog: Boolean = false
 )

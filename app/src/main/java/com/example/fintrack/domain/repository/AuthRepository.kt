@@ -15,4 +15,5 @@ interface AuthRepository {
 
     suspend fun login(email: String, password: String): Resource<User>
     suspend fun loginWithGoogle(idToken: String): Resource<User>
+    suspend fun logout(): Resource<Unit>
 }

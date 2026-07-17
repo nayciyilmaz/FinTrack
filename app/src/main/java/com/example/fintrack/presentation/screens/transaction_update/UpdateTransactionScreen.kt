@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +30,7 @@ import com.example.fintrack.core.util.timeFormatter
 import com.example.fintrack.presentation.components.AmountInput
 import com.example.fintrack.presentation.components.CategorySelector
 import com.example.fintrack.presentation.components.DateTimeSection
+import com.example.fintrack.presentation.components.EditAlertDialog
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditDatePicker
 import com.example.fintrack.presentation.components.EditScaffold
@@ -66,22 +65,13 @@ fun UpdateTransactionScreen(
     }
 
     if (uiState.showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = viewModel::onDismissDeleteDialog,
-            title = { Text(text = stringResource(id = R.string.title_delete_dialog)) },
-            text = { Text(text = stringResource(id = R.string.message_delete_transaction)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.onDismissDeleteDialog()
-                    viewModel.deleteTransaction()
-                }) {
-                    Text(text = stringResource(id = R.string.label_confirm_action))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = viewModel::onDismissDeleteDialog) {
-                    Text(text = stringResource(id = R.string.label_cancel))
-                }
+        EditAlertDialog(
+            title = stringResource(id = R.string.title_delete_dialog),
+            message = stringResource(id = R.string.message_delete_transaction),
+            onDismiss = viewModel::onDismissDeleteDialog,
+            onConfirm = {
+                viewModel.onDismissDeleteDialog()
+                viewModel.deleteTransaction()
             }
         )
     }
