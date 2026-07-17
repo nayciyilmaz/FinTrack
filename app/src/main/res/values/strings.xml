@@ -102,6 +102,8 @@
     <string name="label_reminder">Hatırlatıcı</string>
     <string name="label_reminder_desc">Ödeme günü bildirim gönderir</string>
     <string name="label_save">Kaydet</string>
+    <string name="label_update">Güncelle</string>
+    <string name="label_apply">Uygula</string>
     <string name="error_required_fields">Zorunlu alanları doldurunuz.</string>
     <string name="error_general">Bir hata oluştu. Tekrar deneyin.</string>
     <string name="label_no_transactions">Gösterilecek işlem bulunamadı.</string>
@@ -197,12 +199,22 @@
     <string name="profile_usage_months_value">%1$d Ay</string>
     <string name="profile_usage_days_value">%1$d Gün</string>
     <string name="profile_password_last_changed">Son değişiklik: %1$s</string>
+    <string name="profile_current_password_label">Mevcut Şifre</string>
     <string name="profile_section_account_info">Hesap Bilgileri</string>
     <string name="profile_full_name">Ad Soyad</string>
     <string name="profile_change_password">Şifre Değiştir</string>
     <string name="profile_currency">Para Birimi</string>
     <string name="profile_language">Dil</string>
     <string name="profile_font_size">Yazı Boyutu</string>
+    <string name="profile_currency_try">₺ TRY</string>
+    <string name="profile_currency_eur">€ EUR</string>
+    <string name="profile_currency_usd">$ USD</string>
+    <string name="profile_language_tr">Türkçe</string>
+    <string name="profile_language_en">English</string>
+    <string name="profile_language_de">Deutsch</string>
+    <string name="profile_font_size_small">Küçük</string>
+    <string name="profile_font_size_medium">Orta</string>
+    <string name="profile_font_size_large">Büyük</string>
     <string name="profile_section_app_settings">Uygulama Ayarları</string>
     <string name="profile_logout">Çıkış Yap</string>
 

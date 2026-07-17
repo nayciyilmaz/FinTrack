@@ -54,6 +54,8 @@ import androidx.navigation.NavController
 import com.example.fintrack.R
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
+import com.example.fintrack.presentation.components.ProfileDialogHost
+import com.example.fintrack.presentation.components.SettingsDialogHost
 
 @Composable
 fun ProfileScreen(
@@ -62,6 +64,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier
 ) {
     val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
@@ -73,6 +76,9 @@ fun ProfileScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+
+    ProfileDialogHost(uiState = uiState, viewModel = viewModel)
+    SettingsDialogHost(uiState = uiState, viewModel = viewModel)
 
     EditScaffold(
         title = stringResource(id = R.string.title_profile),
@@ -127,7 +133,10 @@ fun ProfileScreen(
                 AccountInfoCard(
                     fullName = "${actionState.firstName} ${actionState.lastName}".trim(),
                     email = actionState.email,
-                    passwordChangedAtDisplay = actionState.passwordChangedAtDisplay
+                    passwordChangedAtDisplay = actionState.passwordChangedAtDisplay,
+                    onNameClick = viewModel::onShowNameDialog,
+                    onEmailClick = viewModel::onShowEmailDialog,
+                    onPasswordClick = viewModel::onShowPasswordDialog
                 )
                 Text(
                     text = stringResource(id = R.string.profile_section_app_settings),
@@ -135,7 +144,11 @@ fun ProfileScreen(
                     color = Color.Black,
                     modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
                 )
-                AppSettingsCard()
+                AppSettingsCard(
+                    onCurrencyClick = viewModel::onShowCurrencyDialog,
+                    onLanguageClick = viewModel::onShowLanguageDialog,
+                    onFontSizeClick = viewModel::onShowFontSizeDialog
+                )
                 EditButton(
                     onClick = {},
                     text = stringResource(id = R.string.profile_logout),
@@ -239,6 +252,9 @@ private fun AccountInfoCard(
     fullName: String,
     email: String,
     passwordChangedAtDisplay: String,
+    onNameClick: () -> Unit,
+    onEmailClick: () -> Unit,
+    onPasswordClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -251,7 +267,7 @@ private fun AccountInfoCard(
             icon = Icons.Filled.Person,
             title = stringResource(id = R.string.profile_full_name),
             subtitle = fullName,
-            onClick = {}
+            onClick = onNameClick
         )
         HorizontalDivider(
             modifier = modifier.padding(horizontal = 16.dp),
@@ -261,7 +277,7 @@ private fun AccountInfoCard(
             icon = Icons.Filled.Email,
             title = stringResource(id = R.string.sign_in_email),
             subtitle = email,
-            onClick = {}
+            onClick = onEmailClick
         )
         HorizontalDivider(
             modifier = modifier.padding(horizontal = 16.dp),
@@ -271,7 +287,7 @@ private fun AccountInfoCard(
             icon = Icons.Filled.Lock,
             title = stringResource(id = R.string.profile_change_password),
             subtitle = stringResource(id = R.string.profile_password_last_changed, passwordChangedAtDisplay),
-            onClick = {}
+            onClick = onPasswordClick
         )
     }
 }
@@ -326,7 +342,12 @@ private fun InfoRow(
 }
 
 @Composable
-private fun AppSettingsCard(modifier: Modifier = Modifier) {
+private fun AppSettingsCard(
+    onCurrencyClick: () -> Unit,
+    onLanguageClick: () -> Unit,
+    onFontSizeClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var isDarkMode by remember { mutableStateOf(false) }
 
     Column(
@@ -338,8 +359,8 @@ private fun AppSettingsCard(modifier: Modifier = Modifier) {
         SettingRowWithValue(
             icon = Icons.Filled.AccountBalance,
             title = stringResource(id = R.string.profile_currency),
-            value = "₺ TRY",
-            onClick = {}
+            value = stringResource(id = R.string.profile_currency_try),
+            onClick = onCurrencyClick
         )
         HorizontalDivider(
             modifier = modifier.padding(horizontal = 16.dp),
@@ -348,8 +369,8 @@ private fun AppSettingsCard(modifier: Modifier = Modifier) {
         SettingRowWithValue(
             icon = Icons.Filled.Language,
             title = stringResource(id = R.string.profile_language),
-            value = "Türkçe",
-            onClick = {}
+            value = stringResource(id = R.string.profile_language_tr),
+            onClick = onLanguageClick
         )
         HorizontalDivider(
             modifier = modifier.padding(horizontal = 16.dp),
@@ -358,8 +379,8 @@ private fun AppSettingsCard(modifier: Modifier = Modifier) {
         SettingRowWithValue(
             icon = Icons.Filled.TextFields,
             title = stringResource(id = R.string.profile_font_size),
-            value = "Orta",
-            onClick = {}
+            value = stringResource(id = R.string.profile_font_size_medium),
+            onClick = onFontSizeClick
         )
         HorizontalDivider(
             modifier = modifier.padding(horizontal = 16.dp),

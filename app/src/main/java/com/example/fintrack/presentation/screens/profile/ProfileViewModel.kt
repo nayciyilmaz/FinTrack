@@ -29,6 +29,105 @@ class ProfileViewModel @Inject constructor(
     private val _actionState = MutableStateFlow(ProfileActionState())
     val actionState: StateFlow<ProfileActionState> = _actionState.asStateFlow()
 
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    fun onShowNameDialog() {
+        _uiState.value = ProfileUiState(
+            activeDialog = ProfileDialogType.NAME,
+            firstNameInput = _actionState.value.firstName,
+            lastNameInput = _actionState.value.lastName
+        )
+    }
+
+    fun onShowEmailDialog() {
+        _uiState.value = ProfileUiState(
+            activeDialog = ProfileDialogType.EMAIL,
+            emailInput = _actionState.value.email
+        )
+    }
+
+    fun onShowPasswordDialog() {
+        _uiState.value = ProfileUiState(activeDialog = ProfileDialogType.PASSWORD)
+    }
+
+    fun onDismissDialog() {
+        _uiState.value = _uiState.value.copy(activeDialog = null)
+    }
+
+    fun onFirstNameInputChange(value: String) {
+        _uiState.value = _uiState.value.copy(firstNameInput = value)
+    }
+
+    fun onLastNameInputChange(value: String) {
+        _uiState.value = _uiState.value.copy(lastNameInput = value)
+    }
+
+    fun onEmailInputChange(value: String) {
+        _uiState.value = _uiState.value.copy(emailInput = value)
+    }
+
+    fun onCurrentPasswordInputChange(value: String) {
+        _uiState.value = _uiState.value.copy(currentPasswordInput = value)
+    }
+
+    fun onNewPasswordInputChange(value: String) {
+        _uiState.value = _uiState.value.copy(newPasswordInput = value)
+    }
+
+    fun onConfirmPasswordInputChange(value: String) {
+        _uiState.value = _uiState.value.copy(confirmPasswordInput = value)
+    }
+
+    fun toggleCurrentPasswordVisibility() {
+        _uiState.value = _uiState.value.copy(isCurrentPasswordVisible = !_uiState.value.isCurrentPasswordVisible)
+    }
+
+    fun toggleNewPasswordVisibility() {
+        _uiState.value = _uiState.value.copy(isNewPasswordVisible = !_uiState.value.isNewPasswordVisible)
+    }
+
+    fun toggleConfirmPasswordVisibility() {
+        _uiState.value = _uiState.value.copy(isConfirmPasswordVisible = !_uiState.value.isConfirmPasswordVisible)
+    }
+
+    fun onShowCurrencyDialog() {
+        _uiState.value = _uiState.value.copy(
+            activeSettingsDialog = SettingsDialogType.CURRENCY,
+            selectedCurrencyOption = "₺ TRY"
+        )
+    }
+
+    fun onShowLanguageDialog() {
+        _uiState.value = _uiState.value.copy(
+            activeSettingsDialog = SettingsDialogType.LANGUAGE,
+            selectedLanguageOption = "Türkçe"
+        )
+    }
+
+    fun onShowFontSizeDialog() {
+        _uiState.value = _uiState.value.copy(
+            activeSettingsDialog = SettingsDialogType.FONT_SIZE,
+            selectedFontSizeOption = "Orta"
+        )
+    }
+
+    fun onDismissSettingsDialog() {
+        _uiState.value = _uiState.value.copy(activeSettingsDialog = null)
+    }
+
+    fun onCurrencyOptionSelect(value: String) {
+        _uiState.value = _uiState.value.copy(selectedCurrencyOption = value)
+    }
+
+    fun onLanguageOptionSelect(value: String) {
+        _uiState.value = _uiState.value.copy(selectedLanguageOption = value)
+    }
+
+    fun onFontSizeOptionSelect(value: String) {
+        _uiState.value = _uiState.value.copy(selectedFontSizeOption = value)
+    }
+
     fun loadData() {
         viewModelScope.launch {
             _actionState.value = _actionState.value.copy(isLoading = true, isError = false)
