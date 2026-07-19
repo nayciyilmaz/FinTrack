@@ -45,99 +45,143 @@ class ProfileViewModel @Inject constructor(
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     fun onShowNameDialog() {
-        _uiState.value = ProfileUiState(
-            activeDialog = ProfileDialogType.NAME,
-            firstNameInput = _actionState.value.firstName,
-            lastNameInput = _actionState.value.lastName
+        _uiState.value = _uiState.value.copy(
+            editState = ProfileEditState(
+                activeDialog = ProfileDialogType.NAME,
+                firstNameInput = _actionState.value.firstName,
+                lastNameInput = _actionState.value.lastName
+            )
         )
     }
 
     fun onShowEmailDialog() {
-        _uiState.value = ProfileUiState(
-            activeDialog = ProfileDialogType.EMAIL,
-            emailInput = _actionState.value.email
+        _uiState.value = _uiState.value.copy(
+            editState = ProfileEditState(
+                activeDialog = ProfileDialogType.EMAIL,
+                emailInput = _actionState.value.email
+            )
         )
     }
 
     fun onShowPasswordDialog() {
-        _uiState.value = ProfileUiState(activeDialog = ProfileDialogType.PASSWORD)
+        _uiState.value = _uiState.value.copy(
+            editState = ProfileEditState(activeDialog = ProfileDialogType.PASSWORD)
+        )
     }
 
     fun onDismissDialog() {
-        _uiState.value = _uiState.value.copy(activeDialog = null)
+        _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
     }
 
     fun onFirstNameInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(firstNameInput = value, firstNameError = null)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(firstNameInput = value, firstNameError = null)
+        )
     }
 
     fun onLastNameInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(lastNameInput = value, lastNameError = null)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(lastNameInput = value, lastNameError = null)
+        )
     }
 
     fun onEmailInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(emailInput = value, emailError = null)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(emailInput = value, emailError = null)
+        )
     }
 
     fun onCurrentPasswordInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(currentPasswordInput = value, currentPasswordError = null)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(currentPasswordInput = value, currentPasswordError = null)
+        )
     }
 
     fun onNewPasswordInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(newPasswordInput = value, newPasswordError = null)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(newPasswordInput = value, newPasswordError = null)
+        )
     }
 
     fun onConfirmPasswordInputChange(value: String) {
-        _uiState.value = _uiState.value.copy(confirmPasswordInput = value, confirmPasswordError = null)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(confirmPasswordInput = value, confirmPasswordError = null)
+        )
     }
 
     fun toggleCurrentPasswordVisibility() {
-        _uiState.value = _uiState.value.copy(isCurrentPasswordVisible = !_uiState.value.isCurrentPasswordVisible)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(
+                isCurrentPasswordVisible = !_uiState.value.editState.isCurrentPasswordVisible
+            )
+        )
     }
 
     fun toggleNewPasswordVisibility() {
-        _uiState.value = _uiState.value.copy(isNewPasswordVisible = !_uiState.value.isNewPasswordVisible)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(
+                isNewPasswordVisible = !_uiState.value.editState.isNewPasswordVisible
+            )
+        )
     }
 
     fun toggleConfirmPasswordVisibility() {
-        _uiState.value = _uiState.value.copy(isConfirmPasswordVisible = !_uiState.value.isConfirmPasswordVisible)
+        _uiState.value = _uiState.value.copy(
+            editState = _uiState.value.editState.copy(
+                isConfirmPasswordVisible = !_uiState.value.editState.isConfirmPasswordVisible
+            )
+        )
     }
 
     fun onShowCurrencyDialog() {
         _uiState.value = _uiState.value.copy(
-            activeSettingsDialog = SettingsDialogType.CURRENCY,
-            selectedCurrencyOption = "₺ TRY"
+            settingsDialogState = _uiState.value.settingsDialogState.copy(
+                activeSettingsDialog = SettingsDialogType.CURRENCY,
+                selectedCurrencyOption = "₺ TRY"
+            )
         )
     }
 
     fun onShowLanguageDialog() {
         _uiState.value = _uiState.value.copy(
-            activeSettingsDialog = SettingsDialogType.LANGUAGE,
-            selectedLanguageOption = "Türkçe"
+            settingsDialogState = _uiState.value.settingsDialogState.copy(
+                activeSettingsDialog = SettingsDialogType.LANGUAGE,
+                selectedLanguageOption = "Türkçe"
+            )
         )
     }
 
     fun onShowFontSizeDialog() {
         _uiState.value = _uiState.value.copy(
-            activeSettingsDialog = SettingsDialogType.FONT_SIZE,
-            selectedFontSizeOption = "Orta"
+            settingsDialogState = _uiState.value.settingsDialogState.copy(
+                activeSettingsDialog = SettingsDialogType.FONT_SIZE,
+                selectedFontSizeOption = "Orta"
+            )
         )
     }
 
     fun onDismissSettingsDialog() {
-        _uiState.value = _uiState.value.copy(activeSettingsDialog = null)
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(activeSettingsDialog = null)
+        )
     }
 
     fun onCurrencyOptionSelect(value: String) {
-        _uiState.value = _uiState.value.copy(selectedCurrencyOption = value)
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(selectedCurrencyOption = value)
+        )
     }
 
     fun onLanguageOptionSelect(value: String) {
-        _uiState.value = _uiState.value.copy(selectedLanguageOption = value)
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(selectedLanguageOption = value)
+        )
     }
 
     fun onFontSizeOptionSelect(value: String) {
-        _uiState.value = _uiState.value.copy(selectedFontSizeOption = value)
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(selectedFontSizeOption = value)
+        )
     }
 
     fun loadData() {
@@ -208,8 +252,8 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onUpdateName() {
-        val firstName = _uiState.value.firstNameInput.trim()
-        val lastName = _uiState.value.lastNameInput.trim()
+        val firstName = _uiState.value.editState.firstNameInput.trim()
+        val lastName = _uiState.value.editState.lastNameInput.trim()
 
         viewModelScope.launch {
             when (val result = updateUserNameUseCase(firstName, lastName)) {
@@ -222,12 +266,14 @@ class ProfileViewModel @Inject constructor(
                             initials = computeInitials(profile.firstName, profile.lastName)
                         )
                     }
-                    _uiState.value = _uiState.value.copy(activeDialog = null)
+                    _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
                 }
                 is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        firstNameError = result.fieldErrors?.get("first_name"),
-                        lastNameError = result.fieldErrors?.get("last_name") ?: result.message.takeIf { result.fieldErrors.isNullOrEmpty() }
+                        editState = _uiState.value.editState.copy(
+                            firstNameError = result.fieldErrors?.get("first_name"),
+                            lastNameError = result.fieldErrors?.get("last_name") ?: result.message.takeIf { result.fieldErrors.isNullOrEmpty() }
+                        )
                     )
                 }
                 is Resource.Loading -> Unit
@@ -236,10 +282,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onUpdateEmail() {
-        val email = _uiState.value.emailInput.trim()
+        val email = _uiState.value.editState.emailInput.trim()
 
         if (email == _actionState.value.email) {
-            _uiState.value = _uiState.value.copy(activeDialog = null)
+            _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
             return
         }
 
@@ -250,11 +296,13 @@ class ProfileViewModel @Inject constructor(
                     if (newEmail != null) {
                         _actionState.value = _actionState.value.copy(email = newEmail)
                     }
-                    _uiState.value = _uiState.value.copy(activeDialog = null)
+                    _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
                 }
                 is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        emailError = result.fieldErrors?.get("email") ?: result.message
+                        editState = _uiState.value.editState.copy(
+                            emailError = result.fieldErrors?.get("email") ?: result.message
+                        )
                     )
                 }
                 is Resource.Loading -> Unit
@@ -263,13 +311,15 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onUpdatePassword() {
-        val currentPassword = _uiState.value.currentPasswordInput
-        val newPassword = _uiState.value.newPasswordInput
-        val confirmPassword = _uiState.value.confirmPasswordInput
+        val currentPassword = _uiState.value.editState.currentPasswordInput
+        val newPassword = _uiState.value.editState.newPasswordInput
+        val confirmPassword = _uiState.value.editState.confirmPasswordInput
 
         if (newPassword != confirmPassword) {
             _uiState.value = _uiState.value.copy(
-                confirmPasswordError = context.getString(R.string.profile_password_mismatch)
+                editState = _uiState.value.editState.copy(
+                    confirmPasswordError = context.getString(R.string.profile_password_mismatch)
+                )
             )
             return
         }
@@ -283,12 +333,14 @@ class ProfileViewModel @Inject constructor(
                             passwordChangedAtDisplay = formatPasswordChangedAt(profile.passwordChangedAt)
                         )
                     }
-                    _uiState.value = _uiState.value.copy(activeDialog = null)
+                    _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
                 }
                 is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        currentPasswordError = result.fieldErrors?.get("current_password") ?: result.message,
-                        newPasswordError = result.fieldErrors?.get("new_password")
+                        editState = _uiState.value.editState.copy(
+                            currentPasswordError = result.fieldErrors?.get("current_password") ?: result.message,
+                            newPasswordError = result.fieldErrors?.get("new_password")
+                        )
                     )
                 }
                 is Resource.Loading -> Unit

@@ -33,8 +33,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 import com.example.fintrack.presentation.screens.profile.ProfileDialogType
+import com.example.fintrack.presentation.screens.profile.ProfileEditState
 import com.example.fintrack.presentation.screens.profile.ProfileUiState
 import com.example.fintrack.presentation.screens.profile.ProfileViewModel
+import com.example.fintrack.presentation.screens.profile.SettingsDialogState
 import com.example.fintrack.presentation.screens.profile.SettingsDialogType
 
 @Composable
@@ -42,10 +44,10 @@ fun ProfileDialogHost(
     uiState: ProfileUiState,
     viewModel: ProfileViewModel
 ) {
-    when (uiState.activeDialog) {
+    when (uiState.editState.activeDialog) {
         ProfileDialogType.NAME -> {
             NameEditDialog(
-                uiState = uiState,
+                uiState = uiState.editState,
                 onFirstNameChange = viewModel::onFirstNameInputChange,
                 onLastNameChange = viewModel::onLastNameInputChange,
                 onDismiss = viewModel::onDismissDialog,
@@ -54,7 +56,7 @@ fun ProfileDialogHost(
         }
         ProfileDialogType.EMAIL -> {
             EmailEditDialog(
-                uiState = uiState,
+                uiState = uiState.editState,
                 onEmailChange = viewModel::onEmailInputChange,
                 onDismiss = viewModel::onDismissDialog,
                 onUpdate = viewModel::onUpdateEmail
@@ -62,7 +64,7 @@ fun ProfileDialogHost(
         }
         ProfileDialogType.PASSWORD -> {
             PasswordEditDialog(
-                uiState = uiState,
+                uiState = uiState.editState,
                 onCurrentPasswordChange = viewModel::onCurrentPasswordInputChange,
                 onNewPasswordChange = viewModel::onNewPasswordInputChange,
                 onConfirmPasswordChange = viewModel::onConfirmPasswordInputChange,
@@ -79,7 +81,7 @@ fun ProfileDialogHost(
 
 @Composable
 fun NameEditDialog(
-    uiState: ProfileUiState,
+    uiState: ProfileEditState,
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onDismiss: () -> Unit,
@@ -158,7 +160,7 @@ fun NameEditDialog(
 
 @Composable
 fun EmailEditDialog(
-    uiState: ProfileUiState,
+    uiState: ProfileEditState,
     onEmailChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onUpdate: () -> Unit,
@@ -216,7 +218,7 @@ fun EmailEditDialog(
 
 @Composable
 fun PasswordEditDialog(
-    uiState: ProfileUiState,
+    uiState: ProfileEditState,
     onCurrentPasswordChange: (String) -> Unit,
     onNewPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
@@ -343,10 +345,10 @@ fun SettingsDialogHost(
     uiState: ProfileUiState,
     viewModel: ProfileViewModel
 ) {
-    when (uiState.activeSettingsDialog) {
+    when (uiState.settingsDialogState.activeSettingsDialog) {
         SettingsDialogType.CURRENCY -> {
             CurrencySelectDialog(
-                uiState = uiState,
+                uiState = uiState.settingsDialogState,
                 onOptionSelect = viewModel::onCurrencyOptionSelect,
                 onDismiss = viewModel::onDismissSettingsDialog,
                 onApply = {}
@@ -354,7 +356,7 @@ fun SettingsDialogHost(
         }
         SettingsDialogType.LANGUAGE -> {
             LanguageSelectDialog(
-                uiState = uiState,
+                uiState = uiState.settingsDialogState,
                 onOptionSelect = viewModel::onLanguageOptionSelect,
                 onDismiss = viewModel::onDismissSettingsDialog,
                 onApply = {}
@@ -362,7 +364,7 @@ fun SettingsDialogHost(
         }
         SettingsDialogType.FONT_SIZE -> {
             FontSizeSelectDialog(
-                uiState = uiState,
+                uiState = uiState.settingsDialogState,
                 onOptionSelect = viewModel::onFontSizeOptionSelect,
                 onDismiss = viewModel::onDismissSettingsDialog,
                 onApply = {}
@@ -374,7 +376,7 @@ fun SettingsDialogHost(
 
 @Composable
 fun CurrencySelectDialog(
-    uiState: ProfileUiState,
+    uiState: SettingsDialogState,
     onOptionSelect: (String) -> Unit,
     onDismiss: () -> Unit,
     onApply: () -> Unit,
@@ -442,7 +444,7 @@ fun CurrencySelectDialog(
 
 @Composable
 fun LanguageSelectDialog(
-    uiState: ProfileUiState,
+    uiState: SettingsDialogState,
     onOptionSelect: (String) -> Unit,
     onDismiss: () -> Unit,
     onApply: () -> Unit,
@@ -510,7 +512,7 @@ fun LanguageSelectDialog(
 
 @Composable
 fun FontSizeSelectDialog(
-    uiState: ProfileUiState,
+    uiState: SettingsDialogState,
     onOptionSelect: (String) -> Unit,
     onDismiss: () -> Unit,
     onApply: () -> Unit,
