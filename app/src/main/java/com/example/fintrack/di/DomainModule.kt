@@ -23,6 +23,9 @@ import com.example.fintrack.domain.usecase.UpdateUserNameUseCase
 import com.example.fintrack.domain.usecase.UpdateUserPasswordUseCase
 import com.example.fintrack.domain.usecase.LoginUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
+import com.example.fintrack.domain.usecase.ResetPasswordUseCase
+import com.example.fintrack.domain.usecase.SendPasswordResetCodeUseCase
+import com.example.fintrack.domain.usecase.VerifyPasswordResetCodeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -122,4 +125,19 @@ object DomainModule {
     @Singleton
     fun provideUpdateUserPasswordUseCase(userProfileRepository: UserProfileRepository): UpdateUserPasswordUseCase =
         UpdateUserPasswordUseCase(userProfileRepository)
+
+    @Provides
+    @Singleton
+    fun provideSendPasswordResetCodeUseCase(authRepository: AuthRepository): SendPasswordResetCodeUseCase =
+        SendPasswordResetCodeUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideVerifyPasswordResetCodeUseCase(authRepository: AuthRepository): VerifyPasswordResetCodeUseCase =
+        VerifyPasswordResetCodeUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideResetPasswordUseCase(authRepository: AuthRepository): ResetPasswordUseCase =
+        ResetPasswordUseCase(authRepository)
 }

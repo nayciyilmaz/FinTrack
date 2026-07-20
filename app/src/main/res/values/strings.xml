@@ -55,13 +55,14 @@
     <string name="forgot_password_description">Şifrenizi sıfırlamak için e-mailinizi girin. Size şifre sıfırlama kodu göndereceğiz.</string>
     <string name="forgot_password_send">Gönder</string>
     <string name="forgot_password_remembered">Şifremi hatırladım</string>
-    <string name="forgot_password_check_email">Lütfen mailinizi kontrol edin. Gelen kodu aşağıdaki yere giriniz.</string>
+    <string name="forgot_password_check_email">Lütfen mailinizi kontrol edin. Gelen kodu aşağıdaki yere giriniz.Kodun geçerlilik süresi 5 dakikadır.</string>
     <string name="forgot_password_confirm">Onayla</string>
     <string name="forgot_password_go_back">Geri Gel</string>
     <string name="forgot_password_new_password">Kullanmak istediğiniz şifreyi giriniz.</string>
     <string name="forgot_password_save">Kaydet</string>
     <string name="forgot_password_new_password_label">Yeni Şifre</string>
     <string name="forgot_password_new_password_repeat">Yeni Şifre (Tekrar)</string>
+    <string name="forgot_password_error_generic">İşlem başarısız.</string>
     <string name="quick_actions_title">Hızlı İşlemler</string>
     <string name="quick_action_reminders">Hatırlatıcı</string>
     <string name="quick_action_savings">Tasarruf</string>

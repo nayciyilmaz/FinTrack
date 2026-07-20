@@ -5,9 +5,12 @@ import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.data.mapper.AuthMapper
 import com.example.fintrack.data.remote.api.AuthService
 import com.example.fintrack.data.remote.dto.ErrorResponseDto
+import com.example.fintrack.data.remote.dto.ForgotPasswordRequestDto
 import com.example.fintrack.data.remote.dto.GoogleAuthRequestDto
 import com.example.fintrack.data.remote.dto.LoginRequestDto
 import com.example.fintrack.data.remote.dto.RegisterRequestDto
+import com.example.fintrack.data.remote.dto.ResetPasswordRequestDto
+import com.example.fintrack.data.remote.dto.VerifyResetCodeRequestDto
 import com.example.fintrack.domain.model.User
 import com.example.fintrack.domain.repository.AuthRepository
 import kotlinx.serialization.json.Json
@@ -107,5 +110,64 @@ class AuthRepositoryImpl @Inject constructor(
         tokenManager.clearAll()
         tokenManager.notifySessionExpired()
         return Resource.Success(Unit)
+    }
+
+    override suspend fun sendPasswordResetCode(email: String): Resource<Unit> {
+        return try {
+            authService.forgotPassword(ForgotPasswordRequestDto(email = email))
+            Resource.Success(Unit)
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            val fieldErrors = when (errorDto?.code) {
+                1001 -> mapOf("email" to errorDto.message)
+                else -> errorDto?.fieldErrors
+            }
+            Resource.Error(
+                message = errorDto?.message ?: "Bir hata oluştu",
+                fieldErrors = fieldErrors
+            )
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
+    override suspend fun verifyPasswordResetCode(email: String, code: String): Resource<String> {
+        return try {
+            val response = authService.verifyResetCode(VerifyResetCodeRequestDto(email = email, code = code))
+            Resource.Success(response.resetToken)
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            val fieldErrors = when (errorDto?.code) {
+                1009 -> mapOf("code" to errorDto.message)
+                else -> errorDto?.fieldErrors
+            }
+            Resource.Error(
+                message = errorDto?.message ?: "Bir hata oluştu",
+                fieldErrors = fieldErrors
+            )
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
+    override suspend fun resetPassword(resetToken: String, newPassword: String): Resource<Unit> {
+        return try {
+            authService.resetPassword(ResetPasswordRequestDto(resetToken = resetToken, newPassword = newPassword))
+            Resource.Success(Unit)
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(
+                message = errorDto?.message ?: "Bir hata oluştu",
+                fieldErrors = errorDto?.fieldErrors
+            )
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
     }
 }

@@ -24,12 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -45,6 +43,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
@@ -52,6 +51,7 @@ import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditIconButton
 import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditTextButton
+import com.example.fintrack.presentation.components.ValidationErrorText
 import com.example.fintrack.presentation.components.WaveBackground
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
@@ -59,17 +59,23 @@ import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
 @Composable
 fun ForgotPasswordScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var codeSent by rememberSaveable { mutableStateOf(false) }
-    var passwordReset by rememberSaveable { mutableStateOf(false) }
-    var newPassword by rememberSaveable { mutableStateOf("") }
-    var newPasswordVisible by rememberSaveable { mutableStateOf(false) }
-    var newPasswordRepeat by rememberSaveable { mutableStateOf("") }
-    var newPasswordRepeatVisible by rememberSaveable { mutableStateOf(false) }
-    val codeDigits = remember { mutableStateListOf("", "", "", "", "", "") }
+    val uiState by viewModel.uiState.collectAsState()
+    val actionState by viewModel.actionState.collectAsState()
     val focusRequesters = remember { List(6) { FocusRequester() } }
+
+    LaunchedEffect(actionState.isSuccess) {
+        if (actionState.isSuccess) {
+            navigateAndClearBackStack(
+                navController = navController,
+                destination = FinTrackScreens.SignInScreen.route,
+                popUpToRoute = FinTrackScreens.ForgotPasswordScreen.route,
+                inclusive = true
+            )
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         WaveBackground()
@@ -87,37 +93,35 @@ fun ForgotPasswordScreen(
                 color = colorResource(id = R.color.sign_in_title),
                 modifier = modifier.padding(bottom = 12.dp)
             )
-            when {
-                !codeSent -> EmailSection(
-                    email = email,
-                    onEmailChange = { email = it },
-                    onSendClick = { codeSent = true },
+            when (uiState.step) {
+                ForgotPasswordStep.EMAIL -> EmailSection(
+                    email = uiState.email,
+                    emailError = uiState.validationErrors.emailError,
+                    onEmailChange = viewModel::onEmailChange,
+                    onSendClick = viewModel::sendCode,
                     onSignInClick = { navController.navigate(FinTrackScreens.SignInScreen.route) }
                 )
-                !passwordReset -> CodeSection(
-                    codeDigits = codeDigits,
+                ForgotPasswordStep.CODE -> CodeSection(
+                    codeDigits = uiState.codeDigits,
+                    codeError = uiState.validationErrors.codeError,
                     focusRequesters = focusRequesters,
-                    onConfirmClick = { passwordReset = true },
-                    onBackClick = { codeSent = false }
+                    onCodeDigitChange = viewModel::onCodeDigitChange,
+                    onConfirmClick = viewModel::verifyCode,
+                    onBackClick = viewModel::goBackToEmail
                 )
-                else -> NewPasswordSection(
-                    newPassword = newPassword,
-                    onNewPasswordChange = { newPassword = it },
-                    newPasswordVisible = newPasswordVisible,
-                    onNewPasswordVisibleChange = { newPasswordVisible = !newPasswordVisible },
-                    newPasswordRepeat = newPasswordRepeat,
-                    onNewPasswordRepeatChange = { newPasswordRepeat = it },
-                    newPasswordRepeatVisible = newPasswordRepeatVisible,
-                    onNewPasswordRepeatVisibleChange = { newPasswordRepeatVisible = !newPasswordRepeatVisible },
-                    onSaveClick = {
-                        navigateAndClearBackStack(
-                            navController = navController,
-                            destination = FinTrackScreens.SignInScreen.route,
-                            popUpToRoute = FinTrackScreens.ForgotPasswordScreen.route,
-                            inclusive = true
-                        )
-                    },
-                    onBackClick = { passwordReset = false }
+                ForgotPasswordStep.NEW_PASSWORD -> NewPasswordSection(
+                    newPassword = uiState.newPassword,
+                    newPasswordError = uiState.validationErrors.newPasswordError,
+                    onNewPasswordChange = viewModel::onNewPasswordChange,
+                    newPasswordVisible = uiState.isNewPasswordVisible,
+                    onNewPasswordVisibleChange = viewModel::toggleNewPasswordVisibility,
+                    newPasswordRepeat = uiState.newPasswordRepeat,
+                    confirmPasswordError = uiState.validationErrors.confirmPasswordError,
+                    onNewPasswordRepeatChange = viewModel::onNewPasswordRepeatChange,
+                    newPasswordRepeatVisible = uiState.isNewPasswordRepeatVisible,
+                    onNewPasswordRepeatVisibleChange = viewModel::toggleNewPasswordRepeatVisibility,
+                    onSaveClick = viewModel::resetPassword,
+                    onBackClick = viewModel::goBackToCode
                 )
             }
         }
@@ -127,6 +131,7 @@ fun ForgotPasswordScreen(
 @Composable
 private fun EmailSection(
     email: String,
+    emailError: String?,
     onEmailChange: (String) -> Unit,
     onSendClick: () -> Unit,
     onSignInClick: () -> Unit,
@@ -140,30 +145,33 @@ private fun EmailSection(
         textAlign = TextAlign.Center,
         modifier = modifier.padding(bottom = 8.dp)
     )
-    EditOutlinedTextField(
-        value = email,
-        onValueChange = onEmailChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        label = {
-            Text(text = stringResource(id = R.string.sign_in_email))
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Email,
-                contentDescription = null,
-                tint = colorResource(id = R.color.icon_orange)
+    Column(modifier = modifier.fillMaxWidth()) {
+        EditOutlinedTextField(
+            value = email,
+            onValueChange = onEmailChange,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            label = {
+                Text(text = stringResource(id = R.string.sign_in_email))
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Email,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.icon_orange)
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
             )
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Email,
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = { focusManager.clearFocus() }
         )
-    )
+        emailError?.let { ValidationErrorText(error = it) }
+    }
     EditButton(
         onClick = onSendClick,
         text = stringResource(id = R.string.forgot_password_send),
@@ -190,8 +198,10 @@ private fun EmailSection(
 
 @Composable
 private fun CodeSection(
-    codeDigits: MutableList<String>,
+    codeDigits: List<String>,
+    codeError: String?,
     focusRequesters: List<FocusRequester>,
+    onCodeDigitChange: (Int, String) -> Unit,
     onConfirmClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -213,7 +223,7 @@ private fun CodeSection(
                 value = digit,
                 onValueChange = { value ->
                     if (value.length <= 1 && value.all { it.isDigit() }) {
-                        codeDigits[index] = value
+                        onCodeDigitChange(index, value)
                         if (value.isNotEmpty()) {
                             if (index < 5) {
                                 focusRequesters[index + 1].requestFocus()
@@ -245,6 +255,7 @@ private fun CodeSection(
             )
         }
     }
+    codeError?.let { ValidationErrorText(error = it, modifier = modifier.fillMaxWidth()) }
     EditButton(
         onClick = onConfirmClick,
         text = stringResource(id = R.string.forgot_password_confirm),
@@ -262,10 +273,12 @@ private fun CodeSection(
 @Composable
 private fun NewPasswordSection(
     newPassword: String,
+    newPasswordError: String?,
     onNewPasswordChange: (String) -> Unit,
     newPasswordVisible: Boolean,
     onNewPasswordVisibleChange: () -> Unit,
     newPasswordRepeat: String,
+    confirmPasswordError: String?,
     onNewPasswordRepeatChange: (String) -> Unit,
     newPasswordRepeatVisible: Boolean,
     onNewPasswordRepeatVisibleChange: () -> Unit,
@@ -281,65 +294,71 @@ private fun NewPasswordSection(
         textAlign = TextAlign.Center,
         modifier = modifier.padding(bottom = 8.dp)
     )
-    EditOutlinedTextField(
-        value = newPassword,
-        onValueChange = onNewPasswordChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        label = {
-            Text(text = stringResource(id = R.string.forgot_password_new_password_label))
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Lock,
-                contentDescription = null,
-                tint = colorResource(id = R.color.icon_orange)
+    Column(modifier = modifier.fillMaxWidth()) {
+        EditOutlinedTextField(
+            value = newPassword,
+            onValueChange = onNewPasswordChange,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            label = {
+                Text(text = stringResource(id = R.string.forgot_password_new_password_label))
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Lock,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.icon_orange)
+                )
+            },
+            trailingIcon = {
+                EditIconButton(
+                    onClick = onNewPasswordVisibleChange,
+                    imageVector = if (newPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                )
+            },
+            visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
             )
-        },
-        trailingIcon = {
-            EditIconButton(
-                onClick = onNewPasswordVisibleChange,
-                imageVector = if (newPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-            )
-        },
-        visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Next
         )
-    )
-    EditOutlinedTextField(
-        value = newPasswordRepeat,
-        onValueChange = onNewPasswordRepeatChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        label = {
-            Text(text = stringResource(id = R.string.forgot_password_new_password_repeat))
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Lock,
-                contentDescription = null,
-                tint = colorResource(id = R.color.icon_orange)
+        newPasswordError?.let { ValidationErrorText(error = it) }
+    }
+    Column(modifier = modifier.fillMaxWidth()) {
+        EditOutlinedTextField(
+            value = newPasswordRepeat,
+            onValueChange = onNewPasswordRepeatChange,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            label = {
+                Text(text = stringResource(id = R.string.forgot_password_new_password_repeat))
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Lock,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.icon_orange)
+                )
+            },
+            trailingIcon = {
+                EditIconButton(
+                    onClick = onNewPasswordRepeatVisibleChange,
+                    imageVector = if (newPasswordRepeatVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                )
+            },
+            visualTransformation = if (newPasswordRepeatVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
             )
-        },
-        trailingIcon = {
-            EditIconButton(
-                onClick = onNewPasswordRepeatVisibleChange,
-                imageVector = if (newPasswordRepeatVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-            )
-        },
-        visualTransformation = if (newPasswordRepeatVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = { focusManager.clearFocus() }
         )
-    )
+        confirmPasswordError?.let { ValidationErrorText(error = it) }
+    }
     EditButton(
         onClick = onSaveClick,
         text = stringResource(id = R.string.forgot_password_save),
