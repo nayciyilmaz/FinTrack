@@ -3,32 +3,30 @@ package com.example.fintrack.presentation.screens.advisor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SmartToy
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.TrendingDown
-import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,23 +38,48 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
+import com.example.fintrack.core.constants.quickQuestionCategoryIcon
+import com.example.fintrack.core.constants.quickQuestionCategoryLabelResId
+import com.example.fintrack.core.constants.quickQuestionTitleFor
 import com.example.fintrack.core.constants.quickQuestions
+import com.example.fintrack.domain.model.AdvisorInsight
 
 @Composable
 fun AiAdvisorScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AiAdvisorViewModel = hiltViewModel()
 ) {
-    var showQuickQuestionsDialog by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    if (showQuickQuestionsDialog) {
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    if (uiState.showQuickQuestionsDialog) {
         QuickQuestionsDialog(
-            onDismiss = { showQuickQuestionsDialog = false }
+            onDismiss = viewModel::onDismissQuickQuestionsDialog,
+            onQuestionSelected = viewModel::onQuestionAsked
         )
     }
 
@@ -70,7 +93,11 @@ fun AiAdvisorScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            AiAssistantCard()
+            AiAssistantCard(
+                periodText = actionState.periodText,
+                healthScore = actionState.healthScore,
+                riskLevel = actionState.riskLevel
+            )
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -84,28 +111,73 @@ fun AiAdvisorScreen(
                 )
                 EditTextButton(
                     text = stringResource(id = R.string.label_quick_questions),
-                    onClick = { showQuickQuestionsDialog = true },
+                    onClick = viewModel::onShowQuickQuestionsDialog,
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
-            AiCommentCard(
-                icon = Icons.Filled.TrendingDown,
-                title = "Harcamalarını Azalt",
-                subtitle = "Gider",
-                description = "Eğlence kategorisinde geçen aya göre %23 daha fazla harcama yaptın. Bu ayın geri kalanında bu kategoride limit koymanı öneririm."
+            InsightsContent(
+                actionState = actionState,
+                onRefreshInsight = viewModel::onInsightRefreshRequested
             )
-            AiCommentCard(
-                icon = Icons.Filled.TrendingUp,
-                title = "Tasarruf Fırsatı",
-                subtitle = "Tasarruf",
-                description = "Aylık gelirinin %10'unu otomatik tasarrufa yönlendirirsen, yıl sonunda ₺30.000 biriktirebilirsin."
-            )
-            AiCommentCard(
-                icon = Icons.Filled.Star,
-                title = "Hedef Güncelleme",
-                subtitle = "Hedefler",
-                description = "Ev peşinatı hedefinize bu ay ₺2.000 daha eklemen, tahmini bitiş tarihinizi 3 ay öne alır."
-            )
+        }
+    }
+}
+
+@Composable
+private fun InsightsContent(
+    actionState: AiAdvisorActionState,
+    onRefreshInsight: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when {
+        actionState.isLoading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.bottom_bar_fab)
+                )
+            }
+        }
+        actionState.isError -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.error_general),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        actionState.insights.isEmpty() -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_no_insights),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
+            }
+        }
+        else -> {
+            actionState.insights.forEach { insight ->
+                AiCommentCard(
+                    insight = insight,
+                    isRefreshing = actionState.refreshingInsightId == insight.id,
+                    onRefreshClick = { onRefreshInsight(insight.id) }
+                )
+            }
         }
     }
 }
@@ -113,6 +185,7 @@ fun AiAdvisorScreen(
 @Composable
 private fun QuickQuestionsDialog(
     onDismiss: () -> Unit,
+    onQuestionSelected: (categoryKey: String, question: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val categories = quickQuestions.map { it.categoryResId }.distinct()
@@ -144,13 +217,14 @@ private fun QuickQuestionsDialog(
                             .background(colorResource(id = R.color.quick_action_background))
                     ) {
                         questions.forEachIndexed { qIndex, question ->
+                            val questionText = stringResource(id = question.questionResId)
                             Text(
-                                text = stringResource(id = question.questionResId),
+                                text = questionText,
                                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                                 color = colorResource(id = R.color.text_primary),
                                 modifier = modifier
                                     .fillMaxWidth()
-                                    .clickable { }
+                                    .clickable { onQuestionSelected(question.categoryKey, questionText) }
                                     .padding(horizontal = 14.dp, vertical = 12.dp)
                             )
                             if (qIndex < questions.size - 1) {
@@ -173,6 +247,9 @@ private fun QuickQuestionsDialog(
 
 @Composable
 private fun AiAssistantCard(
+    periodText: String,
+    healthScore: Int,
+    riskLevel: String,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -220,21 +297,12 @@ private fun AiAssistantCard(
                             color = Color.White
                         )
                         Text(
-                            text = "Mart 2026 analizi",
+                            text = periodText,
                             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
                             color = Color.White.copy(alpha = 0.85f)
                         )
                     }
                 }
-                Icon(
-                    imageVector = Icons.Filled.Refresh,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color.White.copy(alpha = 0.2f))
-                        .padding(8.dp)
-                )
             }
 
             Row(
@@ -259,7 +327,7 @@ private fun AiAssistantCard(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "72",
+                            text = "$healthScore",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
                             color = Color.White
                         )
@@ -285,7 +353,7 @@ private fun AiAssistantCard(
                         color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
-                        text = "Orta",
+                        text = riskLevel,
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White
                     )
@@ -297,12 +365,13 @@ private fun AiAssistantCard(
 
 @Composable
 private fun AiCommentCard(
-    icon: ImageVector,
-    title: String,
-    subtitle: String,
-    description: String,
+    insight: AdvisorInsight,
+    isRefreshing: Boolean,
+    onRefreshClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val icon: ImageVector = quickQuestionCategoryIcon(insight.categoryKey)
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -318,33 +387,56 @@ private fun AiCommentCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.bottom_bar_fab),
-                    modifier = modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(colorResource(id = R.color.quick_action_background))
-                        .padding(8.dp)
-                )
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                        color = colorResource(id = R.color.text_primary)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = colorResource(id = R.color.bottom_bar_fab),
+                        modifier = modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(colorResource(id = R.color.quick_action_background))
+                            .padding(8.dp)
                     )
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
-                        color = colorResource(id = R.color.text_secondary)
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(
+                            text = quickQuestionTitleFor(insight.question),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = colorResource(id = R.color.text_primary)
+                        )
+                        Text(
+                            text = stringResource(id = quickQuestionCategoryLabelResId(insight.categoryKey)),
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                            color = colorResource(id = R.color.text_secondary)
+                        )
+                    }
+                }
+                if (isRefreshing) {
+                    CircularProgressIndicator(
+                        modifier = modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = colorResource(id = R.color.bottom_bar_fab)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = null,
+                        tint = colorResource(id = R.color.bottom_bar_fab),
+                        modifier = modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .clickable { onRefreshClick() }
+                            .padding(4.dp)
                     )
                 }
             }
             Text(
-                text = description,
+                text = insight.answer,
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                 color = colorResource(id = R.color.text_primary)
             )

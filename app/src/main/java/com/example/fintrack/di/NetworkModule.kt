@@ -1,5 +1,6 @@
 package com.example.fintrack.di
 
+import com.example.fintrack.data.remote.api.AdvisorService
 import com.example.fintrack.data.remote.api.AuthService
 import com.example.fintrack.data.remote.api.BudgetService
 import com.example.fintrack.data.remote.api.SavingsGoalService
@@ -16,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -37,6 +39,9 @@ object NetworkModule {
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient =
         OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor)
             .authenticator(tokenAuthenticator)
             .addInterceptor(
@@ -74,4 +79,9 @@ object NetworkModule {
     @Singleton
     fun provideSavingsGoalService(retrofit: Retrofit): SavingsGoalService =
         retrofit.create(SavingsGoalService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAdvisorService(retrofit: Retrofit): AdvisorService =
+        retrofit.create(AdvisorService::class.java)
 }

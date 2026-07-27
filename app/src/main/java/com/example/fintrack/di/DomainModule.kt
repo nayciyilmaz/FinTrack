@@ -1,5 +1,6 @@
 package com.example.fintrack.di
 
+import com.example.fintrack.domain.repository.AdvisorRepository
 import com.example.fintrack.domain.repository.AuthRepository
 import com.example.fintrack.domain.repository.BudgetRepository
 import com.example.fintrack.domain.repository.SavingsGoalRepository
@@ -7,8 +8,11 @@ import com.example.fintrack.domain.repository.TransactionRepository
 import com.example.fintrack.domain.repository.UserProfileRepository
 import com.example.fintrack.domain.usecase.AddSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
+import com.example.fintrack.domain.usecase.AskAdvisorQuestionUseCase
 import com.example.fintrack.domain.usecase.DeleteSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.DeleteTransactionUseCase
+import com.example.fintrack.domain.usecase.GetAdvisorInsightsUseCase
+import com.example.fintrack.domain.usecase.GetAdvisorSummaryUseCase
 import com.example.fintrack.domain.usecase.GetBudgetsUseCase
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
@@ -22,6 +26,7 @@ import com.example.fintrack.domain.usecase.UpdateUserEmailUseCase
 import com.example.fintrack.domain.usecase.UpdateUserNameUseCase
 import com.example.fintrack.domain.usecase.UpdateUserPasswordUseCase
 import com.example.fintrack.domain.usecase.LoginUseCase
+import com.example.fintrack.domain.usecase.RefreshAdvisorInsightUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
 import com.example.fintrack.domain.usecase.ResetPasswordUseCase
 import com.example.fintrack.domain.usecase.SendPasswordResetCodeUseCase
@@ -140,4 +145,24 @@ object DomainModule {
     @Singleton
     fun provideResetPasswordUseCase(authRepository: AuthRepository): ResetPasswordUseCase =
         ResetPasswordUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetAdvisorSummaryUseCase(advisorRepository: AdvisorRepository): GetAdvisorSummaryUseCase =
+        GetAdvisorSummaryUseCase(advisorRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetAdvisorInsightsUseCase(advisorRepository: AdvisorRepository): GetAdvisorInsightsUseCase =
+        GetAdvisorInsightsUseCase(advisorRepository)
+
+    @Provides
+    @Singleton
+    fun provideAskAdvisorQuestionUseCase(advisorRepository: AdvisorRepository): AskAdvisorQuestionUseCase =
+        AskAdvisorQuestionUseCase(advisorRepository)
+
+    @Provides
+    @Singleton
+    fun provideRefreshAdvisorInsightUseCase(advisorRepository: AdvisorRepository): RefreshAdvisorInsightUseCase =
+        RefreshAdvisorInsightUseCase(advisorRepository)
 }
