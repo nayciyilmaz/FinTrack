@@ -22,6 +22,9 @@ interface TransactionService {
         @Query("endDate") endDate: String
     ): List<TransactionResponseDto>
 
+    @GET("api/transactions/reminders")
+    suspend fun getReminders(): List<TransactionResponseDto>
+
     @PUT("api/transactions/{id}")
     suspend fun updateTransaction(
         @Path("id") id: Long,

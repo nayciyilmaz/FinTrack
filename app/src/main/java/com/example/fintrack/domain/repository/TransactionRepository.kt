@@ -34,4 +34,6 @@ interface TransactionRepository {
     ): Resource<Transaction>
 
     suspend fun deleteTransaction(id: Long): Resource<Unit>
+
+    suspend fun getReminders(): Resource<List<Transaction>>
 }

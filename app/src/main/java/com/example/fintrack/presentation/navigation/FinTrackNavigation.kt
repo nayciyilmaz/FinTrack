@@ -59,7 +59,7 @@ fun FinTrackNavigation(viewModel: MainViewModel = hiltViewModel()) {
             AddTransactionScreen(navController = navController)
         }
         composable(
-            route = "${FinTrackScreens.UpdateTransactionScreen.route}?transactionId={transactionId}&type={type}&category={category}&amount={amount}&date={date}&time={time}&isRecurring={isRecurring}&isReminder={isReminder}&note={note}",
+            route = "${FinTrackScreens.UpdateTransactionScreen.route}?transactionId={transactionId}&type={type}&category={category}&amount={amount}&date={date}&time={time}&isRecurring={isRecurring}&isReminder={isReminder}&note={note}&recurringItemId={recurringItemId}",
             arguments = listOf(
                 navArgument("transactionId") { type = NavType.LongType; defaultValue = 0L },
                 navArgument("type") { type = NavType.StringType; defaultValue = "EXPENSE" },
@@ -69,7 +69,8 @@ fun FinTrackNavigation(viewModel: MainViewModel = hiltViewModel()) {
                 navArgument("time") { type = NavType.StringType; defaultValue = "" },
                 navArgument("isRecurring") { type = NavType.StringType; defaultValue = "false" },
                 navArgument("isReminder") { type = NavType.StringType; defaultValue = "false" },
-                navArgument("note") { type = NavType.StringType; defaultValue = "" }
+                navArgument("note") { type = NavType.StringType; defaultValue = "" },
+                navArgument("recurringItemId") { type = NavType.LongType; defaultValue = 0L }
             )
         ) {
             UpdateTransactionScreen(navController = navController)

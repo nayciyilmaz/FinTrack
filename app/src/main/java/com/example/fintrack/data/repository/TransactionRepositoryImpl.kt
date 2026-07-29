@@ -118,6 +118,20 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getReminders(): Resource<List<Transaction>> {
+        return try {
+            val response = transactionService.getReminders()
+            Resource.Success(response.map { it.toDomain() })
+        } catch (e: HttpException) {
+            val errorDto = e.response()?.errorBody()?.string()?.let {
+                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
+            }
+            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "Bir hata oluştu")
+        }
+    }
+
     private fun TransactionResponseDto.toDomain() = Transaction(
         id = id,
         type = type,

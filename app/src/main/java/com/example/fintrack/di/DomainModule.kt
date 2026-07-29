@@ -3,17 +3,21 @@ package com.example.fintrack.di
 import com.example.fintrack.domain.repository.AdvisorRepository
 import com.example.fintrack.domain.repository.AuthRepository
 import com.example.fintrack.domain.repository.BudgetRepository
+import com.example.fintrack.domain.repository.RecurringItemRepository
 import com.example.fintrack.domain.repository.SavingsGoalRepository
 import com.example.fintrack.domain.repository.TransactionRepository
 import com.example.fintrack.domain.repository.UserProfileRepository
 import com.example.fintrack.domain.usecase.AddSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import com.example.fintrack.domain.usecase.AskAdvisorQuestionUseCase
+import com.example.fintrack.domain.usecase.DeleteRecurringItemUseCase
 import com.example.fintrack.domain.usecase.DeleteSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.DeleteTransactionUseCase
 import com.example.fintrack.domain.usecase.GetAdvisorInsightsUseCase
 import com.example.fintrack.domain.usecase.GetAdvisorSummaryUseCase
 import com.example.fintrack.domain.usecase.GetBudgetsUseCase
+import com.example.fintrack.domain.usecase.GetRecurringItemsUseCase
+import com.example.fintrack.domain.usecase.GetReminderTransactionsUseCase
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GetUserProfileUseCase
@@ -30,6 +34,7 @@ import com.example.fintrack.domain.usecase.RefreshAdvisorInsightUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
 import com.example.fintrack.domain.usecase.ResetPasswordUseCase
 import com.example.fintrack.domain.usecase.SendPasswordResetCodeUseCase
+import com.example.fintrack.domain.usecase.UpdateRecurringItemUseCase
 import com.example.fintrack.domain.usecase.VerifyPasswordResetCodeUseCase
 import dagger.Module
 import dagger.Provides
@@ -165,4 +170,24 @@ object DomainModule {
     @Singleton
     fun provideRefreshAdvisorInsightUseCase(advisorRepository: AdvisorRepository): RefreshAdvisorInsightUseCase =
         RefreshAdvisorInsightUseCase(advisorRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetRecurringItemsUseCase(recurringItemRepository: RecurringItemRepository): GetRecurringItemsUseCase =
+        GetRecurringItemsUseCase(recurringItemRepository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateRecurringItemUseCase(recurringItemRepository: RecurringItemRepository): UpdateRecurringItemUseCase =
+        UpdateRecurringItemUseCase(recurringItemRepository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteRecurringItemUseCase(recurringItemRepository: RecurringItemRepository): DeleteRecurringItemUseCase =
+        DeleteRecurringItemUseCase(recurringItemRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetReminderTransactionsUseCase(transactionRepository: TransactionRepository): GetReminderTransactionsUseCase =
+        GetReminderTransactionsUseCase(transactionRepository)
 }

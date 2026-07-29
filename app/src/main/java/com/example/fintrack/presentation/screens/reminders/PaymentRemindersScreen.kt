@@ -1,7 +1,9 @@
 package com.example.fintrack.presentation.screens.reminders
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,22 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.DirectionsBus
-import androidx.compose.material.icons.filled.ElectricBolt
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Payments
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,19 +26,47 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
+import com.example.fintrack.core.constants.categoryKeyToIcon
+import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.dateFormatter
+import com.example.fintrack.domain.model.RecurringItem
+import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.TransactionRow
 import com.example.fintrack.presentation.components.TransactionTypeSelector
+import com.example.fintrack.presentation.navigation.FinTrackScreens
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun PaymentRemindersScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: PaymentRemindersViewModel = hiltViewModel()
 ) {
-    var selectedFilter by remember { mutableIntStateOf(0) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     EditScaffold(
         title = stringResource(id = R.string.title_payment_reminders),
@@ -64,256 +85,302 @@ fun PaymentRemindersScreen(
                     stringResource(id = R.string.label_planned),
                     stringResource(id = R.string.label_regular)
                 ),
-                selectedIndex = selectedFilter,
-                onOptionSelected = { selectedFilter = it }
+                selectedIndex = uiState.selectedFilterIndex,
+                onOptionSelected = viewModel::onFilterChange
             )
 
-            if (selectedFilter == 0) {
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.label_upcoming_payments),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color.White)
-                            .padding(horizontal = 20.dp, vertical = 4.dp)
-                    ) {
-                        TransactionRow(
-                            icon = Icons.Filled.ElectricBolt,
-                            title = "Elektrik Faturası",
-                            dateTime = "19 Nis 2026 · 09:00",
-                            amount = "-₺650",
-                            remainingBalance = "2 gün kaldı",
-                            amountColor = colorResource(id = R.color.expense_red),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
-                            iconTint = colorResource(id = R.color.expense_red),
-                            showDivider = true
-                        )
-                        TransactionRow(
-                            icon = Icons.Filled.Home,
-                            title = "Kira Ödemesi",
-                            dateTime = "19 Nis 2026 · 10:00",
-                            amount = "-₺8.500",
-                            remainingBalance = "2 gün kaldı",
-                            amountColor = colorResource(id = R.color.expense_red),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
-                            iconTint = colorResource(id = R.color.expense_red),
-                            showDivider = false
-                        )
-                    }
-                }
+            RemindersContent(
+                filterIndex = uiState.selectedFilterIndex,
+                actionState = actionState,
+                navController = navController
+            )
+        }
+    }
+}
 
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.label_upcoming_incomes),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color.White)
-                            .padding(horizontal = 20.dp, vertical = 4.dp)
-                    ) {
-                        TransactionRow(
-                            icon = Icons.Filled.AttachMoney,
-                            title = "Freelance Ödeme",
-                            dateTime = "19 Nis 2026 · 14:00",
-                            amount = "+₺3.500",
-                            remainingBalance = "2 gün kaldı",
-                            amountColor = colorResource(id = R.color.income_green),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
-                            iconTint = colorResource(id = R.color.income_green),
-                            showDivider = true
-                        )
-                        TransactionRow(
-                            icon = Icons.Filled.Payments,
-                            title = "Maaş",
-                            dateTime = "19 Nis 2026 · 09:00",
-                            amount = "+₺25.000",
-                            remainingBalance = "2 gün kaldı",
-                            amountColor = colorResource(id = R.color.income_green),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
-                            iconTint = colorResource(id = R.color.income_green),
-                            showDivider = false
-                        )
-                    }
-                }
+@Composable
+private fun RemindersContent(
+    filterIndex: Int,
+    actionState: PaymentRemindersActionState,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    when {
+        actionState.isLoading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.bottom_bar_fab)
+                )
             }
-
-            if (selectedFilter == 1) {
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.label_planned_payments),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color.White)
-                            .padding(horizontal = 20.dp, vertical = 4.dp)
-                    ) {
-                        TransactionRow(
-                            icon = Icons.Filled.DirectionsBus,
-                            title = "Ulaşım Kartı",
-                            dateTime = "24 Nis 2026 · 08:00",
-                            amount = "-₺500",
-                            remainingBalance = "7 gün kaldı",
-                            amountColor = colorResource(id = R.color.expense_red),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
-                            iconTint = colorResource(id = R.color.expense_red),
-                            showDivider = true
-                        )
-                        TransactionRow(
-                            icon = Icons.Filled.ShoppingCart,
-                            title = "Market Alışverişi",
-                            dateTime = "25 Nis 2026 · 11:00",
-                            amount = "-₺800",
-                            remainingBalance = "8 gün kaldı",
-                            amountColor = colorResource(id = R.color.expense_red),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
-                            iconTint = colorResource(id = R.color.expense_red),
-                            showDivider = false
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.label_planned_incomes),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color.White)
-                            .padding(horizontal = 20.dp, vertical = 4.dp)
-                    ) {
-                        TransactionRow(
-                            icon = Icons.Filled.AttachMoney,
-                            title = "Freelance Ödeme",
-                            dateTime = "24 Nis 2026 · 14:00",
-                            amount = "+₺3.500",
-                            remainingBalance = "7 gün kaldı",
-                            amountColor = colorResource(id = R.color.income_green),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
-                            iconTint = colorResource(id = R.color.income_green),
-                            showDivider = true
-                        )
-                        TransactionRow(
-                            icon = Icons.Filled.FitnessCenter,
-                            title = "Spor Salonu İadesi",
-                            dateTime = "26 Nis 2026 · 10:00",
-                            amount = "+₺450",
-                            remainingBalance = "9 gün kaldı",
-                            amountColor = colorResource(id = R.color.income_green),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
-                            iconTint = colorResource(id = R.color.income_green),
-                            showDivider = false
-                        )
-                    }
-                }
+        }
+        actionState.isError -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.error_general),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.text_secondary)
+                )
             }
+        }
+        filterIndex == 2 -> {
+            RecurringTabContent(
+                recurringItems = actionState.recurringItems,
+                navController = navController
+            )
+        }
+        else -> {
+            val today = LocalDate.now()
+            val filtered = actionState.reminderTransactions.filter { transaction ->
+                val daysRemaining = ChronoUnit.DAYS.between(today, LocalDate.parse(transaction.date))
+                if (filterIndex == 1) daysRemaining >= 3 else daysRemaining < 3
+            }
+            ReminderTabContent(
+                transactions = filtered,
+                paymentsHeaderResId = if (filterIndex == 1) R.string.label_planned_payments else R.string.label_upcoming_payments,
+                incomesHeaderResId = if (filterIndex == 1) R.string.label_planned_incomes else R.string.label_upcoming_incomes,
+                emptyMessageResId = if (filterIndex == 1) R.string.label_no_planned else R.string.label_no_upcoming,
+                navController = navController
+            )
+        }
+    }
+}
 
-            if (selectedFilter == 2) {
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.label_regular_payments),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color.White)
-                            .padding(horizontal = 20.dp, vertical = 4.dp)
-                    ) {
-                        TransactionRow(
-                            icon = Icons.Filled.Home,
-                            title = "Kira Ödemesi",
-                            dateTime = "Her ayın 1'i",
-                            amount = "-₺8.500",
-                            remainingBalance = "Aylık",
-                            amountColor = colorResource(id = R.color.expense_red),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
-                            iconTint = colorResource(id = R.color.expense_red),
-                            showDivider = true
-                        )
-                        TransactionRow(
-                            icon = Icons.Filled.ElectricBolt,
-                            title = "İnternet Faturası",
-                            dateTime = "Her ayın 5'i",
-                            amount = "-₺350",
-                            remainingBalance = "Aylık",
-                            amountColor = colorResource(id = R.color.expense_red),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_expense_background),
-                            iconTint = colorResource(id = R.color.expense_red),
-                            showDivider = false
-                        )
-                    }
-                }
+@Composable
+private fun RecurringTabContent(
+    recurringItems: List<RecurringItem>,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val expenseItems = recurringItems.filter { it.type == "EXPENSE" }
+    val incomeItems = recurringItems.filter { it.type == "INCOME" }
 
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.label_regular_incomes),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    if (expenseItems.isEmpty() && incomeItems.isEmpty()) {
+        EmptyMessage(textResId = R.string.label_no_recurring, modifier = modifier)
+        return
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        if (expenseItems.isNotEmpty()) {
+            Text(
+                text = stringResource(id = R.string.label_regular_payments),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp, vertical = 4.dp)
+            ) {
+                expenseItems.forEachIndexed { index, item ->
+                    RecurringItemRow(
+                        item = item,
+                        showDivider = index < expenseItems.lastIndex,
+                        navController = navController
                     )
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color.White)
-                            .padding(horizontal = 20.dp, vertical = 4.dp)
-                    ) {
-                        TransactionRow(
-                            icon = Icons.Filled.Payments,
-                            title = "Maaş",
-                            dateTime = "Her ayın 5'i",
-                            amount = "+₺25.000",
-                            remainingBalance = "Aylık",
-                            amountColor = colorResource(id = R.color.income_green),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
-                            iconTint = colorResource(id = R.color.income_green),
-                            showDivider = true
-                        )
-                        TransactionRow(
-                            icon = Icons.Filled.TrendingUp,
-                            title = "Yatırım Getirisi",
-                            dateTime = "Her ayın 10'u",
-                            amount = "+₺1.200",
-                            remainingBalance = "Aylık",
-                            amountColor = colorResource(id = R.color.income_green),
-                            iconBackgroundColor = colorResource(id = R.color.transaction_income_background),
-                            iconTint = colorResource(id = R.color.income_green),
-                            showDivider = false
-                        )
-                    }
                 }
             }
         }
+        if (incomeItems.isNotEmpty()) {
+            Text(
+                text = stringResource(id = R.string.label_regular_incomes),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp, vertical = 4.dp)
+            ) {
+                incomeItems.forEachIndexed { index, item ->
+                    RecurringItemRow(
+                        item = item,
+                        showDivider = index < incomeItems.lastIndex,
+                        navController = navController
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecurringItemRow(
+    item: RecurringItem,
+    showDivider: Boolean,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val isIncome = item.type == "INCOME"
+
+    TransactionRow(
+        icon = categoryKeyToIcon(item.category),
+        title = stringResource(id = categoryKeyToLabelResId(item.category)),
+        dateTime = stringResource(id = R.string.label_monthly_day_format, item.dayOfMonth),
+        amount = "${if (isIncome) "+" else "-"}₺${item.amount}",
+        remainingBalance = stringResource(id = R.string.label_monthly),
+        amountColor = if (isIncome) colorResource(id = R.color.income_green) else colorResource(id = R.color.expense_red),
+        iconBackgroundColor = if (isIncome) colorResource(id = R.color.transaction_income_background) else colorResource(id = R.color.transaction_expense_background),
+        iconTint = if (isIncome) colorResource(id = R.color.income_green) else colorResource(id = R.color.expense_red),
+        showDivider = showDivider,
+        modifier = modifier,
+        onClick = {
+            val today = LocalDate.now()
+            val date = today.withDayOfMonth(minOf(item.dayOfMonth, today.lengthOfMonth()))
+            val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
+                "?transactionId=0" +
+                "&type=${item.type}" +
+                "&category=${item.category}" +
+                "&amount=${item.amount.toLong()}" +
+                "&date=$date" +
+                "&time=${Uri.encode("09:00")}" +
+                "&isRecurring=true" +
+                "&isReminder=false" +
+                "&note=" +
+                "&recurringItemId=${item.id}"
+            navController.navigate(route)
+        }
+    )
+}
+
+@Composable
+private fun ReminderTabContent(
+    transactions: List<Transaction>,
+    paymentsHeaderResId: Int,
+    incomesHeaderResId: Int,
+    emptyMessageResId: Int,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val expenseTransactions = transactions.filter { it.type == "EXPENSE" }
+    val incomeTransactions = transactions.filter { it.type == "INCOME" }
+
+    if (expenseTransactions.isEmpty() && incomeTransactions.isEmpty()) {
+        EmptyMessage(textResId = emptyMessageResId, modifier = modifier)
+        return
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        if (expenseTransactions.isNotEmpty()) {
+            Text(
+                text = stringResource(id = paymentsHeaderResId),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp, vertical = 4.dp)
+            ) {
+                expenseTransactions.forEachIndexed { index, transaction ->
+                    ReminderTransactionRow(
+                        transaction = transaction,
+                        showDivider = index < expenseTransactions.lastIndex,
+                        navController = navController
+                    )
+                }
+            }
+        }
+        if (incomeTransactions.isNotEmpty()) {
+            Text(
+                text = stringResource(id = incomesHeaderResId),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp, vertical = 4.dp)
+            ) {
+                incomeTransactions.forEachIndexed { index, transaction ->
+                    ReminderTransactionRow(
+                        transaction = transaction,
+                        showDivider = index < incomeTransactions.lastIndex,
+                        navController = navController
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReminderTransactionRow(
+    transaction: Transaction,
+    showDivider: Boolean,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val isIncome = transaction.type == "INCOME"
+    val daysRemaining = ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.parse(transaction.date))
+    val remainingText = when {
+        daysRemaining < 0 -> stringResource(id = R.string.label_days_overdue_format, (-daysRemaining).toInt())
+        daysRemaining == 0L -> stringResource(id = R.string.label_today)
+        else -> stringResource(id = R.string.label_days_remaining_format, daysRemaining.toInt())
+    }
+
+    TransactionRow(
+        icon = categoryKeyToIcon(transaction.category),
+        title = stringResource(id = categoryKeyToLabelResId(transaction.category)),
+        dateTime = "${LocalDate.parse(transaction.date).format(dateFormatter)} · ${transaction.time}",
+        amount = "${if (isIncome) "+" else "-"}₺${transaction.amount}",
+        remainingBalance = remainingText,
+        amountColor = if (isIncome) colorResource(id = R.color.income_green) else colorResource(id = R.color.expense_red),
+        iconBackgroundColor = if (isIncome) colorResource(id = R.color.transaction_income_background) else colorResource(id = R.color.transaction_expense_background),
+        iconTint = if (isIncome) colorResource(id = R.color.income_green) else colorResource(id = R.color.expense_red),
+        showDivider = showDivider,
+        modifier = modifier,
+        onClick = {
+            val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
+                "?transactionId=${transaction.id}" +
+                "&type=${transaction.type}" +
+                "&category=${transaction.category}" +
+                "&amount=${transaction.amount.toLong()}" +
+                "&date=${transaction.date}" +
+                "&time=${Uri.encode(transaction.time)}" +
+                "&isRecurring=${transaction.isRecurring}" +
+                "&isReminder=${transaction.isReminder}" +
+                "&note=${Uri.encode(transaction.note ?: "")}"
+            navController.navigate(route)
+        }
+    )
+}
+
+@Composable
+private fun EmptyMessage(
+    textResId: Int,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(id = textResId),
+            style = MaterialTheme.typography.bodyMedium,
+            color = colorResource(id = R.color.text_secondary)
+        )
     }
 }
 

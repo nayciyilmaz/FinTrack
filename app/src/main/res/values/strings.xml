@@ -132,6 +132,14 @@
     <string name="label_planned_incomes">Planlanan Gelirler</string>
     <string name="label_regular_payments">Düzenli Ödemeler</string>
     <string name="label_regular_incomes">Düzenli Gelirler</string>
+    <string name="label_no_recurring">Düzenli gelir/gider bulunmamaktadır.</string>
+    <string name="label_no_upcoming">Yaklaşan gelir/gider bulunmamaktadır.</string>
+    <string name="label_no_planned">Planlanan gelir/gider bulunmamaktadır.</string>
+    <string name="label_monthly">Aylık</string>
+    <string name="label_monthly_day_format">Her ayın %d\'ü</string>
+    <string name="label_today">Bugün</string>
+    <string name="label_days_remaining_format">%d gün kaldı</string>
+    <string name="label_days_overdue_format">%d gün geçti</string>
     <string name="label_category_distribution">Kategori Dağılımı</string>
     <string name="label_spending_distribution">Harcama Dağılımı</string>
     <string name="label_last_month_savings">Son Ay Tasarrufu</string>
