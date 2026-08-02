@@ -1,5 +1,9 @@
 package com.example.fintrack.presentation.screens.sign_in
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -67,8 +71,16 @@ fun SignInScreen(
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {}
+    )
+
     LaunchedEffect(actionState.isSuccess) {
         if (actionState.isSuccess) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
             navigateAndClearBackStack(
                 navController = navController,
                 destination = FinTrackScreens.HomeScreen.route,

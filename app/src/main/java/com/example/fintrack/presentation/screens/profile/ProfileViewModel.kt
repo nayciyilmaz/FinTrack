@@ -12,6 +12,7 @@ import com.example.fintrack.domain.usecase.LogoutUseCase
 import com.example.fintrack.domain.usecase.UpdateUserEmailUseCase
 import com.example.fintrack.domain.usecase.UpdateUserNameUseCase
 import com.example.fintrack.domain.usecase.UpdateUserPasswordUseCase
+import com.example.fintrack.notification.ReminderNotificationScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
@@ -35,6 +36,7 @@ class ProfileViewModel @Inject constructor(
     private val updateUserNameUseCase: UpdateUserNameUseCase,
     private val updateUserEmailUseCase: UpdateUserEmailUseCase,
     private val updateUserPasswordUseCase: UpdateUserPasswordUseCase,
+    private val reminderNotificationScheduler: ReminderNotificationScheduler,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -248,6 +250,7 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(showLogoutConfirmDialog = false)
         viewModelScope.launch {
             logoutUseCase()
+            reminderNotificationScheduler.cancel()
         }
     }
 

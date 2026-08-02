@@ -26,7 +26,11 @@ import com.example.fintrack.presentation.screens.transaction_update.UpdateTransa
 import com.example.fintrack.presentation.screens.transactions.TransactionsScreen
 
 @Composable
-fun FinTrackNavigation(viewModel: MainViewModel = hiltViewModel()) {
+fun FinTrackNavigation(
+    viewModel: MainViewModel = hiltViewModel(),
+    openReminders: Boolean = false,
+    onRemindersConsumed: () -> Unit = {}
+) {
     val destination by viewModel.destination.collectAsState()
     val startDestination = destination ?: return
     val navController = rememberNavController()
@@ -36,6 +40,15 @@ fun FinTrackNavigation(viewModel: MainViewModel = hiltViewModel()) {
             navController.navigate(FinTrackScreens.SignInScreen.route) {
                 popUpTo(0) { inclusive = true }
             }
+        }
+    }
+
+    LaunchedEffect(openReminders) {
+        if (openReminders) {
+            navController.navigate(FinTrackScreens.PaymentRemindersScreen.route) {
+                launchSingleTop = true
+            }
+            onRemindersConsumed()
         }
     }
 

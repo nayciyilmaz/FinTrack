@@ -83,6 +83,11 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.52")
     ksp("com.google.dagger:hilt-android-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.hilt:hilt-work:1.3.0")
+    ksp("androidx.hilt:hilt-compiler:1.3.0")
+
+    // WorkManager
+    implementation("androidx.work:work-runtime:2.11.2")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")

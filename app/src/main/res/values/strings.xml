@@ -248,6 +248,11 @@
     <string name="profile_logout_confirm_message">Çıkış yapmak istediğinizden emin misiniz?</string>
     <string name="profile_password_mismatch">Şifreler eşleşmiyor.</string>
 
+    <string name="notification_channel_reminders_name">Ödeme Hatırlatıcıları</string>
+    <string name="notification_channel_reminders_description">Bugüne ait planlanan ödeme ve gelirler için bildirim gönderir</string>
+    <string name="notification_reminder_title">Ödeme Hatırlatıcısı</string>
+    <string name="notification_reminder_body">Bugün %1$d planlanan işleminiz var</string>
+
     <string-array name="week_days_short">
         <item>Pzt</item>
         <item>Sal</item>

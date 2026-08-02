@@ -12,6 +12,7 @@ import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.GoogleSignInUseCase
 import com.example.fintrack.domain.usecase.LoginUseCase
+import com.example.fintrack.notification.ReminderNotificationScheduler
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val googleSignInUseCase: GoogleSignInUseCase,
+    private val reminderNotificationScheduler: ReminderNotificationScheduler,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -71,7 +73,10 @@ class SignInViewModel @Inject constructor(
                 password = _uiState.value.password
             )
             when (result) {
-                is Resource.Success -> _actionState.value = SignInActionState(isSuccess = true)
+                is Resource.Success -> {
+                    reminderNotificationScheduler.schedule()
+                    _actionState.value = SignInActionState(isSuccess = true)
+                }
                 is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(
                         validationErrors = mapErrorToValidation(result.message, result.fieldErrors)
@@ -95,7 +100,10 @@ class SignInViewModel @Inject constructor(
                 ) {
                     val idToken = GoogleIdTokenCredential.createFrom(credential.data).idToken
                     when (val authResult = googleSignInUseCase(idToken)) {
-                        is Resource.Success -> _actionState.value = SignInActionState(isSuccess = true)
+                        is Resource.Success -> {
+                            reminderNotificationScheduler.schedule()
+                            _actionState.value = SignInActionState(isSuccess = true)
+                        }
                         is Resource.Error -> {
                             _uiState.value = _uiState.value.copy(
                                 validationErrors = SignInValidationErrors(emailError = authResult.message)
