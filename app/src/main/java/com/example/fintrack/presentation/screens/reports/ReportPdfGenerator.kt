@@ -32,8 +32,6 @@ object ReportPdfGenerator {
         transactions: List<Transaction>,
         categoryDistribution: List<ReportCategoryItem>,
         spendingTrend: List<ReportTrendItem>,
-        trendHigh: ReportTrendSummary?,
-        trendLow: ReportTrendSummary?,
         budgets: List<Budget>,
         categoryExpenses: Map<String, Int>,
         savingsGoals: List<SavingsGoal>,
@@ -53,7 +51,7 @@ object ReportPdfGenerator {
                 writer.drawCategoryAnalysis(categoryDistribution)
             }
             if (selectedSections.contains(R.string.report_content_spending_trend)) {
-                writer.drawSpendingTrend(spendingTrend, trendHigh, trendLow)
+                writer.drawSpendingTrend(spendingTrend)
             }
             if (selectedSections.contains(R.string.title_budget_limits)) {
                 writer.drawBudgetLimits(budgets, categoryExpenses)
@@ -95,12 +93,6 @@ object ReportPdfGenerator {
             color = ContextCompat.getColor(context, R.color.text_primary)
             textSize = 20f
             isFakeBoldText = true
-            textAlign = Paint.Align.CENTER
-            isAntiAlias = true
-        }
-        private val subtitlePaint = Paint().apply {
-            color = ContextCompat.getColor(context, R.color.bottom_bar_fab)
-            textSize = 12f
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
         }
@@ -157,8 +149,40 @@ object ReportPdfGenerator {
             isAntiAlias = true
         }
         private val dividerPaint = Paint().apply {
-            color = Color.parseColor("#D3D1C7")
+            color = Color.parseColor("#3A3A38")
             strokeWidth = 0.5f
+        }
+        private val summaryBoxFillPaint = Paint().apply {
+            color = ContextCompat.getColor(context, R.color.quick_action_background)
+            isAntiAlias = true
+        }
+        private val summaryBoxStrokePaint = Paint().apply {
+            color = ContextCompat.getColor(context, R.color.bottom_bar_fab)
+            style = Paint.Style.STROKE
+            strokeWidth = 1f
+            isAntiAlias = true
+        }
+        private val axisPaint = Paint().apply {
+            color = ContextCompat.getColor(context, R.color.text_secondary)
+            strokeWidth = 1f
+            isAntiAlias = true
+        }
+        private val gridPaint = Paint().apply {
+            color = Color.parseColor("#F1EFE8")
+            strokeWidth = 1f
+        }
+        private val trendValuePaint = Paint().apply {
+            color = ContextCompat.getColor(context, R.color.text_primary)
+            textSize = 8.5f
+            isFakeBoldText = true
+            textAlign = Paint.Align.CENTER
+            isAntiAlias = true
+        }
+        private val mutedCenterPaint = Paint().apply {
+            color = ContextCompat.getColor(context, R.color.text_secondary)
+            textSize = 9f
+            textAlign = Paint.Align.CENTER
+            isAntiAlias = true
         }
 
         private var pageNumber = 0
@@ -201,18 +225,27 @@ object ReportPdfGenerator {
         }
 
         fun drawHeader(periodLabel: String, income: Int, expense: Int) {
-            requireSpace(90f)
+            requireSpace(100f)
             val c = canvas!!
-            c.drawText(context.getString(R.string.report_title), PAGE_WIDTH / 2f, y + 16f, titlePaint)
-            c.drawText("$periodLabel dönemi", PAGE_WIDTH / 2f, y + 34f, subtitlePaint)
-            y += 48f
+            c.drawText("$periodLabel Dönemi Raporu", PAGE_WIDTH / 2f, y + 16f, titlePaint)
+            y += 36f
 
-            val boxWidth = (contentWidth - 12f) / 2f
-            c.drawText(context.getString(R.string.report_total_income), MARGIN + 8f, y + 14f, mutedPaint)
-            c.drawText("₺${formatMoney(income)}", MARGIN + 8f, y + 32f, headerIncomePaint)
-            c.drawText(context.getString(R.string.report_total_expense), MARGIN + boxWidth + 20f, y + 14f, mutedPaint)
-            c.drawText("₺${formatMoney(expense)}", MARGIN + boxWidth + 20f, y + 32f, headerExpensePaint)
-            y += 46f
+            val boxGap = 12f
+            val boxWidth = (contentWidth - boxGap) / 2f
+            val boxHeight = 54f
+            val incomeBoxLeft = MARGIN
+            val expenseBoxLeft = MARGIN + boxWidth + boxGap
+
+            c.drawRoundRect(incomeBoxLeft, y, incomeBoxLeft + boxWidth, y + boxHeight, 10f, 10f, summaryBoxFillPaint)
+            c.drawRoundRect(incomeBoxLeft, y, incomeBoxLeft + boxWidth, y + boxHeight, 10f, 10f, summaryBoxStrokePaint)
+            c.drawRoundRect(expenseBoxLeft, y, expenseBoxLeft + boxWidth, y + boxHeight, 10f, 10f, summaryBoxFillPaint)
+            c.drawRoundRect(expenseBoxLeft, y, expenseBoxLeft + boxWidth, y + boxHeight, 10f, 10f, summaryBoxStrokePaint)
+
+            c.drawText(context.getString(R.string.report_total_income), incomeBoxLeft + 16f, y + 20f, mutedPaint)
+            c.drawText("₺${formatMoney(income)}", incomeBoxLeft + 16f, y + 40f, headerIncomePaint)
+            c.drawText(context.getString(R.string.report_total_expense), expenseBoxLeft + 16f, y + 20f, mutedPaint)
+            c.drawText("₺${formatMoney(expense)}", expenseBoxLeft + 16f, y + 40f, headerExpensePaint)
+            y += boxHeight + 16f
         }
 
         private fun drawSectionTitle(title: String) {
@@ -266,39 +299,67 @@ object ReportPdfGenerator {
             y += 4f
         }
 
-        fun drawSpendingTrend(items: List<ReportTrendItem>, high: ReportTrendSummary?, low: ReportTrendSummary?) {
+        fun drawSpendingTrend(items: List<ReportTrendItem>) {
             drawSectionTitle(context.getString(R.string.report_content_spending_trend))
             if (items.isEmpty() || items.all { it.amount == 0f }) {
                 drawEmptyLine()
                 return
             }
-            requireSpace(90f)
+            requireSpace(170f)
             val c = canvas!!
-            val chartHeight = 60f
-            val chartTop = y
+            val topPadding = 18f
+            val chartHeight = 120f
+            val chartTop = y + topPadding
             val chartBottom = chartTop + chartHeight
+            val axisLeft = MARGIN + 36f
+            val axisRight = PAGE_WIDTH - MARGIN
+
             val maxAmount = items.maxOf { it.amount }.coerceAtLeast(1f)
-            val stepX = if (items.size > 1) contentWidth / (items.size - 1) else 0f
+            val axisMax = niceAxisMax(maxAmount)
+            val axisSteps = 4
+            for (step in 0..axisSteps) {
+                val stepValue = (axisMax / axisSteps) * step
+                val stepY = chartBottom - (stepValue / axisMax) * chartHeight
+                if (step > 0) c.drawLine(axisLeft, stepY, axisRight, stepY, gridPaint)
+                c.drawText(formatMoney(stepValue), axisLeft - 6f, stepY + 3f, mutedRightPaint)
+            }
+
+            c.drawLine(axisLeft, chartTop, axisLeft, chartBottom, axisPaint)
+            c.drawLine(axisLeft, chartBottom, axisRight, chartBottom, axisPaint)
+
+            val chartAreaWidth = axisRight - axisLeft
+            val stepX = if (items.size > 1) chartAreaWidth / (items.size - 1) else 0f
 
             val path = Path()
             items.forEachIndexed { index, item ->
-                val px = MARGIN + stepX * index
-                val py = chartBottom - (item.amount / maxAmount) * chartHeight
+                val px = axisLeft + stepX * index
+                val py = chartBottom - (item.amount / axisMax) * chartHeight
                 if (index == 0) path.moveTo(px, py) else path.lineTo(px, py)
             }
             c.drawPath(path, linePaint)
-            items.forEachIndexed { index, item ->
-                val px = MARGIN + stepX * index
-                val py = chartBottom - (item.amount / maxAmount) * chartHeight
-                c.drawCircle(px, py, 2.5f, pointPaint)
-            }
-            y = chartBottom + 14f
 
-            requireSpace(20f)
-            val c2 = canvas!!
-            if (high != null) c2.drawText("En çok: ${high.date} · ₺${formatMoney(high.amount)}", MARGIN, y + 10f, mutedPaint)
-            if (low != null) c2.drawText("En az: ${low.date} · ₺${formatMoney(low.amount)}", PAGE_WIDTH - MARGIN, y + 10f, mutedRightPaint)
-            y += 20f
+            items.forEachIndexed { index, item ->
+                val px = axisLeft + stepX * index
+                val py = chartBottom - (item.amount / axisMax) * chartHeight
+                c.drawCircle(px, py, 3f, pointPaint)
+                c.drawText("₺${formatMoney(item.amount)}", px, py - 8f, trendValuePaint)
+                c.drawText(item.label, px, chartBottom + 16f, mutedCenterPaint)
+            }
+
+            y = chartBottom + 30f
+        }
+
+        private fun niceAxisMax(value: Float): Float {
+            if (value <= 0f) return 100f
+            val magnitude = Math.pow(10.0, Math.floor(Math.log10(value.toDouble()))).toFloat()
+            val residual = value / magnitude
+            val niceResidual = when {
+                residual <= 1f -> 1f
+                residual <= 2f -> 2f
+                residual <= 5f -> 5f
+                else -> 10f
+            }
+            return niceResidual * magnitude
         }
 
         fun drawBudgetLimits(budgets: List<Budget>, categoryExpenses: Map<String, Int>) {

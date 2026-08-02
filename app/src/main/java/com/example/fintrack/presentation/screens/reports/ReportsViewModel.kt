@@ -103,7 +103,6 @@ class ReportsViewModel @Inject constructor(
 
                 val categoryDistribution = calculateCategoryDistribution(transactions)
                 val spendingTrend = calculateSpendingTrend(transactions, periodStart, periodEnd.minusDays(1))
-                val (trendHigh, trendLow) = calculateTrendSummary(spendingTrend)
 
                 val canGoPrevious = prevTransactions.isNotEmpty()
                 val canGoNext = offset < 0
@@ -118,8 +117,6 @@ class ReportsViewModel @Inject constructor(
                     transactions = transactions,
                     categoryDistribution = categoryDistribution,
                     spendingTrend = spendingTrend,
-                    trendHigh = trendHigh,
-                    trendLow = trendLow,
                     budgets = budgets,
                     categoryExpenses = categoryExpenses,
                     savingsGoals = goals,
@@ -155,8 +152,6 @@ class ReportsViewModel @Inject constructor(
                     transactions = state.transactions,
                     categoryDistribution = state.categoryDistribution,
                     spendingTrend = state.spendingTrend,
-                    trendHigh = state.trendHigh,
-                    trendLow = state.trendLow,
                     budgets = state.budgets,
                     categoryExpenses = state.categoryExpenses,
                     savingsGoals = state.savingsGoals,
@@ -239,21 +234,11 @@ class ReportsViewModel @Inject constructor(
                 total += transactionsByDate[current] ?: 0.0
                 current = current.plusDays(1)
             }
-            items.add(ReportTrendItem("$weekIndex.Hf", "$weekIndex. Hafta", total.toFloat()))
+            items.add(ReportTrendItem("$weekIndex.Hf", total.toFloat()))
             weekIndex++
             weekStart = weekEnd.plusDays(1)
         }
         return items
-    }
-
-    private fun calculateTrendSummary(trendData: List<ReportTrendItem>): Pair<ReportTrendSummary?, ReportTrendSummary?> {
-        if (trendData.isEmpty() || trendData.all { it.amount == 0f }) return Pair(null, null)
-        val highItem = trendData.maxBy { it.amount }
-        val lowItem = trendData.minBy { it.amount }
-        return Pair(
-            ReportTrendSummary(label = "En Çok Harcanan Hafta", date = highItem.detailLabel, amount = highItem.amount.toDouble()),
-            ReportTrendSummary(label = "En Az Harcanan Hafta", date = lowItem.detailLabel, amount = lowItem.amount.toDouble())
-        )
     }
 
     private fun calculatePeriodDates(payday: Int, today: LocalDate, offset: Int): Pair<LocalDate, LocalDate> {

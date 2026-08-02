@@ -15,8 +15,6 @@ data class ReportsActionState(
     val transactions: List<Transaction> = emptyList(),
     val categoryDistribution: List<ReportCategoryItem> = emptyList(),
     val spendingTrend: List<ReportTrendItem> = emptyList(),
-    val trendHigh: ReportTrendSummary? = null,
-    val trendLow: ReportTrendSummary? = null,
     val budgets: List<Budget> = emptyList(),
     val categoryExpenses: Map<String, Int> = emptyMap(),
     val savingsGoals: List<SavingsGoal> = emptyList(),
@@ -33,14 +31,7 @@ data class ReportCategoryItem(
 
 data class ReportTrendItem(
     val label: String,
-    val detailLabel: String,
     val amount: Float
-)
-
-data class ReportTrendSummary(
-    val label: String,
-    val date: String,
-    val amount: Double
 )
 
 sealed class PdfResult {
