@@ -219,6 +219,7 @@
     <string name="report_subtitle">PDF olarak dışa aktar</string>
     <string name="report_total_income">Toplam Gelir</string>
     <string name="report_total_expense">Toplam Gider</string>
+    <string name="report_pdf_saved">PDF indirilenlere kaydedildi</string>
 
     <string name="profile_stat_total_transactions">Toplam İşlem</string>
     <string name="profile_stat_active_goals">Aktif Hedef</string>
