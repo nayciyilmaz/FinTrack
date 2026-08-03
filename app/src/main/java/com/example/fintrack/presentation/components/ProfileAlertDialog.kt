@@ -370,6 +370,14 @@ fun SettingsDialogHost(
                 onApply = {}
             )
         }
+        SettingsDialogType.DARK_MODE -> {
+            DarkModeSelectDialog(
+                uiState = uiState.settingsDialogState,
+                onOptionSelect = viewModel::onDarkModeOptionSelect,
+                onDismiss = viewModel::onDismissSettingsDialog,
+                onApply = {}
+            )
+        }
         null -> Unit
     }
 }
@@ -549,6 +557,73 @@ fun FontSizeSelectDialog(
                     ) {
                         RadioButton(
                             selected = option == uiState.selectedFontSizeOption,
+                            onClick = { onOptionSelect(option) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = colorResource(id = R.color.bottom_bar_fab)
+                            )
+                        )
+                        Text(
+                            text = option,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = colorResource(id = R.color.text_primary)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            EditTextButton(
+                text = stringResource(id = R.string.label_apply),
+                onClick = onApply
+            )
+        },
+        dismissButton = {
+            EditTextButton(
+                text = stringResource(id = R.string.label_cancel),
+                onClick = onDismiss
+            )
+        }
+    )
+}
+
+@Composable
+fun DarkModeSelectDialog(
+    uiState: SettingsDialogState,
+    onOptionSelect: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onApply: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val options = listOf(
+        stringResource(id = R.string.profile_dark_mode_light),
+        stringResource(id = R.string.profile_dark_mode_dark)
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(id = R.string.profile_theme),
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            )
+        },
+        text = {
+            Column(
+                modifier = modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                options.forEach { option ->
+                    Row(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = option == uiState.selectedDarkModeOption,
+                                onClick = { onOptionSelect(option) }
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = option == uiState.selectedDarkModeOption,
                             onClick = { onOptionSelect(option) },
                             colors = RadioButtonDefaults.colors(
                                 selectedColor = colorResource(id = R.color.bottom_bar_fab)

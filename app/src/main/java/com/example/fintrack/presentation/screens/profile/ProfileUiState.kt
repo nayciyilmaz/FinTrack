@@ -5,7 +5,7 @@ enum class ProfileDialogType {
 }
 
 enum class SettingsDialogType {
-    CURRENCY, LANGUAGE, FONT_SIZE
+    CURRENCY, LANGUAGE, FONT_SIZE, DARK_MODE
 }
 
 data class ProfileEditState(
@@ -31,7 +31,8 @@ data class SettingsDialogState(
     val activeSettingsDialog: SettingsDialogType? = null,
     val selectedCurrencyOption: String = "",
     val selectedLanguageOption: String = "",
-    val selectedFontSizeOption: String = ""
+    val selectedFontSizeOption: String = "",
+    val selectedDarkModeOption: String = ""
 )
 
 data class ProfileUiState(

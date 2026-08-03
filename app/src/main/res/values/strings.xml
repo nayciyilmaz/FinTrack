@@ -255,7 +255,9 @@
     <string name="profile_font_size_large">Büyük</string>
     <string name="profile_section_app_settings">Uygulama Ayarları</string>
     <string name="profile_logout">Çıkış Yap</string>
-    <string name="profile_dark_mode">Koyu Mod</string>
+    <string name="profile_theme">Tema</string>
+    <string name="profile_dark_mode_light">Açık</string>
+    <string name="profile_dark_mode_dark">Koyu</string>
     <string name="profile_logout_confirm_message">Çıkış yapmak istediğinizden emin misiniz?</string>
     <string name="profile_password_mismatch">Şifreler eşleşmiyor.</string>
 

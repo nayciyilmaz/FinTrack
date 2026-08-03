@@ -255,7 +255,9 @@
     <string name="profile_font_size_large">Groß</string>
     <string name="profile_section_app_settings">App-Einstellungen</string>
     <string name="profile_logout">Abmelden</string>
-    <string name="profile_dark_mode">Dunkler Modus</string>
+    <string name="profile_theme">Thema</string>
+    <string name="profile_dark_mode_light">Hell</string>
+    <string name="profile_dark_mode_dark">Dunkel</string>
     <string name="profile_logout_confirm_message">Möchten Sie sich wirklich abmelden?</string>
     <string name="profile_password_mismatch">Die Passwörter stimmen nicht überein.</string>
 

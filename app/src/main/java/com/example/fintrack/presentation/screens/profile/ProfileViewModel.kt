@@ -169,6 +169,15 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    fun onShowDarkModeDialog() {
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(
+                activeSettingsDialog = SettingsDialogType.DARK_MODE,
+                selectedDarkModeOption = context.getString(R.string.profile_dark_mode_light)
+            )
+        )
+    }
+
     fun onDismissSettingsDialog() {
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(activeSettingsDialog = null)
@@ -262,6 +271,12 @@ class ProfileViewModel @Inject constructor(
     fun onFontSizeOptionSelect(value: String) {
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(selectedFontSizeOption = value)
+        )
+    }
+
+    fun onDarkModeOptionSelect(value: String) {
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(selectedDarkModeOption = value)
         )
     }
 

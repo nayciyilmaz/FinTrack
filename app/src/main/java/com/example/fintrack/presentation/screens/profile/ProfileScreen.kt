@@ -28,16 +28,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -171,7 +166,8 @@ fun ProfileScreen(
                     currentLanguageDisplay = uiState.currentLanguageDisplay,
                     onCurrencyClick = viewModel::onShowCurrencyDialog,
                     onLanguageClick = viewModel::onShowLanguageDialog,
-                    onFontSizeClick = viewModel::onShowFontSizeDialog
+                    onFontSizeClick = viewModel::onShowFontSizeDialog,
+                    onDarkModeClick = viewModel::onShowDarkModeDialog
                 )
                 EditButton(
                     onClick = viewModel::onRequestLogout,
@@ -372,10 +368,9 @@ private fun AppSettingsCard(
     onCurrencyClick: () -> Unit,
     onLanguageClick: () -> Unit,
     onFontSizeClick: () -> Unit,
+    onDarkModeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isDarkMode by remember { mutableStateOf(false) }
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -412,52 +407,11 @@ private fun AppSettingsCard(
             modifier = modifier.padding(horizontal = 16.dp),
             color = colorResource(id = R.color.divider_color)
         )
-        DarkModeRow(checked = isDarkMode, onCheckedChange = { isDarkMode = it })
-    }
-}
-
-@Composable
-private fun DarkModeRow(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Box(
-            modifier = modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(colorResource(id = R.color.quick_action_background))
-                .padding(9.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Filled.DarkMode,
-                contentDescription = null,
-                tint = colorResource(id = R.color.icon_orange)
-            )
-        }
-        Text(
-            text = stringResource(id = R.string.profile_dark_mode),
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-            color = colorResource(id = R.color.text_primary),
-            modifier = modifier.weight(1f)
-        )
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = colorResource(id = R.color.bottom_bar_fab),
-                uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = colorResource(id = R.color.switch_unchecked_track),
-                uncheckedBorderColor = Color.Transparent
-            )
+        SettingRowWithValue(
+            icon = Icons.Filled.DarkMode,
+            title = stringResource(id = R.string.profile_theme),
+            value = stringResource(id = R.string.profile_dark_mode_light),
+            onClick = onDarkModeClick
         )
     }
 }
