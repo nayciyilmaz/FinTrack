@@ -1,5 +1,7 @@
 package com.example.fintrack.data.repository
 
+import android.content.Context
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.remote.api.TransactionService
 import com.example.fintrack.data.remote.dto.ErrorResponseDto
@@ -7,13 +9,15 @@ import com.example.fintrack.data.remote.dto.TransactionRequestDto
 import com.example.fintrack.data.remote.dto.TransactionResponseDto
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.repository.TransactionRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
     private val transactionService: TransactionService,
-    private val json: Json
+    private val json: Json,
+    @ApplicationContext private val context: Context
 ) : TransactionRepository {
 
     override suspend fun addTransaction(
@@ -44,9 +48,9 @@ class TransactionRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -62,9 +66,9 @@ class TransactionRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -98,9 +102,9 @@ class TransactionRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -112,9 +116,9 @@ class TransactionRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -126,9 +130,9 @@ class TransactionRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 

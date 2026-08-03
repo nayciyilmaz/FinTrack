@@ -212,7 +212,7 @@ private fun BudgetDetails(
                     color = colorResource(id = R.color.text_tertiary)
                 )
                 Text(
-                    text = "%$spendingRatio harcandı",
+                    text = stringResource(id = R.string.home_spending_ratio_format, "%$spendingRatio"),
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )

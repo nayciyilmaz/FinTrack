@@ -686,9 +686,9 @@ private fun GoalCard(
                 )
                 Text(
                     text = if (estimatedDate != null) {
-                        "%$percentage tamamlandı · Tahmini Bitiş: $estimatedDate"
+                        stringResource(id = R.string.savings_goal_status_with_date_format, "%$percentage", estimatedDate)
                     } else {
-                        "%$percentage tamamlandı"
+                        stringResource(id = R.string.format_percentage_completed, "%$percentage")
                     },
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
                     color = colorResource(id = R.color.bottom_bar_fab)

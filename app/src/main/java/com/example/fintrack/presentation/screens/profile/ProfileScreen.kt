@@ -428,7 +428,7 @@ private fun DarkModeRow(
             )
         }
         Text(
-            text = "Koyu Mod",
+            text = stringResource(id = R.string.profile_dark_mode),
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
             color = colorResource(id = R.color.text_primary),
             modifier = modifier.weight(1f)

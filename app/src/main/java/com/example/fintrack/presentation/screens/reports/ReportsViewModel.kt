@@ -3,6 +3,7 @@ package com.example.fintrack.presentation.screens.reports
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
@@ -11,6 +12,7 @@ import com.example.fintrack.domain.usecase.GetBudgetsUseCase
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,7 +36,8 @@ class ReportsViewModel @Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase,
     private val getBudgetsUseCase: GetBudgetsUseCase,
     private val getSavingsGoalsUseCase: GetSavingsGoalsUseCase,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val locale = Locale("tr")
@@ -224,7 +227,7 @@ class ReportsViewModel @Inject constructor(
 
         val items = mutableListOf<ReportTrendItem>()
         var weekStart = periodStart
-        var weekIndex = 1
+        var weekIndex = 0
         while (!weekStart.isAfter(periodEnd)) {
             var weekEnd = weekStart.plusDays(6)
             if (weekEnd.isAfter(periodEnd)) weekEnd = periodEnd
@@ -234,7 +237,7 @@ class ReportsViewModel @Inject constructor(
                 total += transactionsByDate[current] ?: 0.0
                 current = current.plusDays(1)
             }
-            items.add(ReportTrendItem("$weekIndex.Hf", total.toFloat()))
+            items.add(ReportTrendItem(context.getString(R.string.report_week_label_format, weekIndex), total.toFloat()))
             weekIndex++
             weekStart = weekEnd.plusDays(1)
         }

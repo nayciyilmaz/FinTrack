@@ -227,7 +227,7 @@ object ReportPdfGenerator {
         fun drawHeader(periodLabel: String, income: Int, expense: Int) {
             requireSpace(100f)
             val c = canvas!!
-            c.drawText("$periodLabel Dönemi Raporu", PAGE_WIDTH / 2f, y + 16f, titlePaint)
+            c.drawText(context.getString(R.string.report_title_format, periodLabel), PAGE_WIDTH / 2f, y + 16f, titlePaint)
             y += 36f
 
             val boxGap = 12f
@@ -252,7 +252,7 @@ object ReportPdfGenerator {
             requireSpace(24f)
             val c = canvas!!
             c.drawText(title, MARGIN, y + 12f, sectionPaint)
-            y += 16f
+            y += 18f
             c.drawLine(MARGIN, y, PAGE_WIDTH - MARGIN, y, dividerPaint)
             y += 12f
         }
@@ -373,9 +373,9 @@ object ReportPdfGenerator {
                 val c = canvas!!
                 val used = categoryExpenses[budget.category] ?: 0
                 val limit = budget.limitAmount.toInt().coerceAtLeast(1)
-                val progress = (used.toFloat() / limit.toFloat()).coerceIn(0f, 1f)
+                val progress = (used.toFloat() / limit.toFloat()).coerceAtLeast(0f)
                 val percentage = (progress * 100).toInt()
-                val remaining = (limit - used).coerceAtLeast(0)
+                val remaining = limit - used
                 val label = context.getString(categoryKeyToLabelResId(budget.category))
                 val color = when {
                     used >= limit -> ContextCompat.getColor(context, R.color.expense_red)
@@ -387,7 +387,12 @@ object ReportPdfGenerator {
                 y += 14f
                 drawBar(progress, color)
                 y += 12f
-                c.drawText("%$percentage kullanıldı · Kalan ₺${formatMoney(remaining)}", MARGIN, y + 8f, mutedPaint)
+                c.drawText(
+                    context.getString(R.string.report_budget_status_format, "%$percentage", "₺${formatMoney(remaining)}"),
+                    MARGIN,
+                    y + 8f,
+                    mutedPaint
+                )
                 y += 16f
             }
             y += 4f
@@ -411,9 +416,9 @@ object ReportPdfGenerator {
                 y += 12f
                 val estimatedDate = estimatedDates[goal.id]
                 val statusText = if (estimatedDate != null) {
-                    "%$percentage tamamlandı · Tahmini bitiş: $estimatedDate"
+                    context.getString(R.string.report_savings_status_with_date_format, "%$percentage", estimatedDate)
                 } else {
-                    "%$percentage tamamlandı"
+                    context.getString(R.string.format_percentage_completed, "%$percentage")
                 }
                 c.drawText(statusText, MARGIN, y + 8f, mutedPaint)
                 y += 16f
@@ -437,7 +442,7 @@ object ReportPdfGenerator {
 
         private fun drawEmptyLine() {
             requireSpace(16f)
-            canvas!!.drawText("Kayıt yok", MARGIN, y + 10f, mutedPaint)
+            canvas!!.drawText(context.getString(R.string.report_no_records), MARGIN, y + 10f, mutedPaint)
             y += 20f
         }
     }

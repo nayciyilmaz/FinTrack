@@ -24,6 +24,7 @@
     <string name="savings_goal_error_invalid_amount">Geçerli bir tutar giriniz.</string>
     <string name="savings_goal_error_fields_required">En az bir alan doldurunuz.</string>
     <string name="savings_goal_error_invalid_target_amount">Geçerli bir hedef tutarı giriniz.</string>
+    <string name="savings_goal_status_with_date_format">%1$s tamamlandı · Tahmini Bitiş: %2$s</string>
     <string name="savings_goal_monthly_share">Toplam tasarrufun %%%1$d\'i bu aya ait.</string>
     <string name="title_budget_limits">Bütçe ve Limitler</string>
     <string name="budget_status_exceeded">Limit Aşıldı</string>
@@ -84,6 +85,7 @@
     <string name="label_expense">Gider</string>
     <string name="label_all">Tümü</string>
     <string name="label_spending_rate">Harcama oranı</string>
+    <string name="home_spending_ratio_format">%1$s harcandı</string>
     <string name="label_recent_transactions">Son İşlemler</string>
     <string name="label_all_transactions">Tüm İşlemler</string>
     <string name="label_hour">Saat</string>
@@ -107,6 +109,8 @@
     <string name="label_apply">Uygula</string>
     <string name="error_required_fields">Zorunlu alanları doldurunuz.</string>
     <string name="error_general">Bir hata oluştu. Tekrar deneyin.</string>
+    <string name="error_generic_fallback">Bir hata oluştu</string>
+    <string name="error_google_signin_failed">Google ile giriş başarısız</string>
     <string name="label_no_transactions">Gösterilecek işlem bulunamadı.</string>
     <string name="label_no_budgets">Henüz bir kategori limiti belirlemediniz.</string>
     <string name="warning_budget_exceeds_income">Toplam limit gelirinizi aşıyor.</string>
@@ -140,6 +144,7 @@
     <string name="label_today">Bugün</string>
     <string name="label_days_remaining_format">%d gün kaldı</string>
     <string name="label_days_overdue_format">%d gün geçti</string>
+    <string name="format_percentage_completed">%1$s tamamlandı</string>
     <string name="label_category_distribution">Kategori Dağılımı</string>
     <string name="label_spending_distribution">Harcama Dağılımı</string>
     <string name="label_last_month_savings">Son Ay Tasarrufu</string>
@@ -220,6 +225,11 @@
     <string name="report_total_income">Toplam Gelir</string>
     <string name="report_total_expense">Toplam Gider</string>
     <string name="report_pdf_saved">PDF indirilenlere kaydedildi</string>
+    <string name="report_title_format">%1$s Dönemi Raporu</string>
+    <string name="report_budget_status_format">%1$s kullanıldı · Kalan %2$s</string>
+    <string name="report_savings_status_with_date_format">%1$s tamamlandı · Tahmini bitiş: %2$s</string>
+    <string name="report_no_records">Kayıt yok</string>
+    <string name="report_week_label_format">%1$d.Hf</string>
 
     <string name="profile_stat_total_transactions">Toplam İşlem</string>
     <string name="profile_stat_active_goals">Aktif Hedef</string>
@@ -245,6 +255,7 @@
     <string name="profile_font_size_large">Büyük</string>
     <string name="profile_section_app_settings">Uygulama Ayarları</string>
     <string name="profile_logout">Çıkış Yap</string>
+    <string name="profile_dark_mode">Koyu Mod</string>
     <string name="profile_logout_confirm_message">Çıkış yapmak istediğinizden emin misiniz?</string>
     <string name="profile_password_mismatch">Şifreler eşleşmiyor.</string>
 

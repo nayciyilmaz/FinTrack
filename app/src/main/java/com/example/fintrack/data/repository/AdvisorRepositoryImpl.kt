@@ -1,5 +1,7 @@
 package com.example.fintrack.data.repository
 
+import android.content.Context
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.remote.api.AdvisorService
 import com.example.fintrack.data.remote.dto.AdvisorAskRequestDto
@@ -9,13 +11,15 @@ import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.domain.model.AdvisorInsight
 import com.example.fintrack.domain.model.AdvisorSummary
 import com.example.fintrack.domain.repository.AdvisorRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class AdvisorRepositoryImpl @Inject constructor(
     private val advisorService: AdvisorService,
-    private val json: Json
+    private val json: Json,
+    @ApplicationContext private val context: Context
 ) : AdvisorRepository {
 
     override suspend fun getSummary(): Resource<AdvisorSummary> {
@@ -24,7 +28,7 @@ class AdvisorRepositoryImpl @Inject constructor(
         } catch (e: HttpException) {
             Resource.Error(message = extractErrorMessage(e))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -34,7 +38,7 @@ class AdvisorRepositoryImpl @Inject constructor(
         } catch (e: HttpException) {
             Resource.Error(message = extractErrorMessage(e))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -45,7 +49,7 @@ class AdvisorRepositoryImpl @Inject constructor(
         } catch (e: HttpException) {
             Resource.Error(message = extractErrorMessage(e))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -55,7 +59,7 @@ class AdvisorRepositoryImpl @Inject constructor(
         } catch (e: HttpException) {
             Resource.Error(message = extractErrorMessage(e))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -63,7 +67,7 @@ class AdvisorRepositoryImpl @Inject constructor(
         val errorDto = e.response()?.errorBody()?.string()?.let {
             runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
         }
-        return errorDto?.message ?: "Bir hata oluştu"
+        return errorDto?.message ?: context.getString(R.string.error_generic_fallback)
     }
 
     private fun AdvisorSummaryResponseDto.toDomain() = AdvisorSummary(

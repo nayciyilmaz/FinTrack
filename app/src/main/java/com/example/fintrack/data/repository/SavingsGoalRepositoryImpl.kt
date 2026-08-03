@@ -1,5 +1,7 @@
 package com.example.fintrack.data.repository
 
+import android.content.Context
+import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.remote.api.SavingsGoalService
 import com.example.fintrack.data.remote.dto.ErrorResponseDto
@@ -8,13 +10,15 @@ import com.example.fintrack.data.remote.dto.SavingsGoalResponseDto
 import com.example.fintrack.data.remote.dto.SavingsGoalUpdateDto
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.repository.SavingsGoalRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class SavingsGoalRepositoryImpl @Inject constructor(
     private val savingsGoalService: SavingsGoalService,
-    private val json: Json
+    private val json: Json,
+    @ApplicationContext private val context: Context
 ) : SavingsGoalRepository {
 
     override suspend fun getGoals(): Resource<List<SavingsGoal>> {
@@ -25,9 +29,9 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -41,9 +45,9 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -57,9 +61,9 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 
@@ -71,9 +75,9 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
             }
-            Resource.Error(message = errorDto?.message ?: "Bir hata oluştu")
+            Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Bir hata oluştu")
+            Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
 

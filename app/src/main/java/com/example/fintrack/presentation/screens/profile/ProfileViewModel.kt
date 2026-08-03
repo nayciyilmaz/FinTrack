@@ -148,7 +148,7 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(
                 activeSettingsDialog = SettingsDialogType.LANGUAGE,
-                selectedLanguageOption = "Türkçe"
+                selectedLanguageOption = context.getString(R.string.profile_language_tr)
             )
         )
     }
