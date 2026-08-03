@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
+import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.domain.model.TransactionCategory
 
 @Composable
@@ -124,7 +125,7 @@ fun AmountInput(
             modifier = modifier.fillMaxWidth(),
             placeholder = {
                 Text(
-                    text = stringResource(id = R.string.label_amount_placeholder),
+                    text = stringResource(id = R.string.label_amount_placeholder, currencySymbol()),
                     color = colorResource(id = R.color.text_secondary)
                 )
             },

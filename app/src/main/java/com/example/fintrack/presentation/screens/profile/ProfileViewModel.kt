@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
+import com.example.fintrack.core.util.CurrencyHelper
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
@@ -45,7 +46,10 @@ class ProfileViewModel @Inject constructor(
     val actionState: StateFlow<ProfileActionState> = _actionState.asStateFlow()
 
     private val _uiState = MutableStateFlow(
-        ProfileUiState(currentLanguageDisplay = languageDisplayName(LocaleHelper.getLanguage(context)))
+        ProfileUiState(
+            currentLanguageDisplay = languageDisplayName(LocaleHelper.getLanguage(context)),
+            currentCurrencyDisplay = currencyDisplayName(CurrencyHelper.getCurrency(context))
+        )
     )
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
@@ -142,7 +146,7 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(
                 activeSettingsDialog = SettingsDialogType.CURRENCY,
-                selectedCurrencyOption = "₺ TRY"
+                selectedCurrencyOption = currencyDisplayName(CurrencyHelper.getCurrency(context))
             )
         )
     }
@@ -175,6 +179,40 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(selectedCurrencyOption = value)
         )
+    }
+
+    fun onApplyCurrency() {
+        val selectedCurrencyDisplay = _uiState.value.settingsDialogState.selectedCurrencyOption
+        val currencyCode = currencyCode(selectedCurrencyDisplay)
+        val currentCurrencyCode = CurrencyHelper.getCurrency(context)
+
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(activeSettingsDialog = null),
+            currentCurrencyDisplay = selectedCurrencyDisplay
+        )
+
+        if (currencyCode != currentCurrencyCode) {
+            CurrencyHelper.saveCurrency(context, currencyCode)
+            _uiState.value = _uiState.value.copy(shouldRecreateActivity = true)
+        }
+    }
+
+    private fun currencyDisplayName(currencyCode: String): String {
+        return when (currencyCode) {
+            "TRY" -> context.getString(R.string.profile_currency_try)
+            "EUR" -> context.getString(R.string.profile_currency_eur)
+            "USD" -> context.getString(R.string.profile_currency_usd)
+            else -> context.getString(R.string.profile_currency_try)
+        }
+    }
+
+    private fun currencyCode(currencyDisplayName: String): String {
+        return when (currencyDisplayName) {
+            context.getString(R.string.profile_currency_try) -> "TRY"
+            context.getString(R.string.profile_currency_eur) -> "EUR"
+            context.getString(R.string.profile_currency_usd) -> "USD"
+            else -> "TRY"
+        }
     }
 
     fun onLanguageOptionSelect(value: String) {

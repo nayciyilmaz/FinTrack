@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.reportContentItems
+import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.domain.model.ReportContentItem
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
@@ -217,7 +218,7 @@ private fun ReportHeaderCard(
                         color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
-                        text = "₺${"%,d".format(income).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(income).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White
                     )
@@ -236,7 +237,7 @@ private fun ReportHeaderCard(
                         color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
-                        text = "₺${"%,d".format(expense).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(expense).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White
                     )

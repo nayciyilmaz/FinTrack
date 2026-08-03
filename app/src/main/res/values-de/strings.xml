@@ -30,7 +30,7 @@
     <string name="budget_status_exceeded">Limit überschritten</string>
     <string name="budget_status_warning">Warnung</string>
     <string name="budget_status_normal">Normal</string>
-    <string name="budget_usage_summary">%%%1$d Ihres Budgets verbraucht · ₺%2$s verbleibend</string>
+    <string name="budget_usage_summary">%%%1$d Ihres Budgets verbraucht · %2$s verbleibend</string>
     <string name="title_payment_reminders">Erinnerungen</string>
     <string name="title_reports">Berichte</string>
     <string name="title_profile">Profil</string>
@@ -94,7 +94,7 @@
     <string name="label_confirm">OK</string>
     <string name="label_category">Kategorie</string>
     <string name="label_amount">Betrag</string>
-    <string name="label_amount_placeholder">0,00 ₺</string>
+    <string name="label_amount_placeholder">0,00 %1$s</string>
     <string name="label_note_placeholder">Notiz hinzufügen</string>
     <string name="category_diger">Sonstiges</string>
     <string name="label_date_time">Datum und Uhrzeit</string>

@@ -52,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.goalCategories
+import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditScaffold
@@ -518,7 +519,7 @@ private fun SavingsCard(
                         color = Color.White
                     )
                     Text(
-                        text = "₺${"%,d".format(lastMonthSavings).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(lastMonthSavings).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White
                     )
@@ -533,7 +534,7 @@ private fun SavingsCard(
                         color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
-                        text = "₺${"%,d".format(totalSavings).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(totalSavings).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White.copy(alpha = 0.85f)
                     )
@@ -653,12 +654,12 @@ private fun GoalCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "₺${"%,d".format(goal.currentAmount.toInt()).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(goal.currentAmount.toInt()).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = colorResource(id = R.color.text_primary)
                     )
                     Text(
-                        text = "₺${"%,d".format(goal.targetAmount.toInt()).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(goal.targetAmount.toInt()).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                         color = Color.DarkGray
                     )

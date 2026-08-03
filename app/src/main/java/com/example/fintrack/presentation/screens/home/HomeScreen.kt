@@ -40,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.core.util.dateFormatter
 import com.example.fintrack.presentation.screens.transactions.TransactionDisplayItem
 import com.example.fintrack.presentation.components.EditScaffold
@@ -128,12 +129,12 @@ private fun BudgetHeader(
         ) {
             BudgetHeaderInfoItem(
                 label = stringResource(id = R.string.label_remaining_balance),
-                value = "₺$remainingBalance",
+                value = "${currencySymbol()}$remainingBalance",
                 modifier = modifier.weight(1f)
             )
             BudgetHeaderInfoItem(
                 label = stringResource(id = R.string.label_daily_limit),
-                value = "₺$dailyLimit",
+                value = "${currencySymbol()}$dailyLimit",
                 modifier = modifier.weight(1f)
             )
         }
@@ -187,14 +188,14 @@ private fun BudgetDetails(
         ) {
             BudgetDetailsInfoItem(
                 label = stringResource(id = R.string.label_income),
-                value = "₺$income",
+                value = "${currencySymbol()}$income",
                 valueColor = colorResource(id = R.color.income_green),
                 borderColor = colorResource(id = R.color.income_green),
                 modifier = modifier.weight(1f)
             )
             BudgetDetailsInfoItem(
                 label = stringResource(id = R.string.label_expense),
-                value = "₺$expense",
+                value = "${currencySymbol()}$expense",
                 valueColor = colorResource(id = R.color.expense_red),
                 borderColor = colorResource(id = R.color.expense_red),
                 modifier = modifier.weight(1f)
@@ -429,8 +430,8 @@ private fun RecentTransactionsContent(
                         icon = categoryKeyToIcon(item.transaction.category),
                         title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
                         dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter())} · ${item.transaction.time}",
-                        amount = "${if (isIncome) "+" else "-"}₺${item.transaction.amount}",
-                        remainingBalance = "Kalan: ₺%.2f".format(item.remainingBalance),
+                        amount = "${if (isIncome) "+" else "-"}${currencySymbol()}${item.transaction.amount}",
+                        remainingBalance = "Kalan: ${currencySymbol()}%.2f".format(item.remainingBalance),
                         amountColor = if (isIncome)
                             colorResource(id = R.color.income_green)
                         else

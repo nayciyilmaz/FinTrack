@@ -36,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.core.util.dateFormatter
 import com.example.fintrack.domain.model.RecurringItem
 import com.example.fintrack.domain.model.Transaction
@@ -231,7 +232,7 @@ private fun RecurringItemRow(
         icon = categoryKeyToIcon(item.category),
         title = stringResource(id = categoryKeyToLabelResId(item.category)),
         dateTime = stringResource(id = R.string.label_monthly_day_format, item.dayOfMonth),
-        amount = "${if (isIncome) "+" else "-"}₺${item.amount}",
+        amount = "${if (isIncome) "+" else "-"}${currencySymbol()}${item.amount}",
         remainingBalance = stringResource(id = R.string.label_monthly),
         amountColor = if (isIncome) colorResource(id = R.color.income_green) else colorResource(id = R.color.expense_red),
         iconBackgroundColor = if (isIncome) colorResource(id = R.color.transaction_income_background) else colorResource(id = R.color.transaction_expense_background),
@@ -342,7 +343,7 @@ private fun ReminderTransactionRow(
         icon = categoryKeyToIcon(transaction.category),
         title = stringResource(id = categoryKeyToLabelResId(transaction.category)),
         dateTime = "${LocalDate.parse(transaction.date).format(dateFormatter())} · ${transaction.time}",
-        amount = "${if (isIncome) "+" else "-"}₺${transaction.amount}",
+        amount = "${if (isIncome) "+" else "-"}${currencySymbol()}${transaction.amount}",
         remainingBalance = remainingText,
         amountColor = if (isIncome) colorResource(id = R.color.income_green) else colorResource(id = R.color.expense_red),
         iconBackgroundColor = if (isIncome) colorResource(id = R.color.transaction_income_background) else colorResource(id = R.color.transaction_expense_background),

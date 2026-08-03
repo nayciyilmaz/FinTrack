@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import androidx.core.content.ContextCompat
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.CurrencyHelper
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.domain.model.Budget
 import com.example.fintrack.domain.model.SavingsGoal
@@ -222,7 +223,7 @@ object ReportPdfGenerator {
         }
 
         private fun formatMoney(amount: Number): String {
-            return "%,d".format(amount.toInt()).replace(",", ".")
+            return "${CurrencyHelper.getSymbol(context)}${"%,d".format(amount.toInt()).replace(",", ".")}"
         }
 
         fun drawHeader(periodLabel: String, income: Int, expense: Int) {
@@ -243,9 +244,9 @@ object ReportPdfGenerator {
             c.drawRoundRect(expenseBoxLeft, y, expenseBoxLeft + boxWidth, y + boxHeight, 10f, 10f, summaryBoxStrokePaint)
 
             c.drawText(context.getString(R.string.report_total_income), incomeBoxLeft + 16f, y + 20f, mutedPaint)
-            c.drawText("₺${formatMoney(income)}", incomeBoxLeft + 16f, y + 40f, headerIncomePaint)
+            c.drawText(formatMoney(income), incomeBoxLeft + 16f, y + 40f, headerIncomePaint)
             c.drawText(context.getString(R.string.report_total_expense), expenseBoxLeft + 16f, y + 20f, mutedPaint)
-            c.drawText("₺${formatMoney(expense)}", expenseBoxLeft + 16f, y + 40f, headerExpensePaint)
+            c.drawText(formatMoney(expense), expenseBoxLeft + 16f, y + 40f, headerExpensePaint)
             y += boxHeight + 16f
         }
 
@@ -271,7 +272,7 @@ object ReportPdfGenerator {
                 val date = LocalDate.parse(transaction.date).format(dateFormatter)
                 val categoryLabel = context.getString(categoryKeyToLabelResId(transaction.category))
                 val isIncome = transaction.type == "INCOME"
-                val amountText = "${if (isIncome) "+" else "-"}₺${formatMoney(transaction.amount)}"
+                val amountText = "${if (isIncome) "+" else "-"}${formatMoney(transaction.amount)}"
                 c.drawText(date, MARGIN, y + 10f, mutedPaint)
                 c.drawText(categoryLabel, MARGIN + 60f, y + 10f, bodyPaint)
                 val amountPaint = if (isIncome) incomeRightPaint else expenseRightPaint
@@ -292,7 +293,7 @@ object ReportPdfGenerator {
                 val c = canvas!!
                 val label = context.getString(categoryKeyToLabelResId(item.categoryKey))
                 c.drawText(label, MARGIN, y + 10f, bodyPaint)
-                c.drawText("%${item.percentage.toInt()} · ₺${formatMoney(item.amount)}", PAGE_WIDTH - MARGIN, y + 10f, mutedRightPaint)
+                c.drawText("%${item.percentage.toInt()} · ${formatMoney(item.amount)}", PAGE_WIDTH - MARGIN, y + 10f, mutedRightPaint)
                 y += 14f
                 drawBar(item.percentage / 100f, chartColors[index % chartColors.size])
                 y += 12f
@@ -343,7 +344,7 @@ object ReportPdfGenerator {
                 val px = axisLeft + stepX * index
                 val py = chartBottom - (item.amount / axisMax) * chartHeight
                 c.drawCircle(px, py, 3f, pointPaint)
-                c.drawText("₺${formatMoney(item.amount)}", px, py - 8f, trendValuePaint)
+                c.drawText(formatMoney(item.amount), px, py - 8f, trendValuePaint)
                 c.drawText(item.label, px, chartBottom + 16f, mutedCenterPaint)
             }
 
@@ -384,12 +385,12 @@ object ReportPdfGenerator {
                     else -> ContextCompat.getColor(context, R.color.income_green)
                 }
                 c.drawText(label, MARGIN, y + 10f, bodyPaint)
-                c.drawText("₺${formatMoney(used)} / ₺${formatMoney(limit)}", PAGE_WIDTH - MARGIN, y + 10f, mutedRightPaint)
+                c.drawText("${formatMoney(used)} / ${formatMoney(limit)}", PAGE_WIDTH - MARGIN, y + 10f, mutedRightPaint)
                 y += 14f
                 drawBar(progress, color)
                 y += 12f
                 c.drawText(
-                    context.getString(R.string.report_budget_status_format, "%$percentage", "₺${formatMoney(remaining)}"),
+                    context.getString(R.string.report_budget_status_format, "%$percentage", formatMoney(remaining)),
                     MARGIN,
                     y + 8f,
                     mutedPaint
@@ -411,7 +412,7 @@ object ReportPdfGenerator {
                 val progress = (goal.currentAmount / goal.targetAmount.coerceAtLeast(1.0)).toFloat().coerceIn(0f, 1f)
                 val percentage = (progress * 100).toInt()
                 c.drawText("${goal.name} (${goal.category})", MARGIN, y + 10f, bodyPaint)
-                c.drawText("₺${formatMoney(goal.currentAmount)} / ₺${formatMoney(goal.targetAmount)}", PAGE_WIDTH - MARGIN, y + 10f, mutedRightPaint)
+                c.drawText("${formatMoney(goal.currentAmount)} / ${formatMoney(goal.targetAmount)}", PAGE_WIDTH - MARGIN, y + 10f, mutedRightPaint)
                 y += 14f
                 drawBar(progress, ContextCompat.getColor(context, R.color.bottom_bar_fab))
                 y += 12f

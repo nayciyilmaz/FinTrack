@@ -30,7 +30,7 @@
     <string name="budget_status_exceeded">Limit Aşıldı</string>
     <string name="budget_status_warning">Uyarı</string>
     <string name="budget_status_normal">Normal</string>
-    <string name="budget_usage_summary">Bütçenin %%%1$d\'ini kullandın · ₺%2$s kaldı</string>
+    <string name="budget_usage_summary">Bütçenin %%%1$d\'ini kullandın · %2$s kaldı</string>
     <string name="title_payment_reminders">Hatırlatıcılar</string>
     <string name="title_reports">Raporlar</string>
     <string name="title_profile">Profil</string>
@@ -94,7 +94,7 @@
     <string name="label_confirm">Tamam</string>
     <string name="label_category">Kategori</string>
     <string name="label_amount">İşlem Tutarı</string>
-    <string name="label_amount_placeholder">0.00 ₺</string>
+    <string name="label_amount_placeholder">0.00 %1$s</string>
     <string name="label_note_placeholder">Açıklama Ekle</string>
     <string name="category_diger">Genel</string>
     <string name="label_date_time">Tarih ve Saat</string>

@@ -53,6 +53,7 @@ import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
 import com.example.fintrack.core.constants.expenseCategories
+import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.presentation.components.EditIconButton
 import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditScaffold
@@ -288,7 +289,7 @@ private fun ManageLimitsDialog(
                         color = colorResource(id = R.color.text_primary)
                     )
                     Text(
-                        text = "₺${"%,d".format(uiState.totalLimit).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(uiState.totalLimit).replace(",", ".")}",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = colorResource(id = R.color.bottom_bar_fab)
                     )
@@ -360,7 +361,7 @@ private fun BudgetCard(
                         color = Color.White
                     )
                     Text(
-                        text = "₺${"%,d".format(totalBudget).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(totalBudget).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White
                     )
@@ -375,7 +376,7 @@ private fun BudgetCard(
                         color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
-                        text = "₺${"%,d".format(usedBudget).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(usedBudget).replace(",", ".")}",
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White.copy(alpha = 0.85f)
                     )
@@ -392,7 +393,7 @@ private fun BudgetCard(
                 text = stringResource(
                     id = R.string.budget_usage_summary,
                     percentage,
-                    "%,d".format(remaining).replace(",", ".")
+                    "${currencySymbol()}${"%,d".format(remaining).replace(",", ".")}"
                 ),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = Color.White.copy(alpha = 0.85f)
@@ -485,12 +486,12 @@ private fun CategoryLimitCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "₺${"%,d".format(usedAmount).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(usedAmount).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = colorResource(id = R.color.text_primary)
                     )
                     Text(
-                        text = "₺${"%,d".format(limitAmount).replace(",", ".")}",
+                        text = "${currencySymbol()}${"%,d".format(limitAmount).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                         color = Color.DarkGray
                     )

@@ -40,10 +40,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.CurrencyHelper
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.PeriodSelector
 import androidx.compose.ui.res.integerArrayResource
 import java.text.NumberFormat
+import java.util.Currency
 import java.util.Locale
 
 @Composable
@@ -263,8 +265,10 @@ private fun SpendingSummaryCards(
     summaryLow: SpendingSummary,
     modifier: Modifier = Modifier
 ) {
-    val numberFormat = remember {
+    val currencyCode = CurrencyHelper.getCurrency(LocalContext.current)
+    val numberFormat = remember(currencyCode) {
         NumberFormat.getCurrencyInstance(Locale("tr", "TR")).apply {
+            currency = Currency.getInstance(currencyCode)
             maximumFractionDigits = 0
         }
     }

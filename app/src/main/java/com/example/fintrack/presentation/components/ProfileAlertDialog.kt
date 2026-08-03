@@ -351,7 +351,7 @@ fun SettingsDialogHost(
                 uiState = uiState.settingsDialogState,
                 onOptionSelect = viewModel::onCurrencyOptionSelect,
                 onDismiss = viewModel::onDismissSettingsDialog,
-                onApply = {}
+                onApply = viewModel::onApplyCurrency
             )
         }
         SettingsDialogType.LANGUAGE -> {

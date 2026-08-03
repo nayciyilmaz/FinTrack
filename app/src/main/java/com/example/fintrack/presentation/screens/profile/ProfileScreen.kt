@@ -167,6 +167,7 @@ fun ProfileScreen(
                     modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
                 )
                 AppSettingsCard(
+                    currentCurrencyDisplay = uiState.currentCurrencyDisplay,
                     currentLanguageDisplay = uiState.currentLanguageDisplay,
                     onCurrencyClick = viewModel::onShowCurrencyDialog,
                     onLanguageClick = viewModel::onShowLanguageDialog,
@@ -366,6 +367,7 @@ private fun InfoRow(
 
 @Composable
 private fun AppSettingsCard(
+    currentCurrencyDisplay: String,
     currentLanguageDisplay: String,
     onCurrencyClick: () -> Unit,
     onLanguageClick: () -> Unit,
@@ -383,7 +385,7 @@ private fun AppSettingsCard(
         SettingRowWithValue(
             icon = Icons.Filled.AccountBalance,
             title = stringResource(id = R.string.profile_currency),
-            value = stringResource(id = R.string.profile_currency_try),
+            value = currentCurrencyDisplay,
             onClick = onCurrencyClick
         )
         HorizontalDivider(
