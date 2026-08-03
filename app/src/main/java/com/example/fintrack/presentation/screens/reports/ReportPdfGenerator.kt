@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import androidx.core.content.ContextCompat
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.domain.model.Budget
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.model.Transaction
@@ -85,7 +86,7 @@ object ReportPdfGenerator {
         private val context: Context,
         private val document: PdfDocument
     ) {
-        private val locale = Locale("tr")
+        private val locale = LocaleHelper.getLocale(context)
         private val contentWidth = PAGE_WIDTH - 2 * MARGIN
         private val chartColors = context.resources.getIntArray(R.array.chart_colors)
 

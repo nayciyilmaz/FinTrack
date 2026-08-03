@@ -428,7 +428,7 @@ private fun RecentTransactionsContent(
                     TransactionRow(
                         icon = categoryKeyToIcon(item.transaction.category),
                         title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
-                        dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter)} · ${item.transaction.time}",
+                        dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter())} · ${item.transaction.time}",
                         amount = "${if (isIncome) "+" else "-"}₺${item.transaction.amount}",
                         remainingBalance = "Kalan: ₺%.2f".format(item.remainingBalance),
                         amountColor = if (isIncome)

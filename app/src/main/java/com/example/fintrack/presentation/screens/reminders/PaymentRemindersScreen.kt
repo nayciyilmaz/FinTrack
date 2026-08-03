@@ -341,7 +341,7 @@ private fun ReminderTransactionRow(
     TransactionRow(
         icon = categoryKeyToIcon(transaction.category),
         title = stringResource(id = categoryKeyToLabelResId(transaction.category)),
-        dateTime = "${LocalDate.parse(transaction.date).format(dateFormatter)} · ${transaction.time}",
+        dateTime = "${LocalDate.parse(transaction.date).format(dateFormatter())} · ${transaction.time}",
         amount = "${if (isIncome) "+" else "-"}₺${transaction.amount}",
         remainingBalance = remainingText,
         amountColor = if (isIncome) colorResource(id = R.color.income_green) else colorResource(id = R.color.expense_red),

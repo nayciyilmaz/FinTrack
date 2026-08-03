@@ -1,8 +1,10 @@
 package com.example.fintrack
 
 import android.app.Application
+import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.notification.ReminderNotificationHelper
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -12,6 +14,11 @@ class FinTrackApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    override fun attachBaseContext(base: Context) {
+        val languageCode = LocaleHelper.getLanguage(base)
+        super.attachBaseContext(LocaleHelper.setLocale(base, languageCode))
+    }
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()

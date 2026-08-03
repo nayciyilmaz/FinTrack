@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
@@ -40,7 +41,7 @@ class ReportsViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    private val locale = Locale("tr")
+    private val locale = LocaleHelper.getLocale(context)
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     private val _uiState = MutableStateFlow(ReportsUiState())

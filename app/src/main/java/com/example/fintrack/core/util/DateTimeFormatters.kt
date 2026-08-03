@@ -1,8 +1,17 @@
 package com.example.fintrack.core.util
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
-val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("tr"))
 val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-val monthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("tr"))
+
+@Composable
+fun dateFormatter(): DateTimeFormatter {
+    return DateTimeFormatter.ofPattern("dd MMMM yyyy", LocaleHelper.getLocale(LocalContext.current))
+}
+
+@Composable
+fun monthFormatter(): DateTimeFormatter {
+    return DateTimeFormatter.ofPattern("MMMM yyyy", LocaleHelper.getLocale(LocalContext.current))
+}

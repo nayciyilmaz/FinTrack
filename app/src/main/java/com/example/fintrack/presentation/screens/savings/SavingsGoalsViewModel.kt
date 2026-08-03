@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
@@ -290,7 +291,7 @@ class SavingsGoalsViewModel @Inject constructor(
         val estimatedMonths = (remaining / monthlyRate).toLong()
         val estimatedDate = today.plusMonths(estimatedMonths)
 
-        val locale = Locale("tr")
+        val locale = LocaleHelper.getLocale(context)
         val month = estimatedDate.month.getDisplayName(TextStyle.SHORT, locale)
             .replaceFirstChar { it.uppercase(locale) }
         return "$month. ${estimatedDate.year}"

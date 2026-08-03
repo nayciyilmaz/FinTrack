@@ -70,7 +70,7 @@ fun EditDatePicker(
                             onClick = { onMonthChange(currentMonth.minusMonths(1)) }
                         )
                         Text(
-                            text = currentMonth.format(monthFormatter),
+                            text = currentMonth.format(monthFormatter()),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Black
                         )

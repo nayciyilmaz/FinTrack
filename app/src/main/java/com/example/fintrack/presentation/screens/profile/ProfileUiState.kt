@@ -37,5 +37,7 @@ data class SettingsDialogState(
 data class ProfileUiState(
     val editState: ProfileEditState = ProfileEditState(),
     val settingsDialogState: SettingsDialogState = SettingsDialogState(),
-    val showLogoutConfirmDialog: Boolean = false
+    val showLogoutConfirmDialog: Boolean = false,
+    val shouldRecreateActivity: Boolean = false,
+    val currentLanguageDisplay: String = ""
 )

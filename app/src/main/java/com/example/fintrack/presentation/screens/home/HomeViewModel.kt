@@ -1,13 +1,16 @@
 package com.example.fintrack.presentation.screens.home
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.presentation.screens.transactions.TransactionDisplayItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,13 +21,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _actionState = MutableStateFlow(HomeActionState())
@@ -100,7 +103,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun formatPeriodText(start: LocalDate, end: LocalDate): String {
-        val locale = Locale("tr")
+        val locale = LocaleHelper.getLocale(context)
         val startMonth = start.month.getDisplayName(TextStyle.FULL, locale)
             .replaceFirstChar { it.uppercase(locale) }
         val endMonth = end.month.getDisplayName(TextStyle.FULL, locale)

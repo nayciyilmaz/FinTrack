@@ -129,7 +129,7 @@ fun UpdateTransactionScreen(
                 onNoteChange = viewModel::onNoteChange
             )
             DateTimeSection(
-                date = uiState.selectedDate?.format(dateFormatter) ?: "",
+                date = uiState.selectedDate?.format(dateFormatter()) ?: "",
                 time = uiState.selectedTime?.format(timeFormatter) ?: "",
                 onDateClick = viewModel::onDatePickerShow,
                 onTimeClick = viewModel::onTimePickerShow

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
@@ -43,7 +44,9 @@ class ProfileViewModel @Inject constructor(
     private val _actionState = MutableStateFlow(ProfileActionState())
     val actionState: StateFlow<ProfileActionState> = _actionState.asStateFlow()
 
-    private val _uiState = MutableStateFlow(ProfileUiState())
+    private val _uiState = MutableStateFlow(
+        ProfileUiState(currentLanguageDisplay = languageDisplayName(LocaleHelper.getLanguage(context)))
+    )
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     fun onShowNameDialog() {
@@ -148,7 +151,7 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(
                 activeSettingsDialog = SettingsDialogType.LANGUAGE,
-                selectedLanguageOption = context.getString(R.string.profile_language_tr)
+                selectedLanguageOption = languageDisplayName(LocaleHelper.getLanguage(context))
             )
         )
     }
@@ -178,6 +181,44 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(selectedLanguageOption = value)
         )
+    }
+
+    fun onApplyLanguage() {
+        val selectedLanguageDisplay = _uiState.value.settingsDialogState.selectedLanguageOption
+        val languageCode = languageCode(selectedLanguageDisplay)
+        val currentLanguageCode = LocaleHelper.getLanguage(context)
+
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(activeSettingsDialog = null),
+            currentLanguageDisplay = selectedLanguageDisplay
+        )
+
+        if (languageCode != currentLanguageCode) {
+            LocaleHelper.saveLanguage(context, languageCode)
+            _uiState.value = _uiState.value.copy(shouldRecreateActivity = true)
+        }
+    }
+
+    fun onRecreateActivityHandled() {
+        _uiState.value = _uiState.value.copy(shouldRecreateActivity = false)
+    }
+
+    private fun languageDisplayName(languageCode: String): String {
+        return when (languageCode) {
+            "tr" -> context.getString(R.string.profile_language_tr)
+            "en" -> context.getString(R.string.profile_language_en)
+            "de" -> context.getString(R.string.profile_language_de)
+            else -> context.getString(R.string.profile_language_tr)
+        }
+    }
+
+    private fun languageCode(languageDisplayName: String): String {
+        return when (languageDisplayName) {
+            context.getString(R.string.profile_language_tr) -> "tr"
+            context.getString(R.string.profile_language_en) -> "en"
+            context.getString(R.string.profile_language_de) -> "de"
+            else -> "tr"
+        }
     }
 
     fun onFontSizeOptionSelect(value: String) {
@@ -359,7 +400,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun formatPasswordChangedAt(dateTime: java.time.LocalDateTime): String {
-        val locale = Locale("tr")
+        val locale = LocaleHelper.getLocale(context)
         val month = dateTime.month.getDisplayName(TextStyle.FULL, locale)
             .replaceFirstChar { it.uppercase(locale) }
         val time = "%02d:%02d".format(dateTime.hour, dateTime.minute)

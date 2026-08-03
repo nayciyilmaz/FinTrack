@@ -1,5 +1,6 @@
 package com.example.fintrack
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.presentation.navigation.FinTrackNavigation
 import com.example.fintrack.ui.theme.FinTrackTheme
 
@@ -20,6 +22,11 @@ import com.example.fintrack.ui.theme.FinTrackTheme
 class MainActivity : ComponentActivity() {
 
     private var openReminders by mutableStateOf(false)
+
+    override fun attachBaseContext(newBase: Context) {
+        val languageCode = LocaleHelper.getLanguage(newBase)
+        super.attachBaseContext(LocaleHelper.setLocale(newBase, languageCode))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

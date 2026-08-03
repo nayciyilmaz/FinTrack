@@ -1,5 +1,6 @@
 package com.example.fintrack.presentation.screens.profile
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +33,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -67,6 +70,7 @@ fun ProfileScreen(
     val actionState by viewModel.actionState.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -76,6 +80,13 @@ fun ProfileScreen(
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    LaunchedEffect(uiState.shouldRecreateActivity) {
+        if (uiState.shouldRecreateActivity) {
+            (context as? Activity)?.recreate()
+            viewModel.onRecreateActivityHandled()
+        }
     }
 
     ProfileDialogHost(uiState = uiState, viewModel = viewModel)
@@ -156,6 +167,7 @@ fun ProfileScreen(
                     modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
                 )
                 AppSettingsCard(
+                    currentLanguageDisplay = uiState.currentLanguageDisplay,
                     onCurrencyClick = viewModel::onShowCurrencyDialog,
                     onLanguageClick = viewModel::onShowLanguageDialog,
                     onFontSizeClick = viewModel::onShowFontSizeDialog
@@ -354,6 +366,7 @@ private fun InfoRow(
 
 @Composable
 private fun AppSettingsCard(
+    currentLanguageDisplay: String,
     onCurrencyClick: () -> Unit,
     onLanguageClick: () -> Unit,
     onFontSizeClick: () -> Unit,
@@ -380,7 +393,7 @@ private fun AppSettingsCard(
         SettingRowWithValue(
             icon = Icons.Filled.Language,
             title = stringResource(id = R.string.profile_language),
-            value = stringResource(id = R.string.profile_language_tr),
+            value = currentLanguageDisplay,
             onClick = onLanguageClick
         )
         HorizontalDivider(

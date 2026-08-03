@@ -359,7 +359,7 @@ fun SettingsDialogHost(
                 uiState = uiState.settingsDialogState,
                 onOptionSelect = viewModel::onLanguageOptionSelect,
                 onDismiss = viewModel::onDismissSettingsDialog,
-                onApply = {}
+                onApply = viewModel::onApplyLanguage
             )
         }
         SettingsDialogType.FONT_SIZE -> {

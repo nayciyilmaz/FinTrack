@@ -1,11 +1,14 @@
 package com.example.fintrack.presentation.screens.analysis
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,15 +16,15 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class SpendingAnalysisViewModel @Inject constructor(
-    private val getTransactionsUseCase: GetTransactionsUseCase
+    private val getTransactionsUseCase: GetTransactionsUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    private val locale = Locale("tr")
+    private val locale = LocaleHelper.getLocale(context)
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     private val _uiState = MutableStateFlow(SpendingAnalysisUiState())
