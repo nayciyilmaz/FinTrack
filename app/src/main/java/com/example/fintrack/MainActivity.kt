@@ -10,10 +10,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import com.example.fintrack.core.util.FontSizeHelper
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.ThemeHelper
 import com.example.fintrack.presentation.navigation.FinTrackNavigation
@@ -36,15 +40,23 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         openReminders = intent.getBooleanExtra(EXTRA_OPEN_REMINDERS, false)
         setContent {
-            FinTrackTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    FinTrackNavigation(
-                        openReminders = openReminders,
-                        onRemindersConsumed = { openReminders = false }
-                    )
+            val fontScale = FontSizeHelper.getScale(this)
+            CompositionLocalProvider(
+                LocalDensity provides Density(
+                    density = LocalDensity.current.density,
+                    fontScale = fontScale
+                )
+            ) {
+                FinTrackTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        FinTrackNavigation(
+                            openReminders = openReminders,
+                            onRemindersConsumed = { openReminders = false }
+                        )
+                    }
                 }
             }
         }

@@ -165,6 +165,7 @@ fun ProfileScreen(
                     currentCurrencyDisplay = uiState.currentCurrencyDisplay,
                     currentLanguageDisplay = uiState.currentLanguageDisplay,
                     currentThemeDisplay = uiState.currentThemeDisplay,
+                    currentFontSizeDisplay = uiState.currentFontSizeDisplay,
                     onCurrencyClick = viewModel::onShowCurrencyDialog,
                     onLanguageClick = viewModel::onShowLanguageDialog,
                     onFontSizeClick = viewModel::onShowFontSizeDialog,
@@ -367,6 +368,7 @@ private fun AppSettingsCard(
     currentCurrencyDisplay: String,
     currentLanguageDisplay: String,
     currentThemeDisplay: String,
+    currentFontSizeDisplay: String,
     onCurrencyClick: () -> Unit,
     onLanguageClick: () -> Unit,
     onFontSizeClick: () -> Unit,
@@ -402,7 +404,7 @@ private fun AppSettingsCard(
         SettingRowWithValue(
             icon = Icons.Filled.TextFields,
             title = stringResource(id = R.string.profile_font_size),
-            value = stringResource(id = R.string.profile_font_size_medium),
+            value = currentFontSizeDisplay,
             onClick = onFontSizeClick
         )
         HorizontalDivider(

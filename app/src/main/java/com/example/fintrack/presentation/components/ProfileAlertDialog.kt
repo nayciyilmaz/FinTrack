@@ -367,7 +367,7 @@ fun SettingsDialogHost(
                 uiState = uiState.settingsDialogState,
                 onOptionSelect = viewModel::onFontSizeOptionSelect,
                 onDismiss = viewModel::onDismissSettingsDialog,
-                onApply = {}
+                onApply = viewModel::onApplyFontSize
             )
         }
         SettingsDialogType.DARK_MODE -> {

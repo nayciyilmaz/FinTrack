@@ -42,5 +42,6 @@ data class ProfileUiState(
     val shouldRecreateActivity: Boolean = false,
     val currentLanguageDisplay: String = "",
     val currentCurrencyDisplay: String = "",
-    val currentThemeDisplay: String = ""
+    val currentThemeDisplay: String = "",
+    val currentFontSizeDisplay: String = ""
 )

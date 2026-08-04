@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
 import com.example.fintrack.core.util.CurrencyHelper
+import com.example.fintrack.core.util.FontSizeHelper
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.core.util.ThemeHelper
@@ -50,7 +51,8 @@ class ProfileViewModel @Inject constructor(
         ProfileUiState(
             currentLanguageDisplay = languageDisplayName(LocaleHelper.getLanguage(context)),
             currentCurrencyDisplay = currencyDisplayName(CurrencyHelper.getCurrency(context)),
-            currentThemeDisplay = themeDisplayName(ThemeHelper.getTheme(context))
+            currentThemeDisplay = themeDisplayName(ThemeHelper.getTheme(context)),
+            currentFontSizeDisplay = fontSizeDisplayName(FontSizeHelper.getFontSize(context))
         )
     )
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -166,7 +168,7 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(
                 activeSettingsDialog = SettingsDialogType.FONT_SIZE,
-                selectedFontSizeOption = "Orta"
+                selectedFontSizeOption = fontSizeDisplayName(FontSizeHelper.getFontSize(context))
             )
         )
     }
@@ -274,6 +276,38 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(selectedFontSizeOption = value)
         )
+    }
+
+    fun onApplyFontSize() {
+        val selectedFontSizeDisplay = _uiState.value.settingsDialogState.selectedFontSizeOption
+        val fontSize = fontSizeCode(selectedFontSizeDisplay)
+        val currentFontSize = FontSizeHelper.getFontSize(context)
+
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(activeSettingsDialog = null),
+            currentFontSizeDisplay = selectedFontSizeDisplay
+        )
+
+        if (fontSize != currentFontSize) {
+            FontSizeHelper.saveFontSize(context, fontSize)
+            _uiState.value = _uiState.value.copy(shouldRecreateActivity = true)
+        }
+    }
+
+    private fun fontSizeDisplayName(fontSize: String): String {
+        return when (fontSize) {
+            "small" -> context.getString(R.string.profile_font_size_small)
+            "large" -> context.getString(R.string.profile_font_size_large)
+            else -> context.getString(R.string.profile_font_size_medium)
+        }
+    }
+
+    private fun fontSizeCode(fontSizeDisplayName: String): String {
+        return when (fontSizeDisplayName) {
+            context.getString(R.string.profile_font_size_small) -> "small"
+            context.getString(R.string.profile_font_size_large) -> "large"
+            else -> "medium"
+        }
     }
 
     fun onDarkModeOptionSelect(value: String) {
