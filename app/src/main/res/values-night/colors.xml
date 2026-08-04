@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_color">#FF181310</color>
+    <color name="bottom_bar_background">#FFFF8A3D</color>
+    <color name="bottom_bar_fab">#FFFF7A1F</color>
+    <color name="text_primary">#FFF5F1EC</color>
+    <color name="text_secondary">#FFB8AFA6</color>
+    <color name="text_on_surface">#FFD8D0C8</color>
+    <color name="icon_orange">#FFFF8A3D</color>
+    <color name="sign_in_title">#FFFFA366</color>
+    <color name="sign_in_google_button">#FF2A2A2A</color>
+    <color name="wave_color">#FFCC6A2E</color>
+    <color name="scaffold_background">#FF181310</color>
+    <color name="quick_action_background">#FF241E19</color>
+    <color name="income_green">#FF66BB6A</color>
+    <color name="expense_red">#FFEF5350</color>
+    <color name="surface_gray">#FF211C18</color>
+    <color name="progress_track">#FF2E2822</color>
+    <color name="text_tertiary">#FF9C948B</color>
+    <color name="text_quaternary">#FF7A736B</color>
+    <color name="transaction_expense_background">#FF3A2323</color>
+    <color name="transaction_income_background">#FF213A26</color>
+    <color name="divider_color">#FF3A342E</color>
+    <color name="switch_unchecked_track">#FF4A443D</color>
+    <color name="budget_used_amount">#FF4A3520</color>
+    <color name="card_background">#FF211C18</color>
+    <integer-array name="chart_colors">
+        <item>0xFFFF8A3D</item>
+        <item>0xFF64B5F6</item>
+        <item>0xFF66BB6A</item>
+        <item>0xFFBA68C8</item>
+    </integer-array>
+</resources>

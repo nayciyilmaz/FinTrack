@@ -378,7 +378,7 @@ private fun AiCommentCard(
             .padding(bottom = 8.dp),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Column(
             modifier = modifier

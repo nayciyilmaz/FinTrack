@@ -137,7 +137,7 @@ private fun TransactionsContent(
                 modifier = modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
-                    .background(Color.White)
+                    .background(colorResource(id = R.color.card_background))
                     .padding(horizontal = 20.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {

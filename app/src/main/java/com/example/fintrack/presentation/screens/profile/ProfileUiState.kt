@@ -41,5 +41,6 @@ data class ProfileUiState(
     val showLogoutConfirmDialog: Boolean = false,
     val shouldRecreateActivity: Boolean = false,
     val currentLanguageDisplay: String = "",
-    val currentCurrencyDisplay: String = ""
+    val currentCurrencyDisplay: String = "",
+    val currentThemeDisplay: String = ""
 )

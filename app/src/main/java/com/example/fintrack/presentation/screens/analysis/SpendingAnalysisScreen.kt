@@ -114,7 +114,7 @@ private fun CategoryDistributionSection(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
-            .background(Color.White)
+            .background(colorResource(id = R.color.card_background))
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(24.dp)
@@ -188,7 +188,7 @@ private fun SpendingTrendSection(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
-            .background(Color.White)
+            .background(colorResource(id = R.color.card_background))
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -281,7 +281,7 @@ private fun SpendingSummaryCards(
             modifier = Modifier
                 .weight(1f)
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color.White)
+                .background(colorResource(id = R.color.card_background))
                 .padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
@@ -304,7 +304,7 @@ private fun SpendingSummaryCards(
             modifier = Modifier
                 .weight(1f)
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color.White)
+                .background(colorResource(id = R.color.card_background))
                 .padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
@@ -333,6 +333,7 @@ private fun DonutChart(
     modifier: Modifier = Modifier
 ) {
     val totalPercentage = percentages.sum()
+    val emptyArcColor = colorResource(id = R.color.divider_color)
 
     Box(
         contentAlignment = Alignment.Center,
@@ -349,7 +350,7 @@ private fun DonutChart(
 
             if (totalPercentage == 0f) {
                 drawArc(
-                    color = Color.Black,
+                    color = emptyArcColor,
                     startAngle = 0f,
                     sweepAngle = 360f,
                     useCenter = false,

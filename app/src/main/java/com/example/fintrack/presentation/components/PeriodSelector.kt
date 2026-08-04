@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,7 +43,7 @@ fun PeriodSelector(
         Row(
             modifier = modifier
                 .clip(RoundedCornerShape(20.dp))
-                .border(1.dp, Color.Black.copy(alpha = 0.15f), RoundedCornerShape(20.dp))
+                .border(1.dp, colorResource(id = R.color.text_primary).copy(alpha = 0.15f), RoundedCornerShape(20.dp))
                 .clickable { expanded = true }
                 .padding(horizontal = 14.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -52,12 +52,12 @@ fun PeriodSelector(
             Text(
                 text = selectedPeriod,
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                color = Color.Black
+                color = colorResource(id = R.color.text_primary)
             )
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowDown,
                 contentDescription = null,
-                tint = Color.Black
+                tint = colorResource(id = R.color.text_primary)
             )
         }
         DropdownMenu(
@@ -70,7 +70,7 @@ fun PeriodSelector(
                         Text(
                             text = period,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Black
+                            color = colorResource(id = R.color.text_primary)
                         )
                     },
                     onClick = {

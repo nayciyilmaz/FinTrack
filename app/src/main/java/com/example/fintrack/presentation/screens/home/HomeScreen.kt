@@ -178,7 +178,7 @@ private fun BudgetDetails(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
-            .background(Color.White)
+            .background(colorResource(id = R.color.card_background))
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -281,7 +281,7 @@ private fun QuickActions(
             modifier = modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(28.dp))
-                .background(Color.White)
+                .background(colorResource(id = R.color.card_background))
                 .padding(horizontal = 20.dp, vertical = 4.dp)
         ) {
             Row(
@@ -357,7 +357,7 @@ private fun RecentTransactions(
                     )
                 },
                 text = stringResource(id = R.string.label_all_transactions),
-                color = Color.Black
+                color = colorResource(id = R.color.text_primary)
             )
         }
         RecentTransactionsContent(
@@ -421,7 +421,7 @@ private fun RecentTransactionsContent(
                 modifier = modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
-                    .background(Color.White)
+                    .background(colorResource(id = R.color.card_background))
                     .padding(horizontal = 20.dp, vertical = 4.dp)
             ) {
                 transactions.forEachIndexed { index, item ->

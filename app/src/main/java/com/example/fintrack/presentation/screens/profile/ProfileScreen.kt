@@ -144,7 +144,7 @@ fun ProfileScreen(
                 Text(
                     text = stringResource(id = R.string.profile_section_account_info),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.Black,
+                    color = colorResource(id = R.color.text_primary),
                     modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
                 )
                 AccountInfoCard(
@@ -158,12 +158,13 @@ fun ProfileScreen(
                 Text(
                     text = stringResource(id = R.string.profile_section_app_settings),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.Black,
+                    color = colorResource(id = R.color.text_primary),
                     modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
                 )
                 AppSettingsCard(
                     currentCurrencyDisplay = uiState.currentCurrencyDisplay,
                     currentLanguageDisplay = uiState.currentLanguageDisplay,
+                    currentThemeDisplay = uiState.currentThemeDisplay,
                     onCurrencyClick = viewModel::onShowCurrencyDialog,
                     onLanguageClick = viewModel::onShowLanguageDialog,
                     onFontSizeClick = viewModel::onShowFontSizeDialog,
@@ -181,7 +182,7 @@ fun ProfileScreen(
                             RoundedCornerShape(12.dp)
                         ),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
+                        containerColor = colorResource(id = R.color.card_background),
                         contentColor = colorResource(id = R.color.expense_red)
                     ),
                     style = MaterialTheme.typography.bodyLarge.copy(
@@ -249,7 +250,7 @@ private fun StatCard(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(colorResource(id = R.color.card_background))
             .padding(vertical = 14.dp, horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -281,7 +282,7 @@ private fun AccountInfoCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.White)
+            .background(colorResource(id = R.color.card_background))
     ) {
         InfoRow(
             icon = Icons.Filled.Person,
@@ -350,13 +351,13 @@ private fun InfoRow(
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.DarkGray
+                color = colorResource(id = R.color.text_secondary)
             )
         }
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint = Color.Black.copy(alpha = 0.2f)
+            tint = colorResource(id = R.color.text_primary).copy(alpha = 0.2f)
         )
     }
 }
@@ -365,6 +366,7 @@ private fun InfoRow(
 private fun AppSettingsCard(
     currentCurrencyDisplay: String,
     currentLanguageDisplay: String,
+    currentThemeDisplay: String,
     onCurrencyClick: () -> Unit,
     onLanguageClick: () -> Unit,
     onFontSizeClick: () -> Unit,
@@ -375,7 +377,7 @@ private fun AppSettingsCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.White)
+            .background(colorResource(id = R.color.card_background))
     ) {
         SettingRowWithValue(
             icon = Icons.Filled.AccountBalance,
@@ -410,7 +412,7 @@ private fun AppSettingsCard(
         SettingRowWithValue(
             icon = Icons.Filled.DarkMode,
             title = stringResource(id = R.string.profile_theme),
-            value = stringResource(id = R.string.profile_dark_mode_light),
+            value = currentThemeDisplay,
             onClick = onDarkModeClick
         )
     }
@@ -458,12 +460,12 @@ private fun SettingRowWithValue(
             Text(
                 text = value,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.DarkGray
+                color = colorResource(id = R.color.text_secondary)
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = Color.Black.copy(alpha = 0.2f)
+                tint = colorResource(id = R.color.text_primary).copy(alpha = 0.2f)
             )
         }
     }

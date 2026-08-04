@@ -262,7 +262,7 @@ private fun ReportPeriodSelector(
             .padding(bottom = 8.dp),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Row(
             modifier = modifier
@@ -352,7 +352,7 @@ private fun ReportContentCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Column(
             modifier = modifier

@@ -85,7 +85,7 @@ private fun EditTopAppBar(
                 EditIconButton(
                     onClick = { navController.popBackStack() },
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    tint = Color.Black
+                    tint = colorResource(id = R.color.text_primary)
                 )
             }
         }
@@ -100,7 +100,7 @@ private fun EditBottomAppBar(
 ) {
     NavigationBar(
         modifier = modifier,
-        containerColor = Color.White,
+        containerColor = colorResource(id = R.color.card_background),
         contentColor = colorResource(id = R.color.bottom_bar_fab)
     ) {
         bottomNavItems.forEachIndexed { index, item ->
@@ -157,9 +157,9 @@ private fun EditBottomAppBar(
                     },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = colorResource(id = R.color.bottom_bar_fab),
-                        unselectedIconColor = Color.Gray,
+                        unselectedIconColor = colorResource(id = R.color.text_secondary),
                         selectedTextColor = colorResource(id = R.color.bottom_bar_fab),
-                        unselectedTextColor = Color.Gray,
+                        unselectedTextColor = colorResource(id = R.color.text_secondary),
                         indicatorColor = colorResource(id = R.color.icon_orange).copy(alpha = 0.15f)
                     )
                 )

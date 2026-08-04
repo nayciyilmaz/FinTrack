@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.example.fintrack.core.util.LocaleHelper
+import com.example.fintrack.core.util.ThemeHelper
 import com.example.fintrack.notification.ReminderNotificationHelper
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -17,7 +18,9 @@ class FinTrackApplication : Application(), Configuration.Provider {
 
     override fun attachBaseContext(base: Context) {
         val languageCode = LocaleHelper.getLanguage(base)
-        super.attachBaseContext(LocaleHelper.setLocale(base, languageCode))
+        val localizedContext = LocaleHelper.setLocale(base, languageCode)
+        val theme = ThemeHelper.getTheme(localizedContext)
+        super.attachBaseContext(ThemeHelper.setTheme(localizedContext, theme))
     }
 
     override val workManagerConfiguration: Configuration

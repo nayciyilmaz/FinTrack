@@ -49,7 +49,7 @@ fun EditTimePicker(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(16.dp),
-            color = Color.White,
+            color = colorResource(id = R.color.card_background),
             modifier = modifier.fillMaxWidth()
         ) {
             Column(
@@ -84,7 +84,7 @@ fun EditTimePicker(
                         Text(
                             text = stringResource(id = R.string.label_hour),
                             style = MaterialTheme.typography.labelMedium,
-                            color = Color.Gray,
+                            color = colorResource(id = R.color.text_secondary),
                             modifier = modifier.padding(bottom = 8.dp)
                         )
                         ScrollWheel(
@@ -104,7 +104,7 @@ fun EditTimePicker(
                         Text(
                             text = stringResource(id = R.string.label_minute),
                             style = MaterialTheme.typography.labelMedium,
-                            color = Color.Gray,
+                            color = colorResource(id = R.color.text_secondary),
                             modifier = modifier.padding(bottom = 8.dp)
                         )
                         ScrollWheel(
@@ -182,7 +182,7 @@ fun ScrollWheel(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         fontSize = if (isSelected) 22.sp else 18.sp,
-                        color = if (isSelected) Color.White else Color.Gray,
+                        color = if (isSelected) Color.White else colorResource(id = R.color.text_secondary),
                         textAlign = TextAlign.Center
                     )
                 }

@@ -83,7 +83,7 @@ private fun CategoryItem(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(if (isSelected) colorResource(id = R.color.bottom_bar_fab) else Color.White)
+            .background(if (isSelected) colorResource(id = R.color.bottom_bar_fab) else colorResource(id = R.color.card_background))
             .clickable { onCategorySelected() }
             .padding(horizontal = 18.dp, vertical = 14.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -139,8 +139,8 @@ fun AmountInput(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
                 unfocusedBorderColor = colorResource(id = R.color.text_secondary),
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White
+                focusedContainerColor = colorResource(id = R.color.card_background),
+                unfocusedContainerColor = colorResource(id = R.color.card_background)
             )
         )
     }
@@ -179,8 +179,8 @@ fun NoteInput(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(id = R.color.bottom_bar_fab),
                 unfocusedBorderColor = colorResource(id = R.color.text_secondary),
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White
+                focusedContainerColor = colorResource(id = R.color.card_background),
+                unfocusedContainerColor = colorResource(id = R.color.card_background)
             )
         )
     }
@@ -228,7 +228,7 @@ fun DateTimeSection(
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     disabledBorderColor = colorResource(id = R.color.text_secondary),
-                    disabledContainerColor = Color.White,
+                    disabledContainerColor = colorResource(id = R.color.card_background),
                     disabledTextColor = colorResource(id = R.color.text_primary),
                     disabledLeadingIconColor = colorResource(id = R.color.bottom_bar_fab),
                     disabledPlaceholderColor = colorResource(id = R.color.text_secondary)
@@ -256,7 +256,7 @@ fun DateTimeSection(
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     disabledBorderColor = colorResource(id = R.color.text_secondary),
-                    disabledContainerColor = Color.White,
+                    disabledContainerColor = colorResource(id = R.color.card_background),
                     disabledTextColor = colorResource(id = R.color.text_primary),
                     disabledLeadingIconColor = colorResource(id = R.color.bottom_bar_fab),
                     disabledPlaceholderColor = colorResource(id = R.color.text_secondary)
@@ -279,7 +279,7 @@ fun RecurringPaymentSection(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(colorResource(id = R.color.card_background))
             .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
         RecurringPaymentRow(

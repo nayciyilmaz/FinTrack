@@ -264,7 +264,7 @@ private fun AddGoalDialog(
                                         .clip(RoundedCornerShape(8.dp))
                                         .background(
                                             if (isSelected) Color.White.copy(alpha = 0.2f)
-                                            else Color.White
+                                            else colorResource(id = R.color.card_background)
                                         )
                                         .padding(6.dp)
                                 )
@@ -374,7 +374,7 @@ private fun GoalDetailDialog(
                         Text(
                             text = goal.category,
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.DarkGray
+                            color = colorResource(id = R.color.text_secondary)
                         )
                     }
                 }
@@ -593,7 +593,7 @@ private fun GoalCard(
             .padding(bottom = 8.dp),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Column(
             modifier = modifier
@@ -628,7 +628,7 @@ private fun GoalCard(
                         Text(
                             text = goal.category,
                             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
-                            color = Color.DarkGray
+                            color = colorResource(id = R.color.text_secondary)
                         )
                     }
                 }
@@ -661,7 +661,7 @@ private fun GoalCard(
                     Text(
                         text = "${currencySymbol()}${"%,d".format(goal.targetAmount.toInt()).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
-                        color = Color.DarkGray
+                        color = colorResource(id = R.color.text_secondary)
                     )
                 }
                 ProgressBar(

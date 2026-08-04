@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.fintrack.core.util.LocaleHelper
+import com.example.fintrack.core.util.ThemeHelper
 import com.example.fintrack.presentation.navigation.FinTrackNavigation
 import com.example.fintrack.ui.theme.FinTrackTheme
 
@@ -25,7 +26,9 @@ class MainActivity : ComponentActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         val languageCode = LocaleHelper.getLanguage(newBase)
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, languageCode))
+        val localizedContext = LocaleHelper.setLocale(newBase, languageCode)
+        val theme = ThemeHelper.getTheme(localizedContext)
+        super.attachBaseContext(ThemeHelper.setTheme(localizedContext, theme))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

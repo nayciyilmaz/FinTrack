@@ -375,7 +375,7 @@ fun SettingsDialogHost(
                 uiState = uiState.settingsDialogState,
                 onOptionSelect = viewModel::onDarkModeOptionSelect,
                 onDismiss = viewModel::onDismissSettingsDialog,
-                onApply = {}
+                onApply = viewModel::onApplyTheme
             )
         }
         null -> Unit

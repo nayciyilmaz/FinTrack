@@ -183,7 +183,7 @@ private fun RecurringTabContent(
                 modifier = modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
-                    .background(Color.White)
+                    .background(colorResource(id = R.color.card_background))
                     .padding(horizontal = 20.dp, vertical = 4.dp)
             ) {
                 expenseItems.forEachIndexed { index, item ->
@@ -204,7 +204,7 @@ private fun RecurringTabContent(
                 modifier = modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
-                    .background(Color.White)
+                    .background(colorResource(id = R.color.card_background))
                     .padding(horizontal = 20.dp, vertical = 4.dp)
             ) {
                 incomeItems.forEachIndexed { index, item ->
@@ -288,7 +288,7 @@ private fun ReminderTabContent(
                 modifier = modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
-                    .background(Color.White)
+                    .background(colorResource(id = R.color.card_background))
                     .padding(horizontal = 20.dp, vertical = 4.dp)
             ) {
                 expenseTransactions.forEachIndexed { index, transaction ->
@@ -309,7 +309,7 @@ private fun ReminderTabContent(
                 modifier = modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
-                    .background(Color.White)
+                    .background(colorResource(id = R.color.card_background))
                     .padding(horizontal = 20.dp, vertical = 4.dp)
             ) {
                 incomeTransactions.forEachIndexed { index, transaction ->

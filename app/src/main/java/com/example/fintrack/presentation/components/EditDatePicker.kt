@@ -46,7 +46,7 @@ fun EditDatePicker(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(16.dp),
-            color = Color.White,
+            color = colorResource(id = R.color.card_background),
             modifier = modifier.fillMaxWidth()
         ) {
             Column(
@@ -72,7 +72,7 @@ fun EditDatePicker(
                         Text(
                             text = currentMonth.format(monthFormatter()),
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color.Black
+                            color = colorResource(id = R.color.text_primary)
                         )
                         EditTextButton(
                             text = ">",
@@ -175,7 +175,7 @@ fun CalendarDaysGrid(
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) Color.White else Color.Black
+                                color = if (isSelected) Color.White else colorResource(id = R.color.text_primary)
                             )
                         }
                     }

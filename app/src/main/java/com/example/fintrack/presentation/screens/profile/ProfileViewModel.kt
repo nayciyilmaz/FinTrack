@@ -7,6 +7,7 @@ import com.example.fintrack.R
 import com.example.fintrack.core.util.CurrencyHelper
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.ThemeHelper
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GetUserProfileUseCase
@@ -48,7 +49,8 @@ class ProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(
         ProfileUiState(
             currentLanguageDisplay = languageDisplayName(LocaleHelper.getLanguage(context)),
-            currentCurrencyDisplay = currencyDisplayName(CurrencyHelper.getCurrency(context))
+            currentCurrencyDisplay = currencyDisplayName(CurrencyHelper.getCurrency(context)),
+            currentThemeDisplay = themeDisplayName(ThemeHelper.getTheme(context))
         )
     )
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -173,7 +175,7 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(
                 activeSettingsDialog = SettingsDialogType.DARK_MODE,
-                selectedDarkModeOption = context.getString(R.string.profile_dark_mode_light)
+                selectedDarkModeOption = themeDisplayName(ThemeHelper.getTheme(context))
             )
         )
     }
@@ -278,6 +280,38 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             settingsDialogState = _uiState.value.settingsDialogState.copy(selectedDarkModeOption = value)
         )
+    }
+
+    fun onApplyTheme() {
+        val selectedThemeDisplay = _uiState.value.settingsDialogState.selectedDarkModeOption
+        val theme = themeCode(selectedThemeDisplay)
+        val currentTheme = ThemeHelper.getTheme(context)
+
+        _uiState.value = _uiState.value.copy(
+            settingsDialogState = _uiState.value.settingsDialogState.copy(activeSettingsDialog = null),
+            currentThemeDisplay = selectedThemeDisplay
+        )
+
+        if (theme != currentTheme) {
+            ThemeHelper.saveTheme(context, theme)
+            _uiState.value = _uiState.value.copy(shouldRecreateActivity = true)
+        }
+    }
+
+    private fun themeDisplayName(theme: String): String {
+        return when (theme) {
+            "light" -> context.getString(R.string.profile_dark_mode_light)
+            "dark" -> context.getString(R.string.profile_dark_mode_dark)
+            else -> context.getString(R.string.profile_dark_mode_light)
+        }
+    }
+
+    private fun themeCode(themeDisplayName: String): String {
+        return when (themeDisplayName) {
+            context.getString(R.string.profile_dark_mode_light) -> "light"
+            context.getString(R.string.profile_dark_mode_dark) -> "dark"
+            else -> "light"
+        }
     }
 
     fun loadData() {

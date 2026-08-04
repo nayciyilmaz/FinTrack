@@ -4,11 +4,14 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.res.colorResource
+import com.example.fintrack.R
 
 @Composable
 fun WaveBackground(modifier: Modifier = Modifier) {
+    val waveColor = colorResource(id = R.color.wave_color)
+
     Canvas(modifier = modifier.fillMaxSize()) {
         val w = size.width
         val h = size.height
@@ -40,8 +43,8 @@ fun WaveBackground(modifier: Modifier = Modifier) {
             close()
         }
 
-        drawPath(wave1, color = Color(0xFFFF9E40).copy(alpha = 0.3f))
-        drawPath(wave2, color = Color(0xFFFF9E40).copy(alpha = 0.5f))
-        drawPath(wave3, color = Color(0xFFFF9E40).copy(alpha = 0.7f))
+        drawPath(wave1, color = waveColor.copy(alpha = 0.3f))
+        drawPath(wave2, color = waveColor.copy(alpha = 0.5f))
+        drawPath(wave3, color = waveColor.copy(alpha = 0.7f))
     }
 }

@@ -228,19 +228,19 @@ private fun ManageLimitsDialog(
                             Icon(
                                 imageVector = category.icon,
                                 contentDescription = null,
-                                tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray,
+                                tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else colorResource(id = R.color.text_secondary),
                                 modifier = modifier
                                     .clip(RoundedCornerShape(10.dp))
                                     .background(
                                         if (isActive) colorResource(id = R.color.quick_action_background)
-                                        else Color.LightGray.copy(alpha = 0.3f)
+                                        else colorResource(id = R.color.progress_track)
                                     )
                                     .padding(8.dp)
                             )
                             Text(
                                 text = stringResource(id = category.labelResId),
                                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                                color = if (isActive) colorResource(id = R.color.text_primary) else Color.Gray,
+                                color = if (isActive) colorResource(id = R.color.text_primary) else colorResource(id = R.color.text_secondary),
                                 modifier = modifier.weight(1f)
                             )
                             EditOutlinedTextField(
@@ -252,7 +252,7 @@ private fun ManageLimitsDialog(
                                     Text(
                                         text = "0",
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = Color.Gray
+                                        color = colorResource(id = R.color.text_secondary)
                                     )
                                 },
                                 keyboardOptions = KeyboardOptions(
@@ -270,7 +270,7 @@ private fun ManageLimitsDialog(
                             EditIconButton(
                                 onClick = { onActiveToggle(category.key) },
                                 imageVector = if (isActive) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else Color.Gray
+                                tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else colorResource(id = R.color.text_secondary)
                             )
                         }
                     }
@@ -434,7 +434,7 @@ private fun CategoryLimitCard(
             .padding(bottom = 8.dp),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Column(
             modifier = modifier
@@ -493,7 +493,7 @@ private fun CategoryLimitCard(
                     Text(
                         text = "${currencySymbol()}${"%,d".format(limitAmount).replace(",", ".")}",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
-                        color = Color.DarkGray
+                        color = colorResource(id = R.color.text_secondary)
                     )
                 }
                 ProgressBar(
