@@ -83,7 +83,6 @@
     <string name="label_daily_limit">Daily limit</string>
     <string name="label_income">Income</string>
     <string name="label_expense">Expense</string>
-    <string name="label_all">All</string>
     <string name="label_spending_rate">Spending rate</string>
     <string name="home_spending_ratio_format">%1$s spent</string>
     <string name="label_recent_transactions">Recent Transactions</string>
@@ -127,9 +126,6 @@
     <string name="label_recurring_income">Recurring income</string>
     <string name="label_recurring_income_desc">Records income automatically every month</string>
     <string name="label_reminder_income_desc">Sends a notification on income day</string>
-    <string name="label_upcoming">Upcoming</string>
-    <string name="label_planned">Planned</string>
-    <string name="label_regular">Recurring</string>
     <string name="label_upcoming_payments">Upcoming Payments</string>
     <string name="label_upcoming_incomes">Upcoming Incomes</string>
     <string name="label_planned_payments">Planned Payments</string>

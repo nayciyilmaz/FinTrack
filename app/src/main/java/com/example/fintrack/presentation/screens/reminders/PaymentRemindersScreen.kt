@@ -102,11 +102,7 @@ fun PaymentRemindersScreen(
                     }
                     else -> {
                         val filterIndex = uiState.selectedFilterIndex
-                        val today = LocalDate.now()
-                        val filtered = actionState.reminderTransactions.filter { transaction ->
-                            val daysRemaining = ChronoUnit.DAYS.between(today, LocalDate.parse(transaction.date))
-                            if (filterIndex == 1) daysRemaining >= 3 else daysRemaining < 3
-                        }
+                        val filtered = viewModel.filterReminders(filterIndex, actionState.reminderTransactions)
                         ReminderTabContent(
                             transactions = filtered,
                             paymentsHeaderResId = if (filterIndex == 1) R.string.label_planned_payments else R.string.label_upcoming_payments,

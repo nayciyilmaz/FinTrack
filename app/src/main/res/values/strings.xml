@@ -83,7 +83,6 @@
     <string name="label_daily_limit">Günlük limit</string>
     <string name="label_income">Gelir</string>
     <string name="label_expense">Gider</string>
-    <string name="label_all">Tümü</string>
     <string name="label_spending_rate">Harcama oranı</string>
     <string name="home_spending_ratio_format">%1$s harcandı</string>
     <string name="label_recent_transactions">Son İşlemler</string>
@@ -127,9 +126,6 @@
     <string name="label_recurring_income">Düzenli gelir</string>
     <string name="label_recurring_income_desc">Her ay otomatik gelir kaydeder</string>
     <string name="label_reminder_income_desc">Gelir günü bildirim gönderir</string>
-    <string name="label_upcoming">Yaklaşan</string>
-    <string name="label_planned">Planlanan</string>
-    <string name="label_regular">Düzenli</string>
     <string name="label_upcoming_payments">Yaklaşan Ödemeler</string>
     <string name="label_upcoming_incomes">Yaklaşan Gelirler</string>
     <string name="label_planned_payments">Planlanan Ödemeler</string>

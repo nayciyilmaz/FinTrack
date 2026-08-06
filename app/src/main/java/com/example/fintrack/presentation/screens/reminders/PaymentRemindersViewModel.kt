@@ -3,6 +3,7 @@ package com.example.fintrack.presentation.screens.reminders
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.usecase.GetRecurringItemsUseCase
 import com.example.fintrack.domain.usecase.GetReminderTransactionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,5 +53,13 @@ class PaymentRemindersViewModel @Inject constructor(
 
     fun onFilterChange(index: Int) {
         _uiState.value = _uiState.value.copy(selectedFilterIndex = index)
+    }
+
+    fun filterReminders(filterIndex: Int, transactions: List<Transaction>): List<Transaction> {
+        val today = LocalDate.now()
+        return transactions.filter { transaction ->
+            val daysRemaining = ChronoUnit.DAYS.between(today, LocalDate.parse(transaction.date))
+            if (filterIndex == 1) daysRemaining >= 3 else daysRemaining < 3
+        }
     }
 }

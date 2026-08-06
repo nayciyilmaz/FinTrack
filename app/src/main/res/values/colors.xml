@@ -22,7 +22,6 @@
     <color name="transaction_income_background">#FFE8F5E9</color>
     <color name="divider_color">#FFDADADA</color>
     <color name="switch_unchecked_track">#FFDDDDDD</color>
-    <color name="budget_used_amount">#FFFFE0B2</color>
     <color name="card_background">#FFFFFFFF</color>
     <color name="auth_background">#FFFFFBFE</color>
     <integer-array name="chart_colors">

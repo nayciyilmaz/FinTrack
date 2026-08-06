@@ -83,7 +83,6 @@
     <string name="label_daily_limit">Tageslimit</string>
     <string name="label_income">Einnahme</string>
     <string name="label_expense">Ausgabe</string>
-    <string name="label_all">Alle</string>
     <string name="label_spending_rate">Ausgabenquote</string>
     <string name="home_spending_ratio_format">%1$s ausgegeben</string>
     <string name="label_recent_transactions">Letzte Transaktionen</string>
@@ -127,9 +126,6 @@
     <string name="label_recurring_income">Wiederkehrende Einnahme</string>
     <string name="label_recurring_income_desc">Erfasst jeden Monat automatisch eine Einnahme</string>
     <string name="label_reminder_income_desc">Sendet am Einnahmetag eine Benachrichtigung</string>
-    <string name="label_upcoming">Bevorstehend</string>
-    <string name="label_planned">Geplant</string>
-    <string name="label_regular">Wiederkehrend</string>
     <string name="label_upcoming_payments">Bevorstehende Zahlungen</string>
     <string name="label_upcoming_incomes">Bevorstehende Einnahmen</string>
     <string name="label_planned_payments">Geplante Zahlungen</string>
