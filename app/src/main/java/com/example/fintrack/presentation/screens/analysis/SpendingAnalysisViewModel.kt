@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -54,7 +55,7 @@ class SpendingAnalysisViewModel @Inject constructor(
 
             val (startDate, endDate) = periodToDateRange(periodIndex)
             val result = getTransactionsUseCase(
-                type = "EXPENSE",
+                type = TransactionType.EXPENSE,
                 startDate = startDate.format(formatter),
                 endDate = endDate.format(formatter)
             )
@@ -84,7 +85,7 @@ class SpendingAnalysisViewModel @Inject constructor(
 
             val (startDate, endDate) = periodToDateRange(periodIndex)
             val result = getTransactionsUseCase(
-                type = "EXPENSE",
+                type = TransactionType.EXPENSE,
                 startDate = startDate.format(formatter),
                 endDate = endDate.format(formatter)
             )

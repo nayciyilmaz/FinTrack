@@ -7,6 +7,7 @@ import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.constants.incomeCategories
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.TransactionCategory
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.DeleteRecurringItemUseCase
 import com.example.fintrack.domain.usecase.DeleteTransactionUseCase
 import com.example.fintrack.domain.usecase.UpdateRecurringItemUseCase
@@ -35,7 +36,7 @@ class UpdateTransactionViewModel @Inject constructor(
     private val recurringItemId: Long = savedStateHandle.get<Long>("recurringItemId") ?: 0L
     private val isRecurringItemEdit: Boolean = recurringItemId > 0L
     private val allCategories = expenseCategories + incomeCategories
-    private val initialType = savedStateHandle.get<String>("type") ?: "EXPENSE"
+    private val initialType = savedStateHandle.get<String>("type") ?: TransactionType.EXPENSE.name
     private val initialCategory = savedStateHandle.get<String>("category") ?: ""
     private val initialAmount = savedStateHandle.get<String>("amount") ?: ""
     private val initialDate = savedStateHandle.get<String>("date") ?: ""
@@ -48,7 +49,7 @@ class UpdateTransactionViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         UpdateTransactionUiState(
-            selectedTypeIndex = if (initialType == "INCOME") 1 else 0,
+            selectedTypeIndex = if (initialType == TransactionType.INCOME.name) 1 else 0,
             selectedCategory = allCategories.find { it.key == initialCategory },
             amount = initialAmount,
             note = initialNote,
@@ -182,7 +183,7 @@ class UpdateTransactionViewModel @Inject constructor(
             when (
                 val result = updateTransactionUseCase(
                     id = transactionId,
-                    type = if (state.selectedTypeIndex == 0) "EXPENSE" else "INCOME",
+                    type = if (state.selectedTypeIndex == 0) TransactionType.EXPENSE else TransactionType.INCOME,
                     category = state.selectedCategory!!.key,
                     amount = state.amount.toDouble(),
                     note = state.note.takeIf { it.isNotBlank() },

@@ -8,6 +8,7 @@ import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.data.remote.dto.TransactionRequestDto
 import com.example.fintrack.data.remote.dto.TransactionResponseDto
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.repository.TransactionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
@@ -21,7 +22,7 @@ class TransactionRepositoryImpl @Inject constructor(
 ) : TransactionRepository {
 
     override suspend fun addTransaction(
-        type: String,
+        type: TransactionType,
         category: String,
         amount: Double,
         note: String?,
@@ -33,7 +34,7 @@ class TransactionRepositoryImpl @Inject constructor(
         return try {
             val response = transactionService.addTransaction(
                 TransactionRequestDto(
-                    type = type,
+                    type = type.name,
                     category = category,
                     amount = amount,
                     note = note,
@@ -55,12 +56,12 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTransactions(
-        type: String?,
+        type: TransactionType?,
         startDate: String,
         endDate: String
     ): Resource<List<Transaction>> {
         return try {
-            val response = transactionService.getTransactions(type, startDate, endDate)
+            val response = transactionService.getTransactions(type?.name, startDate, endDate)
             Resource.Success(response.map { it.toDomain() })
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {
@@ -74,7 +75,7 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun updateTransaction(
         id: Long,
-        type: String,
+        type: TransactionType,
         category: String,
         amount: Double,
         note: String?,
@@ -87,7 +88,7 @@ class TransactionRepositoryImpl @Inject constructor(
             val response = transactionService.updateTransaction(
                 id,
                 TransactionRequestDto(
-                    type = type,
+                    type = type.name,
                     category = category,
                     amount = amount,
                     note = note,
@@ -138,7 +139,7 @@ class TransactionRepositoryImpl @Inject constructor(
 
     private fun TransactionResponseDto.toDomain() = Transaction(
         id = id,
-        type = type,
+        type = TransactionType.valueOf(type),
         category = category,
         amount = amount,
         note = note,

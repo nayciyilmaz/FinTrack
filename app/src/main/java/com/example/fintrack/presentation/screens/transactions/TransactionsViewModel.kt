@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,8 +46,8 @@ class TransactionsViewModel @Inject constructor(
 
             val state = _uiState.value
             val type = when (state.selectedFilterIndex) {
-                1 -> "EXPENSE"
-                2 -> "INCOME"
+                1 -> TransactionType.EXPENSE
+                2 -> TransactionType.INCOME
                 else -> null
             }
 
@@ -87,7 +88,7 @@ class TransactionsViewModel @Inject constructor(
 
     private fun calculateDisplayItems(transactions: List<Transaction>): List<TransactionDisplayItem> {
         val signedAmounts = transactions.map {
-            if (it.type == "INCOME") it.amount else -it.amount
+            if (it.type == TransactionType.INCOME) it.amount else -it.amount
         }
         val totalBalance = signedAmounts.sum()
 

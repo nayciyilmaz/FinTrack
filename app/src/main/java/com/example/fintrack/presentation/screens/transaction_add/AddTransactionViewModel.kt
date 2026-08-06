@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.TransactionCategory
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -122,7 +123,7 @@ class AddTransactionViewModel @Inject constructor(
             _actionState.value = AddTransactionActionState(isLoading = true)
 
             val result = addTransactionUseCase(
-                type = if (state.selectedTypeIndex == 0) "EXPENSE" else "INCOME",
+                type = if (state.selectedTypeIndex == 0) TransactionType.EXPENSE else TransactionType.INCOME,
                 category = state.selectedCategory.key,
                 amount = state.amount.toDouble(),
                 note = state.note.takeIf { it.isNotBlank() },

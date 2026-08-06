@@ -39,6 +39,7 @@ import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.core.util.dateFormatter
 import com.example.fintrack.domain.model.RecurringItem
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.ScreenStateContent
 import com.example.fintrack.presentation.components.TransactionRow
@@ -123,8 +124,8 @@ private fun RecurringTabContent(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val expenseItems = recurringItems.filter { it.type == "EXPENSE" }
-    val incomeItems = recurringItems.filter { it.type == "INCOME" }
+    val expenseItems = recurringItems.filter { it.type == TransactionType.EXPENSE }
+    val incomeItems = recurringItems.filter { it.type == TransactionType.INCOME }
 
     if (expenseItems.isEmpty() && incomeItems.isEmpty()) {
         EmptyMessage(textResId = R.string.label_no_recurring, modifier = modifier)
@@ -187,7 +188,7 @@ private fun RecurringItemRow(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val isIncome = item.type == "INCOME"
+    val isIncome = item.type == TransactionType.INCOME
 
     TransactionRow(
         icon = categoryKeyToIcon(item.category),
@@ -205,7 +206,7 @@ private fun RecurringItemRow(
             val date = today.withDayOfMonth(minOf(item.dayOfMonth, today.lengthOfMonth()))
             val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
                 "?transactionId=0" +
-                "&type=${item.type}" +
+                "&type=${item.type.name}" +
                 "&category=${item.category}" +
                 "&amount=${item.amount.toLong()}" +
                 "&date=$date" +
@@ -228,8 +229,8 @@ private fun ReminderTabContent(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val expenseTransactions = transactions.filter { it.type == "EXPENSE" }
-    val incomeTransactions = transactions.filter { it.type == "INCOME" }
+    val expenseTransactions = transactions.filter { it.type == TransactionType.EXPENSE }
+    val incomeTransactions = transactions.filter { it.type == TransactionType.INCOME }
 
     if (expenseTransactions.isEmpty() && incomeTransactions.isEmpty()) {
         EmptyMessage(textResId = emptyMessageResId, modifier = modifier)
@@ -292,7 +293,7 @@ private fun ReminderTransactionRow(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val isIncome = transaction.type == "INCOME"
+    val isIncome = transaction.type == TransactionType.INCOME
     val daysRemaining = ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.parse(transaction.date))
     val remainingText = when {
         daysRemaining < 0 -> stringResource(id = R.string.label_days_overdue_format, (-daysRemaining).toInt())
@@ -314,7 +315,7 @@ private fun ReminderTransactionRow(
         onClick = {
             val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
                 "?transactionId=${transaction.id}" +
-                "&type=${transaction.type}" +
+                "&type=${transaction.type.name}" +
                 "&category=${transaction.category}" +
                 "&amount=${transaction.amount.toLong()}" +
                 "&date=${transaction.date}" +

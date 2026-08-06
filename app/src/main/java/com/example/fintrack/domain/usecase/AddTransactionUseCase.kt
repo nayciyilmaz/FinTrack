@@ -2,11 +2,12 @@ package com.example.fintrack.domain.usecase
 
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.repository.TransactionRepository
 
 class AddTransactionUseCase(private val transactionRepository: TransactionRepository) {
     suspend operator fun invoke(
-        type: String,
+        type: TransactionType,
         category: String,
         amount: Double,
         note: String?,

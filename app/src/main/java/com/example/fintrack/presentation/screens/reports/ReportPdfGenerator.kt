@@ -16,6 +16,7 @@ import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.domain.model.Budget
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -271,7 +272,7 @@ object ReportPdfGenerator {
                 val c = canvas!!
                 val date = LocalDate.parse(transaction.date).format(dateFormatter)
                 val categoryLabel = context.getString(categoryKeyToLabelResId(transaction.category))
-                val isIncome = transaction.type == "INCOME"
+                val isIncome = transaction.type == TransactionType.INCOME
                 val amountText = "${if (isIncome) "+" else "-"}${formatMoney(transaction.amount)}"
                 c.drawText(date, MARGIN, y + 10f, mutedPaint)
                 c.drawText(categoryLabel, MARGIN + 60f, y + 10f, bodyPaint)

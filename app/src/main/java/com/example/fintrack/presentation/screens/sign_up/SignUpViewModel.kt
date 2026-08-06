@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -128,7 +129,7 @@ class SignUpViewModel @Inject constructor(
         val timeStr = LocalTime.of(9, 0).format(DateTimeFormatter.ISO_LOCAL_TIME)
 
         addTransactionUseCase(
-            type = "INCOME",
+            type = TransactionType.INCOME,
             category = "SALARY",
             amount = salary,
             note = null,

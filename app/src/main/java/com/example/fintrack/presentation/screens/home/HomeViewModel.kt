@@ -7,6 +7,7 @@ import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.presentation.screens.transactions.TransactionDisplayItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -66,8 +67,8 @@ class HomeViewModel @Inject constructor(
                 val periodTransactions = periodResult.data ?: emptyList()
                 val recentTransactions = recentResult.data ?: emptyList()
 
-                val income = periodTransactions.filter { it.type == "INCOME" }.sumOf { it.amount }.toInt()
-                val expense = periodTransactions.filter { it.type == "EXPENSE" }.sumOf { it.amount }.toInt()
+                val income = periodTransactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }.toInt()
+                val expense = periodTransactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }.toInt()
                 val remainingBalance = income - expense
                 val daysRemaining = ChronoUnit.DAYS.between(today, periodEnd).toInt()
                 val dailyLimit = if (remainingBalance > 0 && daysRemaining > 0) remainingBalance / daysRemaining else 0
@@ -113,7 +114,7 @@ class HomeViewModel @Inject constructor(
 
     private fun calculateDisplayItems(transactions: List<Transaction>): List<TransactionDisplayItem> {
         val signedAmounts = transactions.map {
-            if (it.type == "INCOME") it.amount else -it.amount
+            if (it.type == TransactionType.INCOME) it.amount else -it.amount
         }
         val totalBalance = signedAmounts.sum()
 

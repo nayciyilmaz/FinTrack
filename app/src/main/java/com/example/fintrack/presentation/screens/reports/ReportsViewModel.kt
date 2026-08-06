@@ -9,6 +9,7 @@ import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetBudgetsUseCase
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
@@ -97,11 +98,11 @@ class ReportsViewModel @Inject constructor(
                 val budgets = budgetsResult.data ?: emptyList()
                 val goals = goalsResult.data ?: emptyList()
 
-                val income = transactions.filter { it.type == "INCOME" }.sumOf { it.amount }.toInt()
-                val expense = transactions.filter { it.type == "EXPENSE" }.sumOf { it.amount }.toInt()
+                val income = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }.toInt()
+                val expense = transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }.toInt()
 
                 val categoryExpenses = transactions
-                    .filter { it.type == "EXPENSE" }
+                    .filter { it.type == TransactionType.EXPENSE }
                     .groupBy { it.category }
                     .mapValues { entry -> entry.value.sumOf { it.amount }.toInt() }
 
@@ -199,7 +200,7 @@ class ReportsViewModel @Inject constructor(
     }
 
     private fun calculateCategoryDistribution(transactions: List<Transaction>): List<ReportCategoryItem> {
-        val expenseTransactions = transactions.filter { it.type == "EXPENSE" }
+        val expenseTransactions = transactions.filter { it.type == TransactionType.EXPENSE }
         val totalAmount = expenseTransactions.sumOf { it.amount }
         if (totalAmount == 0.0) return emptyList()
 
@@ -222,7 +223,7 @@ class ReportsViewModel @Inject constructor(
         periodEnd: LocalDate
     ): List<ReportTrendItem> {
         val transactionsByDate = transactions
-            .filter { it.type == "EXPENSE" }
+            .filter { it.type == TransactionType.EXPENSE }
             .groupBy { LocalDate.parse(it.date) }
             .mapValues { (_, txs) -> txs.sumOf { it.amount } }
 

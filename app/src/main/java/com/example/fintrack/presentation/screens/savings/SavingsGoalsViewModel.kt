@@ -8,6 +8,7 @@ import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.AddSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.DeleteSavingsGoalUseCase
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
@@ -143,12 +144,12 @@ class SavingsGoalsViewModel @Inject constructor(
                 val allTransactions = allResult.data ?: emptyList()
                 val goals = goalsResult.data ?: emptyList()
 
-                val prevIncome = prevTransactions.filter { it.type == "INCOME" }.sumOf { it.amount }.toInt()
-                val prevExpense = prevTransactions.filter { it.type == "EXPENSE" }.sumOf { it.amount }.toInt()
+                val prevIncome = prevTransactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }.toInt()
+                val prevExpense = prevTransactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }.toInt()
                 val lastMonthSavings = prevIncome - prevExpense
 
-                val totalIncome = allTransactions.filter { it.type == "INCOME" }.sumOf { it.amount }.toInt()
-                val totalExpense = allTransactions.filter { it.type == "EXPENSE" }.sumOf { it.amount }.toInt()
+                val totalIncome = allTransactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }.toInt()
+                val totalExpense = allTransactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }.toInt()
                 val totalSavings = totalIncome - totalExpense
 
                 _actionState.value = SavingsGoalsActionState(

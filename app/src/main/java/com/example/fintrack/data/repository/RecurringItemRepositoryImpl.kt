@@ -8,6 +8,7 @@ import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.data.remote.dto.RecurringItemResponseDto
 import com.example.fintrack.data.remote.dto.RecurringItemUpdateRequestDto
 import com.example.fintrack.domain.model.RecurringItem
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.repository.RecurringItemRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
@@ -61,7 +62,7 @@ class RecurringItemRepositoryImpl @Inject constructor(
 
     private fun RecurringItemResponseDto.toDomain() = RecurringItem(
         id = id,
-        type = type,
+        type = TransactionType.valueOf(type),
         category = category,
         amount = amount,
         dayOfMonth = dayOfMonth

@@ -2,10 +2,11 @@ package com.example.fintrack.domain.repository
 
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 
 interface TransactionRepository {
     suspend fun addTransaction(
-        type: String,
+        type: TransactionType,
         category: String,
         amount: Double,
         note: String?,
@@ -16,14 +17,14 @@ interface TransactionRepository {
     ): Resource<Transaction>
 
     suspend fun getTransactions(
-        type: String?,
+        type: TransactionType?,
         startDate: String,
         endDate: String
     ): Resource<List<Transaction>>
 
     suspend fun updateTransaction(
         id: Long,
-        type: String,
+        type: TransactionType,
         category: String,
         amount: Double,
         note: String?,

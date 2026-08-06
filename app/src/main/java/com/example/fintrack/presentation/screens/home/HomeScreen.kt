@@ -39,6 +39,7 @@ import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
 import com.example.fintrack.core.constants.quickActionItems
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.core.util.dateFormatter
 import com.example.fintrack.presentation.components.EditScaffold
@@ -367,7 +368,7 @@ private fun RecentTransactions(
                     .padding(horizontal = 20.dp, vertical = 4.dp)
             ) {
                 transactions.forEachIndexed { index, item ->
-                    val isIncome = item.transaction.type == "INCOME"
+                    val isIncome = item.transaction.type == TransactionType.INCOME
                     TransactionRow(
                         icon = categoryKeyToIcon(item.transaction.category),
                         title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
@@ -391,7 +392,7 @@ private fun RecentTransactions(
                             val t = item.transaction
                             val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
                                 "?transactionId=${t.id}" +
-                                "&type=${t.type}" +
+                                "&type=${t.type.name}" +
                                 "&category=${t.category}" +
                                 "&amount=${t.amount.toLong()}" +
                                 "&date=${t.date}" +

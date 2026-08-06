@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetBudgetsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.SaveBudgetsUseCase
@@ -61,11 +62,11 @@ class BudgetLimitsViewModel @Inject constructor(
                 val transactions = transactionsResult.data ?: emptyList()
                 val budgets = budgetsResult.data ?: emptyList()
 
-                val income = transactions.filter { it.type == "INCOME" }.sumOf { it.amount }.toInt()
-                val expense = transactions.filter { it.type == "EXPENSE" }.sumOf { it.amount }.toInt()
+                val income = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }.toInt()
+                val expense = transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }.toInt()
 
                 val categoryExpenses = transactions
-                    .filter { it.type == "EXPENSE" }
+                    .filter { it.type == TransactionType.EXPENSE }
                     .groupBy { it.category }
                     .mapValues { entry -> entry.value.sumOf { it.amount }.toInt() }
 
