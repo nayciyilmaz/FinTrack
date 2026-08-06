@@ -3,7 +3,7 @@ package com.example.fintrack.presentation.screens.transaction_add
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.Resource
-import com.example.fintrack.domain.model.TransactionCategory
+import com.example.fintrack.presentation.model.TransactionCategory
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

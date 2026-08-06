@@ -49,7 +49,7 @@ import androidx.navigation.NavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.reportContentItems
 import com.example.fintrack.core.util.currencySymbol
-import com.example.fintrack.domain.model.ReportContentItem
+import com.example.fintrack.presentation.model.ReportContentItem
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.ScreenStateContent

@@ -12,7 +12,7 @@ import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.fintrack.R
-import com.example.fintrack.domain.model.QuickQuestion
+import com.example.fintrack.presentation.model.QuickQuestion
 
 const val QUICK_QUESTION_CATEGORY_EXPENSE = "EXPENSE"
 const val QUICK_QUESTION_CATEGORY_ANALYSIS = "ANALYSIS"

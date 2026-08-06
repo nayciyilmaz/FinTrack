@@ -39,7 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 import com.example.fintrack.core.util.currencySymbol
-import com.example.fintrack.domain.model.TransactionCategory
+import com.example.fintrack.presentation.model.TransactionCategory
 
 @Composable
 fun CategorySelector(

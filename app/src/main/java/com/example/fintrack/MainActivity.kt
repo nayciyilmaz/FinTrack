@@ -21,7 +21,7 @@ import com.example.fintrack.core.util.FontSizeHelper
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.ThemeHelper
 import com.example.fintrack.presentation.navigation.FinTrackNavigation
-import com.example.fintrack.ui.theme.FinTrackTheme
+import com.example.fintrack.presentation.theme.FinTrackTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

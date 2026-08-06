@@ -1,4 +1,4 @@
-package com.example.fintrack.domain.model
+package com.example.fintrack.presentation.model
 
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes

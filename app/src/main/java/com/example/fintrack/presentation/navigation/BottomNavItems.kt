@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SmartToy
 import com.example.fintrack.R
-import com.example.fintrack.domain.model.NavigationItem
+import com.example.fintrack.presentation.model.NavigationItem
 
 val bottomBarRoutes = setOf(
     FinTrackScreens.HomeScreen.route,

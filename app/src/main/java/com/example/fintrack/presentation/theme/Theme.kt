@@ -1,4 +1,4 @@
-package com.example.fintrack.ui.theme
+package com.example.fintrack.presentation.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

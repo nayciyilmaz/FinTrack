@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.constants.incomeCategories
 import com.example.fintrack.core.util.Resource
-import com.example.fintrack.domain.model.TransactionCategory
+import com.example.fintrack.presentation.model.TransactionCategory
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.DeleteRecurringItemUseCase
 import com.example.fintrack.domain.usecase.DeleteTransactionUseCase

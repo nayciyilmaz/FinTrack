@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.TrendingUp
 import com.example.fintrack.R
-import com.example.fintrack.domain.model.ReportContentItem
+import com.example.fintrack.presentation.model.ReportContentItem
 
 val reportContentItems = listOf(
     ReportContentItem(Icons.Filled.List, R.string.report_content_transaction_summary, R.string.report_content_transaction_summary_desc),

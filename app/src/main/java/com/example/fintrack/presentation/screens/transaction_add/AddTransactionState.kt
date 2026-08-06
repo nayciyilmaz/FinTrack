@@ -1,6 +1,6 @@
 package com.example.fintrack.presentation.screens.transaction_add
 
-import com.example.fintrack.domain.model.TransactionCategory
+import com.example.fintrack.presentation.model.TransactionCategory
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
