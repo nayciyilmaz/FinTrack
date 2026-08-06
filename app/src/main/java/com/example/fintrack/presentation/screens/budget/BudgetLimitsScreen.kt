@@ -57,6 +57,7 @@ import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
 import com.example.fintrack.presentation.components.ScreenStateContent
+import com.example.fintrack.presentation.components.SectionHeaderRow
 
 @Composable
 fun BudgetLimitsScreen(
@@ -103,23 +104,12 @@ fun BudgetLimitsScreen(
                 totalBudget = actionState.income,
                 usedBudget = actionState.expense
             )
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_category_limits),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                )
-                EditTextButton(
-                    text = stringResource(id = R.string.label_edit),
-                    onClick = viewModel::onShowManageDialog,
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
+            SectionHeaderRow(
+                title = stringResource(id = R.string.label_category_limits),
+                actionText = stringResource(id = R.string.label_edit),
+                onActionClick = viewModel::onShowManageDialog,
+                modifier = modifier.padding(vertical = 4.dp)
+            )
             ScreenStateContent(
                 isLoading = actionState.isLoading,
                 isError = actionState.isError,

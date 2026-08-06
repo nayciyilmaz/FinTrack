@@ -1,6 +1,7 @@
 package com.example.fintrack.presentation.screens.sign_up
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +77,11 @@ fun SignUpScreen(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.auth_background))
+    ) {
         WaveBackground()
         Column(
             modifier = modifier

@@ -45,6 +45,7 @@ import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
 import com.example.fintrack.presentation.components.ScreenStateContent
+import com.example.fintrack.presentation.components.SectionHeaderRow
 import com.example.fintrack.presentation.components.TransactionRow
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
@@ -337,28 +338,18 @@ private fun RecentTransactions(
             .padding(top = 4.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(id = R.string.label_recent_transactions),
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-            )
-            EditTextButton(
-                onClick = {
-                    navigateAndClearBackStack(
-                        navController = navController,
-                        destination = FinTrackScreens.TransactionsScreen.route,
-                        popUpToRoute = FinTrackScreens.HomeScreen.route,
-                        inclusive = false
-                    )
-                },
-                text = stringResource(id = R.string.label_all_transactions),
-                color = colorResource(id = R.color.text_primary)
-            )
-        }
+        SectionHeaderRow(
+            title = stringResource(id = R.string.label_recent_transactions),
+            actionText = stringResource(id = R.string.label_all_transactions),
+            onActionClick = {
+                navigateAndClearBackStack(
+                    navController = navController,
+                    destination = FinTrackScreens.TransactionsScreen.route,
+                    popUpToRoute = FinTrackScreens.HomeScreen.route,
+                    inclusive = false
+                )
+            }
+        )
         ScreenStateContent(
             isLoading = actionState.isLoading,
             isError = actionState.isError,

@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -70,7 +71,6 @@ fun SignInScreen(
     val actionState by viewModel.actionState.collectAsState()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {}
@@ -90,7 +90,11 @@ fun SignInScreen(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.auth_background))
+    ) {
         WaveBackground()
         Column(
             modifier = modifier

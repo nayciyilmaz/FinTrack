@@ -58,6 +58,7 @@ import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
 import com.example.fintrack.presentation.components.ScreenStateContent
+import com.example.fintrack.presentation.components.SectionHeaderRow
 import com.example.fintrack.presentation.components.ValidationErrorText
 
 @Composable
@@ -119,23 +120,12 @@ fun SavingsGoalsScreen(
                 lastMonthSavings = actionState.lastMonthSavings,
                 totalSavings = actionState.totalSavings
             )
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_active_goals),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                )
-                EditTextButton(
-                    text = stringResource(id = R.string.label_new_goal),
-                    onClick = viewModel::showAddDialog,
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
+            SectionHeaderRow(
+                title = stringResource(id = R.string.label_active_goals),
+                actionText = stringResource(id = R.string.label_new_goal),
+                onActionClick = viewModel::showAddDialog,
+                modifier = modifier.padding(vertical = 4.dp)
+            )
             ScreenStateContent(
                 isLoading = actionState.isLoading,
                 isError = actionState.isError,

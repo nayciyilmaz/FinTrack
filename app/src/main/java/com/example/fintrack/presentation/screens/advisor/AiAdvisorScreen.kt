@@ -49,6 +49,7 @@ import com.example.fintrack.R
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ScreenStateContent
+import com.example.fintrack.presentation.components.SectionHeaderRow
 import com.example.fintrack.core.constants.quickQuestionCategoryIcon
 import com.example.fintrack.core.constants.quickQuestionCategoryLabelResId
 import com.example.fintrack.core.constants.quickQuestionTitleFor
@@ -99,23 +100,12 @@ fun AiAdvisorScreen(
                 healthScore = actionState.healthScore,
                 riskLevel = actionState.riskLevel
             )
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_automatic_comments),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                )
-                EditTextButton(
-                    text = stringResource(id = R.string.label_quick_questions),
-                    onClick = viewModel::onShowQuickQuestionsDialog,
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
+            SectionHeaderRow(
+                title = stringResource(id = R.string.label_automatic_comments),
+                actionText = stringResource(id = R.string.label_quick_questions),
+                onActionClick = viewModel::onShowQuickQuestionsDialog,
+                modifier = modifier.padding(vertical = 4.dp)
+            )
             ScreenStateContent(
                 isLoading = actionState.isLoading,
                 isError = actionState.isError,
