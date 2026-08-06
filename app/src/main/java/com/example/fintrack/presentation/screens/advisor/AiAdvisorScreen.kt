@@ -48,6 +48,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
+import com.example.fintrack.presentation.components.ScreenStateContent
 import com.example.fintrack.core.constants.quickQuestionCategoryIcon
 import com.example.fintrack.core.constants.quickQuestionCategoryLabelResId
 import com.example.fintrack.core.constants.quickQuestionTitleFor
@@ -115,68 +116,22 @@ fun AiAdvisorScreen(
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
-            InsightsContent(
-                actionState = actionState,
-                onRefreshInsight = viewModel::onInsightRefreshRequested
-            )
-        }
-    }
-}
-
-@Composable
-private fun InsightsContent(
-    actionState: AiAdvisorActionState,
-    onRefreshInsight: (Long) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    when {
-        actionState.isLoading -> {
-            Box(
-                modifier = modifier
+            ScreenStateContent(
+                isLoading = actionState.isLoading,
+                isError = actionState.isError,
+                isEmpty = actionState.insights.isEmpty(),
+                emptyMessageResId = R.string.label_no_insights,
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 12.dp)
             ) {
-                CircularProgressIndicator(
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
-        }
-        actionState.isError -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.error_general),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        actionState.insights.isEmpty() -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_no_insights),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        else -> {
-            actionState.insights.forEach { insight ->
-                AiCommentCard(
-                    insight = insight,
-                    isRefreshing = actionState.refreshingInsightId == insight.id,
-                    onRefreshClick = { onRefreshInsight(insight.id) }
-                )
+                actionState.insights.forEach { insight ->
+                    AiCommentCard(
+                        insight = insight,
+                        isRefreshing = actionState.refreshingInsightId == insight.id,
+                        onRefreshClick = { viewModel.onInsightRefreshRequested(insight.id) }
+                    )
+                }
             }
         }
     }

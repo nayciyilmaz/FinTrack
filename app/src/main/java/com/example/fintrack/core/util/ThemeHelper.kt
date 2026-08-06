@@ -17,12 +17,10 @@ object ThemeHelper {
     }
 
     fun getTheme(context: Context): String {
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        return prefs.getString(SELECTED_THEME, DEFAULT_THEME) ?: DEFAULT_THEME
+        return AppPreferences.getString(context, SELECTED_THEME, DEFAULT_THEME)
     }
 
     fun saveTheme(context: Context, theme: String) {
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putString(SELECTED_THEME, theme).apply()
+        AppPreferences.saveString(context, SELECTED_THEME, theme)
     }
 }

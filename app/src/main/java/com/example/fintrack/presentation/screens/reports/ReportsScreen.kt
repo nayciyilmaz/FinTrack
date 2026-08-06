@@ -52,6 +52,7 @@ import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.domain.model.ReportContentItem
 import com.example.fintrack.presentation.components.EditButton
 import com.example.fintrack.presentation.components.EditScaffold
+import com.example.fintrack.presentation.components.ScreenStateContent
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
 
@@ -130,12 +131,18 @@ fun ReportsScreen(
                     text = stringResource(id = R.string.report_content),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
-                ReportContentSection(
+                ScreenStateContent(
                     isLoading = actionState.isLoading,
                     isError = actionState.isError,
-                    checkedStates = uiState.checkedSections,
-                    onCheckedChange = { titleResId -> viewModel.onSectionToggle(titleResId) }
-                )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                ) {
+                    ReportContentCard(
+                        checkedStates = uiState.checkedSections,
+                        onCheckedChange = { titleResId, _ -> viewModel.onSectionToggle(titleResId) }
+                    )
+                }
             }
             EditButton(
                 onClick = { viewModel.generatePdf(context) },
@@ -295,48 +302,6 @@ private fun ReportPeriodSelector(
                     .background(colorResource(id = R.color.quick_action_background))
                     .clickable(enabled = canGoNext, onClick = onNext)
                     .padding(8.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun ReportContentSection(
-    isLoading: Boolean,
-    isError: Boolean,
-    checkedStates: Map<Int, Boolean>,
-    onCheckedChange: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    when {
-        isLoading -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = colorResource(id = R.color.bottom_bar_fab))
-            }
-        }
-        isError -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.error_general),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        else -> {
-            ReportContentCard(
-                checkedStates = checkedStates,
-                onCheckedChange = { titleResId, _ -> onCheckedChange(titleResId) }
             )
         }
     }

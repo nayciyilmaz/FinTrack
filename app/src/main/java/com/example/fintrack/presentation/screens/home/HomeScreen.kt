@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,16 +38,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
+import com.example.fintrack.core.constants.quickActionItems
 import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.core.util.dateFormatter
-import com.example.fintrack.presentation.screens.transactions.TransactionDisplayItem
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
+import com.example.fintrack.presentation.components.ScreenStateContent
 import com.example.fintrack.presentation.components.TransactionRow
-import com.example.fintrack.core.constants.quickActionItems
 import com.example.fintrack.presentation.navigation.FinTrackScreens
 import com.example.fintrack.presentation.navigation.navigateAndClearBackStack
+import com.example.fintrack.presentation.screens.transactions.TransactionDisplayItem
 import java.time.LocalDate
 
 @Composable
@@ -360,65 +359,17 @@ private fun RecentTransactions(
                 color = colorResource(id = R.color.text_primary)
             )
         }
-        RecentTransactionsContent(
-            transactions = transactions,
-            actionState = actionState,
-            navController = navController
-        )
-    }
-}
-
-@Composable
-private fun RecentTransactionsContent(
-    transactions: List<TransactionDisplayItem>,
-    actionState: HomeActionState,
-    navController: NavController,
-    modifier: Modifier = Modifier
-) {
-    when {
-        actionState.isLoading -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
-        }
-        actionState.isError -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.error_general),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        transactions.isEmpty() -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_no_transactions),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        else -> {
+        ScreenStateContent(
+            isLoading = actionState.isLoading,
+            isError = actionState.isError,
+            isEmpty = transactions.isEmpty(),
+            emptyMessageResId = R.string.label_no_transactions,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp)
+        ) {
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
                     .background(colorResource(id = R.color.card_background))

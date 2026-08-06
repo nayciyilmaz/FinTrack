@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +39,7 @@ import com.example.fintrack.core.util.dateFormatter
 import com.example.fintrack.domain.model.RecurringItem
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.presentation.components.EditScaffold
+import com.example.fintrack.presentation.components.ScreenStateContent
 import com.example.fintrack.presentation.components.TransactionRow
 import com.example.fintrack.presentation.components.TransactionTypeSelector
 import com.example.fintrack.presentation.navigation.FinTrackScreens
@@ -90,68 +89,37 @@ fun PaymentRemindersScreen(
                 onOptionSelected = viewModel::onFilterChange
             )
 
-            RemindersContent(
-                filterIndex = uiState.selectedFilterIndex,
-                actionState = actionState,
-                navController = navController
-            )
-        }
-    }
-}
-
-@Composable
-private fun RemindersContent(
-    filterIndex: Int,
-    actionState: PaymentRemindersActionState,
-    navController: NavController,
-    modifier: Modifier = Modifier
-) {
-    when {
-        actionState.isLoading -> {
-            Box(
-                modifier = modifier
+            ScreenStateContent(
+                isLoading = actionState.isLoading,
+                isError = actionState.isError,
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 12.dp)
             ) {
-                CircularProgressIndicator(
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
+                when {
+                    uiState.selectedFilterIndex == 2 -> {
+                        RecurringTabContent(
+                            recurringItems = actionState.recurringItems,
+                            navController = navController
+                        )
+                    }
+                    else -> {
+                        val filterIndex = uiState.selectedFilterIndex
+                        val today = LocalDate.now()
+                        val filtered = actionState.reminderTransactions.filter { transaction ->
+                            val daysRemaining = ChronoUnit.DAYS.between(today, LocalDate.parse(transaction.date))
+                            if (filterIndex == 1) daysRemaining >= 3 else daysRemaining < 3
+                        }
+                        ReminderTabContent(
+                            transactions = filtered,
+                            paymentsHeaderResId = if (filterIndex == 1) R.string.label_planned_payments else R.string.label_upcoming_payments,
+                            incomesHeaderResId = if (filterIndex == 1) R.string.label_planned_incomes else R.string.label_upcoming_incomes,
+                            emptyMessageResId = if (filterIndex == 1) R.string.label_no_planned else R.string.label_no_upcoming,
+                            navController = navController
+                        )
+                    }
+                }
             }
-        }
-        actionState.isError -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.error_general),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        filterIndex == 2 -> {
-            RecurringTabContent(
-                recurringItems = actionState.recurringItems,
-                navController = navController
-            )
-        }
-        else -> {
-            val today = LocalDate.now()
-            val filtered = actionState.reminderTransactions.filter { transaction ->
-                val daysRemaining = ChronoUnit.DAYS.between(today, LocalDate.parse(transaction.date))
-                if (filterIndex == 1) daysRemaining >= 3 else daysRemaining < 3
-            }
-            ReminderTabContent(
-                transactions = filtered,
-                paymentsHeaderResId = if (filterIndex == 1) R.string.label_planned_payments else R.string.label_upcoming_payments,
-                incomesHeaderResId = if (filterIndex == 1) R.string.label_planned_incomes else R.string.label_upcoming_incomes,
-                emptyMessageResId = if (filterIndex == 1) R.string.label_no_planned else R.string.label_no_upcoming,
-                navController = navController
-            )
         }
     }
 }

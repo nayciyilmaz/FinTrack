@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,6 +57,7 @@ import com.example.fintrack.presentation.components.EditOutlinedTextField
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTextButton
 import com.example.fintrack.presentation.components.ProgressBar
+import com.example.fintrack.presentation.components.ScreenStateContent
 import com.example.fintrack.presentation.components.ValidationErrorText
 
 @Composable
@@ -136,69 +136,23 @@ fun SavingsGoalsScreen(
                     color = colorResource(id = R.color.bottom_bar_fab)
                 )
             }
-            SavingsGoalsContent(
-                actionState = actionState,
-                onGoalClick = viewModel::selectGoal
-            )
-        }
-    }
-}
-
-@Composable
-private fun SavingsGoalsContent(
-    actionState: SavingsGoalsActionState,
-    onGoalClick: (SavingsGoal) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    when {
-        actionState.isLoading -> {
-            Box(
-                modifier = modifier
+            ScreenStateContent(
+                isLoading = actionState.isLoading,
+                isError = actionState.isError,
+                isEmpty = actionState.goals.isEmpty(),
+                emptyMessageResId = R.string.label_no_goals,
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 12.dp)
             ) {
-                CircularProgressIndicator(
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
-        }
-        actionState.isError -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.error_general),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        actionState.goals.isEmpty() -> {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_no_goals),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        else -> {
-            actionState.goals.forEach { goal ->
-                GoalCard(
-                    icon = goalCategoryIcon(goal.category),
-                    goal = goal,
-                    estimatedDate = actionState.estimatedDates[goal.id],
-                    onClick = { onGoalClick(goal) }
-                )
+                actionState.goals.forEach { goal ->
+                    GoalCard(
+                        icon = goalCategoryIcon(goal.category),
+                        goal = goal,
+                        estimatedDate = actionState.estimatedDates[goal.id],
+                        onClick = { viewModel.selectGoal(goal) }
+                    )
+                }
             }
         }
     }

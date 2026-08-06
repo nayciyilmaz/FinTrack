@@ -8,13 +8,11 @@ object FontSizeHelper {
     private const val DEFAULT_FONT_SIZE = "medium"
 
     fun getFontSize(context: Context): String {
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        return prefs.getString(SELECTED_FONT_SIZE, DEFAULT_FONT_SIZE) ?: DEFAULT_FONT_SIZE
+        return AppPreferences.getString(context, SELECTED_FONT_SIZE, DEFAULT_FONT_SIZE)
     }
 
     fun saveFontSize(context: Context, fontSize: String) {
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putString(SELECTED_FONT_SIZE, fontSize).apply()
+        AppPreferences.saveString(context, SELECTED_FONT_SIZE, fontSize)
     }
 
     fun getScale(context: Context): Float {

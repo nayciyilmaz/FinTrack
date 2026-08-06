@@ -1,8 +1,8 @@
 package com.example.fintrack.presentation.screens.transactions
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,18 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,13 +29,13 @@ import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
 import com.example.fintrack.core.util.currencySymbol
 import com.example.fintrack.core.util.dateFormatter
-import java.time.LocalDate
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.PeriodSelector
+import com.example.fintrack.presentation.components.ScreenStateContent
 import com.example.fintrack.presentation.components.TransactionRow
 import com.example.fintrack.presentation.components.TransactionTypeSelector
-import android.net.Uri
 import com.example.fintrack.presentation.navigation.FinTrackScreens
+import java.time.LocalDate
 
 @Composable
 fun TransactionsScreen(
@@ -80,103 +75,58 @@ fun TransactionsScreen(
                     onPeriodSelected = viewModel::onPeriodChange
                 )
             }
-            TransactionsContent(
-                uiState = uiState,
-                actionState = actionState,
-                navController = navController,
-                modifier = modifier
-            )
-        }
-    }
-}
-
-@Composable
-private fun TransactionsContent(
-    uiState: TransactionsUiState,
-    actionState: TransactionsActionState,
-    navController: NavController,
-    modifier: Modifier = Modifier
-) {
-    when {
-        actionState.isLoading -> {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            ScreenStateContent(
+                isLoading = actionState.isLoading,
+                isError = actionState.isError,
+                isEmpty = uiState.transactions.isEmpty(),
+                emptyMessageResId = R.string.label_no_transactions,
+                modifier = modifier.fillMaxSize()
             ) {
-                CircularProgressIndicator(
-                    color = colorResource(id = R.color.bottom_bar_fab)
-                )
-            }
-        }
-        actionState.isError -> {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.error_general),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        uiState.transactions.isEmpty() -> {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_no_transactions),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text_secondary)
-                )
-            }
-        }
-        else -> {
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(28.dp))
-                    .background(colorResource(id = R.color.card_background))
-                    .padding(horizontal = 20.dp, vertical = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                itemsIndexed(uiState.transactions) { index, item ->
-                    val isIncome = item.transaction.type == "INCOME"
-                    TransactionRow(
-                        icon = categoryKeyToIcon(item.transaction.category),
-                        title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
-                        dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter())} · ${item.transaction.time}",
-                        amount = "${if (isIncome) "+" else "-"}${currencySymbol()}${item.transaction.amount}",
-                        remainingBalance = "Kalan: ${currencySymbol()}%.2f".format(item.remainingBalance),
-                        amountColor = if (isIncome)
-                            colorResource(id = R.color.income_green)
-                        else
-                            colorResource(id = R.color.expense_red),
-                        iconBackgroundColor = if (isIncome)
-                            colorResource(id = R.color.transaction_income_background)
-                        else
-                            colorResource(id = R.color.transaction_expense_background),
-                        iconTint = if (isIncome)
-                            colorResource(id = R.color.income_green)
-                        else
-                            colorResource(id = R.color.expense_red),
-                        showDivider = index < uiState.transactions.lastIndex,
-                        onClick = {
-                            val t = item.transaction
-                            val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
-                                "?transactionId=${t.id}" +
-                                "&type=${t.type}" +
-                                "&category=${t.category}" +
-                                "&amount=${t.amount.toLong()}" +
-                                "&date=${t.date}" +
-                                "&time=${Uri.encode(t.time)}" +
-                                "&isRecurring=${t.isRecurring}" +
-                                "&isReminder=${t.isReminder}" +
-                                "&note=${Uri.encode(t.note ?: "")}"
-                            navController.navigate(route)
-                        }
-                    )
+                LazyColumn(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(28.dp))
+                        .background(colorResource(id = R.color.card_background))
+                        .padding(horizontal = 20.dp, vertical = 4.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
+                ) {
+                    itemsIndexed(uiState.transactions) { index, item ->
+                        val isIncome = item.transaction.type == "INCOME"
+                        TransactionRow(
+                            icon = categoryKeyToIcon(item.transaction.category),
+                            title = stringResource(id = categoryKeyToLabelResId(item.transaction.category)),
+                            dateTime = "${LocalDate.parse(item.transaction.date).format(dateFormatter())} · ${item.transaction.time}",
+                            amount = "${if (isIncome) "+" else "-"}${currencySymbol()}${item.transaction.amount}",
+                            remainingBalance = "Kalan: ${currencySymbol()}%.2f".format(item.remainingBalance),
+                            amountColor = if (isIncome)
+                                colorResource(id = R.color.income_green)
+                            else
+                                colorResource(id = R.color.expense_red),
+                            iconBackgroundColor = if (isIncome)
+                                colorResource(id = R.color.transaction_income_background)
+                            else
+                                colorResource(id = R.color.transaction_expense_background),
+                            iconTint = if (isIncome)
+                                colorResource(id = R.color.income_green)
+                            else
+                                colorResource(id = R.color.expense_red),
+                            showDivider = index < uiState.transactions.lastIndex,
+                            onClick = {
+                                val t = item.transaction
+                                val route = "${FinTrackScreens.UpdateTransactionScreen.route}" +
+                                    "?transactionId=${t.id}" +
+                                    "&type=${t.type}" +
+                                    "&category=${t.category}" +
+                                    "&amount=${t.amount.toLong()}" +
+                                    "&date=${t.date}" +
+                                    "&time=${Uri.encode(t.time)}" +
+                                    "&isRecurring=${t.isRecurring}" +
+                                    "&isReminder=${t.isReminder}" +
+                                    "&note=${Uri.encode(t.note ?: "")}"
+                                navController.navigate(route)
+                            }
+                        )
+                    }
                 }
             }
         }

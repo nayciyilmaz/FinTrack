@@ -10,13 +10,11 @@ object CurrencyHelper {
     private const val DEFAULT_CURRENCY = "TRY"
 
     fun getCurrency(context: Context): String {
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        return prefs.getString(SELECTED_CURRENCY, DEFAULT_CURRENCY) ?: DEFAULT_CURRENCY
+        return AppPreferences.getString(context, SELECTED_CURRENCY, DEFAULT_CURRENCY)
     }
 
     fun saveCurrency(context: Context, currencyCode: String) {
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putString(SELECTED_CURRENCY, currencyCode).apply()
+        AppPreferences.saveString(context, SELECTED_CURRENCY, currencyCode)
     }
 
     fun getSymbol(context: Context): String {
