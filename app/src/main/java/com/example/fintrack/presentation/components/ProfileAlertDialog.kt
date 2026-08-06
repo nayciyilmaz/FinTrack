@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -390,11 +391,7 @@ fun CurrencySelectDialog(
     onApply: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = listOf(
-        stringResource(id = R.string.profile_currency_try),
-        stringResource(id = R.string.profile_currency_eur),
-        stringResource(id = R.string.profile_currency_usd)
-    )
+    val options = stringArrayResource(id = R.array.currency_options).toList()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -458,11 +455,7 @@ fun LanguageSelectDialog(
     onApply: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = listOf(
-        stringResource(id = R.string.profile_language_tr),
-        stringResource(id = R.string.profile_language_en),
-        stringResource(id = R.string.profile_language_de)
-    )
+    val options = stringArrayResource(id = R.array.language_options).toList()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -526,11 +519,7 @@ fun FontSizeSelectDialog(
     onApply: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = listOf(
-        stringResource(id = R.string.profile_font_size_small),
-        stringResource(id = R.string.profile_font_size_medium),
-        stringResource(id = R.string.profile_font_size_large)
-    )
+    val options = stringArrayResource(id = R.array.font_size_options).toList()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -594,10 +583,7 @@ fun DarkModeSelectDialog(
     onApply: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val options = listOf(
-        stringResource(id = R.string.profile_dark_mode_light),
-        stringResource(id = R.string.profile_dark_mode_dark)
-    )
+    val options = stringArrayResource(id = R.array.dark_mode_options).toList()
 
     AlertDialog(
         onDismissRequest = onDismiss,

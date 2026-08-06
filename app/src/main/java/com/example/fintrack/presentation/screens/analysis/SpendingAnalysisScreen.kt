@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -56,6 +57,7 @@ fun SpendingAnalysisScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val periods = stringArrayResource(id = R.array.transaction_periods)
 
     EditScaffold(
         title = stringResource(id = R.string.title_spending_analysis),
@@ -70,15 +72,15 @@ fun SpendingAnalysisScreen(
         ) {
             CategoryDistributionSection(
                 items = actionState.categoryDistribution,
-                selectedPeriod = uiState.selectedCategoryPeriod,
-                onPeriodSelected = viewModel::onCategoryPeriodChanged
+                selectedPeriod = periods[uiState.selectedCategoryPeriodIndex],
+                onPeriodSelected = { selected -> viewModel.onCategoryPeriodChanged(periods.indexOf(selected)) }
             )
             SpendingTrendSection(
                 trendData = actionState.spendingTrend,
                 summaryHigh = actionState.summaryHigh,
                 summaryLow = actionState.summaryLow,
-                selectedPeriod = uiState.selectedTrendPeriod,
-                onPeriodSelected = viewModel::onTrendPeriodChanged
+                selectedPeriod = periods[uiState.selectedTrendPeriodIndex],
+                onPeriodSelected = { selected -> viewModel.onTrendPeriodChanged(periods.indexOf(selected)) }
             )
         }
     }
@@ -107,7 +109,7 @@ private fun CategoryDistributionSection(
         PeriodSelector(
             selectedPeriod = selectedPeriod,
             onPeriodSelected = onPeriodSelected,
-            excludePeriods = listOf("Bu Ay", "Bu Yıl")
+            excludePeriods = stringArrayResource(id = R.array.transaction_periods).let { listOf(it[2], it[6]) }
         )
     }
     Row(
@@ -181,7 +183,7 @@ private fun SpendingTrendSection(
         PeriodSelector(
             selectedPeriod = selectedPeriod,
             onPeriodSelected = onPeriodSelected,
-            excludePeriods = listOf("Bu Ay", "Bu Yıl")
+            excludePeriods = stringArrayResource(id = R.array.transaction_periods).let { listOf(it[2], it[6]) }
         )
     }
     Column(

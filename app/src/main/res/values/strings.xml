@@ -286,4 +286,44 @@
         <item>Bu Yıl</item>
         <item>Son 1 Yıl</item>
     </string-array>
+
+    <string-array name="transaction_filter_options">
+        <item>Tümü</item>
+        <item>Gider</item>
+        <item>Gelir</item>
+    </string-array>
+
+    <string-array name="transaction_type_options">
+        <item>Gider</item>
+        <item>Gelir</item>
+    </string-array>
+
+    <string-array name="reminder_filter_options">
+        <item>Yaklaşan</item>
+        <item>Planlanan</item>
+        <item>Düzenli</item>
+    </string-array>
+
+    <string-array name="currency_options">
+        <item>₺ TRY</item>
+        <item>€ EUR</item>
+        <item>$ USD</item>
+    </string-array>
+
+    <string-array name="language_options">
+        <item>Türkçe</item>
+        <item>English</item>
+        <item>Deutsch</item>
+    </string-array>
+
+    <string-array name="font_size_options">
+        <item>Küçük</item>
+        <item>Orta</item>
+        <item>Büyük</item>
+    </string-array>
+
+    <string-array name="dark_mode_options">
+        <item>Açık</item>
+        <item>Koyu</item>
+    </string-array>
 </resources>

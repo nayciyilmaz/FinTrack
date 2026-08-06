@@ -34,25 +34,25 @@ class SpendingAnalysisViewModel @Inject constructor(
     val actionState: StateFlow<SpendingAnalysisActionState> = _actionState.asStateFlow()
 
     init {
-        loadCategoryDistribution(_uiState.value.selectedCategoryPeriod)
-        loadSpendingTrend(_uiState.value.selectedTrendPeriod)
+        loadCategoryDistribution(_uiState.value.selectedCategoryPeriodIndex)
+        loadSpendingTrend(_uiState.value.selectedTrendPeriodIndex)
     }
 
-    fun onCategoryPeriodChanged(period: String) {
-        _uiState.value = _uiState.value.copy(selectedCategoryPeriod = period)
-        loadCategoryDistribution(period)
+    fun onCategoryPeriodChanged(periodIndex: Int) {
+        _uiState.value = _uiState.value.copy(selectedCategoryPeriodIndex = periodIndex)
+        loadCategoryDistribution(periodIndex)
     }
 
-    fun onTrendPeriodChanged(period: String) {
-        _uiState.value = _uiState.value.copy(selectedTrendPeriod = period)
-        loadSpendingTrend(period)
+    fun onTrendPeriodChanged(periodIndex: Int) {
+        _uiState.value = _uiState.value.copy(selectedTrendPeriodIndex = periodIndex)
+        loadSpendingTrend(periodIndex)
     }
 
-    private fun loadCategoryDistribution(period: String) {
+    private fun loadCategoryDistribution(periodIndex: Int) {
         viewModelScope.launch {
             _actionState.value = _actionState.value.copy(isCategoryLoading = true, isCategoryError = false)
 
-            val (startDate, endDate) = periodToDateRange(period)
+            val (startDate, endDate) = periodToDateRange(periodIndex)
             val result = getTransactionsUseCase(
                 type = "EXPENSE",
                 startDate = startDate.format(formatter),
@@ -78,11 +78,11 @@ class SpendingAnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun loadSpendingTrend(period: String) {
+    private fun loadSpendingTrend(periodIndex: Int) {
         viewModelScope.launch {
             _actionState.value = _actionState.value.copy(isTrendLoading = true, isTrendError = false)
 
-            val (startDate, endDate) = periodToDateRange(period)
+            val (startDate, endDate) = periodToDateRange(periodIndex)
             val result = getTransactionsUseCase(
                 type = "EXPENSE",
                 startDate = startDate.format(formatter),
@@ -92,8 +92,8 @@ class SpendingAnalysisViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     val transactions = result.data ?: emptyList()
-                    val trendData = calculateSpendingTrend(transactions, period, startDate, endDate)
-                    val (high, low) = calculateSummary(trendData, period)
+                    val trendData = calculateSpendingTrend(transactions, periodIndex, startDate, endDate)
+                    val (high, low) = calculateSummary(trendData, periodIndex)
                     _actionState.value = _actionState.value.copy(
                         isTrendLoading = false,
                         spendingTrend = trendData,
@@ -112,15 +112,15 @@ class SpendingAnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun periodToDateRange(period: String): Pair<LocalDate, LocalDate> {
+    private fun periodToDateRange(periodIndex: Int): Pair<LocalDate, LocalDate> {
         val today = LocalDate.now()
-        val startDate = when (period) {
-            "Son 7 Gün" -> today.minusDays(6)
-            "Son 15 Gün" -> today.minusDays(14)
-            "Son 1 Ay" -> today.minusMonths(1)
-            "Son 3 Ay" -> today.minusMonths(3)
-            "Son 6 Ay" -> today.minusMonths(6)
-            "Son 1 Yıl" -> today.minusYears(1)
+        val startDate = when (periodIndex) {
+            0 -> today.minusDays(6)
+            1 -> today.minusDays(14)
+            3 -> today.minusMonths(1)
+            4 -> today.minusMonths(3)
+            5 -> today.minusMonths(6)
+            7 -> today.minusYears(1)
             else -> today.minusDays(6)
         }
         return Pair(startDate, today)
@@ -163,20 +163,17 @@ class SpendingAnalysisViewModel @Inject constructor(
 
     private fun calculateSpendingTrend(
         transactions: List<Transaction>,
-        period: String,
+        periodIndex: Int,
         startDate: LocalDate,
         endDate: LocalDate
     ): List<SpendingTrendItem> {
         val transactionsByDate = transactions.groupBy { LocalDate.parse(it.date) }
             .mapValues { (_, txs) -> txs.sumOf { it.amount } }
 
-        return when (period) {
-            "Son 7 Gün" -> buildDailyTrend(startDate, endDate, transactionsByDate)
-            "Son 15 Gün" -> buildDailyTrend(startDate, endDate, transactionsByDate)
-            "Son 1 Ay" -> buildWeeklyTrend(startDate, endDate, transactionsByDate)
-            "Son 3 Ay" -> buildMonthlyTrend(startDate, endDate, transactionsByDate)
-            "Son 6 Ay" -> buildMonthlyTrend(startDate, endDate, transactionsByDate)
-            "Son 1 Yıl" -> buildMonthlyTrend(startDate, endDate, transactionsByDate)
+        return when (periodIndex) {
+            0, 1 -> buildDailyTrend(startDate, endDate, transactionsByDate)
+            3 -> buildWeeklyTrend(startDate, endDate, transactionsByDate)
+            4, 5, 7 -> buildMonthlyTrend(startDate, endDate, transactionsByDate)
             else -> buildDailyTrend(startDate, endDate, transactionsByDate)
         }
     }
@@ -248,16 +245,16 @@ class SpendingAnalysisViewModel @Inject constructor(
 
     private fun calculateSummary(
         trendData: List<SpendingTrendItem>,
-        period: String
+        periodIndex: Int
     ): Pair<SpendingSummary?, SpendingSummary?> {
         if (trendData.isEmpty() || trendData.all { it.amount == 0f }) return Pair(null, null)
 
         val highItem = trendData.maxBy { it.amount }
         val lowItem = trendData.minBy { it.amount }
 
-        val summaryLabel = when (period) {
-            "Son 7 Gün", "Son 15 Gün" -> "Gün"
-            "Son 1 Ay" -> "Hafta"
+        val summaryLabel = when (periodIndex) {
+            0, 1 -> "Gün"
+            3 -> "Hafta"
             else -> "Ay"
         }
 

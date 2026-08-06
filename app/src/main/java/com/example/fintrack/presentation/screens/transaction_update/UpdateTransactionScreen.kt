@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -108,10 +109,7 @@ fun UpdateTransactionScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TransactionTypeSelector(
-                options = listOf(
-                    stringResource(id = R.string.label_expense),
-                    stringResource(id = R.string.label_income)
-                ),
+                options = stringArrayResource(id = R.array.transaction_type_options).toList(),
                 selectedIndex = uiState.selectedTypeIndex,
                 onOptionSelected = viewModel::onTypeChange
             )

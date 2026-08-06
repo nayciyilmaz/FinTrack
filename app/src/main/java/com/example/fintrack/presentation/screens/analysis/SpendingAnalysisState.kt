@@ -1,6 +1,6 @@
 package com.example.fintrack.presentation.screens.analysis
 
 data class SpendingAnalysisUiState(
-    val selectedCategoryPeriod: String = "Son 1 Ay",
-    val selectedTrendPeriod: String = "Son 7 Gün"
+    val selectedCategoryPeriodIndex: Int = 3,
+    val selectedTrendPeriodIndex: Int = 0
 )

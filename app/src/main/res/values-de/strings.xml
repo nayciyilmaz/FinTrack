@@ -286,4 +286,44 @@
         <item>Dieses Jahr</item>
         <item>Letztes 1 Jahr</item>
     </string-array>
+
+    <string-array name="transaction_filter_options">
+        <item>Alle</item>
+        <item>Ausgabe</item>
+        <item>Einnahme</item>
+    </string-array>
+
+    <string-array name="transaction_type_options">
+        <item>Ausgabe</item>
+        <item>Einnahme</item>
+    </string-array>
+
+    <string-array name="reminder_filter_options">
+        <item>Bevorstehend</item>
+        <item>Geplant</item>
+        <item>Wiederkehrend</item>
+    </string-array>
+
+    <string-array name="currency_options">
+        <item>₺ TRY</item>
+        <item>€ EUR</item>
+        <item>$ USD</item>
+    </string-array>
+
+    <string-array name="language_options">
+        <item>Türkçe</item>
+        <item>English</item>
+        <item>Deutsch</item>
+    </string-array>
+
+    <string-array name="font_size_options">
+        <item>Klein</item>
+        <item>Mittel</item>
+        <item>Groß</item>
+    </string-array>
+
+    <string-array name="dark_mode_options">
+        <item>Hell</item>
+        <item>Dunkel</item>
+    </string-array>
 </resources>

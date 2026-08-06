@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,11 +81,7 @@ fun PaymentRemindersScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             TransactionTypeSelector(
-                options = listOf(
-                    stringResource(id = R.string.label_upcoming),
-                    stringResource(id = R.string.label_planned),
-                    stringResource(id = R.string.label_regular)
-                ),
+                options = stringArrayResource(id = R.array.reminder_filter_options).toList(),
                 selectedIndex = uiState.selectedFilterIndex,
                 onOptionSelected = viewModel::onFilterChange
             )
