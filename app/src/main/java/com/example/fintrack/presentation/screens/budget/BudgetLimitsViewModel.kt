@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetBudgetsUseCase
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,15 +39,14 @@ class BudgetLimitsViewModel @Inject constructor(
             _actionState.value = _actionState.value.copy(isLoading = true, isError = false)
 
             val today = LocalDate.now()
-            val formatter = DateTimeFormatter.ISO_LOCAL_DATE
             val payday = tokenManager.getPayday().first()
             val (periodStart, periodEnd) = calculatePeriodDates(payday, today)
 
             val transactionsDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = periodStart.format(formatter),
-                    endDate = periodEnd.minusDays(1).format(formatter)
+                    startDate = periodStart.format(apiDateFormatter),
+                    endDate = periodEnd.minusDays(1).format(apiDateFormatter)
                 )
             }
 

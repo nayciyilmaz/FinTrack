@@ -4,20 +4,19 @@ import android.content.Context
 import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.mapper.BudgetMapper
+import com.example.fintrack.data.remote.error.NetworkErrorParser
 import com.example.fintrack.data.remote.api.BudgetService
 import com.example.fintrack.data.remote.dto.BudgetRequestDto
-import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.domain.model.Budget
 import com.example.fintrack.domain.repository.BudgetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class BudgetRepositoryImpl @Inject constructor(
     private val budgetService: BudgetService,
     private val budgetMapper: BudgetMapper,
-    private val json: Json,
+    private val networkErrorParser: NetworkErrorParser,
     @ApplicationContext private val context: Context
 ) : BudgetRepository {
 
@@ -26,9 +25,7 @@ class BudgetRepositoryImpl @Inject constructor(
             val response = budgetService.getBudgets()
             Resource.Success(response.map { budgetMapper.toBudget(it) })
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -41,9 +38,7 @@ class BudgetRepositoryImpl @Inject constructor(
             val response = budgetService.saveBudgets(request)
             Resource.Success(response.map { budgetMapper.toBudget(it) })
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))

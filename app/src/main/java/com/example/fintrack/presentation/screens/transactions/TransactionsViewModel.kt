@@ -3,6 +3,7 @@ package com.example.fintrack.presentation.screens.transactions
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,12 +52,11 @@ class TransactionsViewModel @Inject constructor(
             }
 
             val (startDate, endDate) = periodToDateRange(state.selectedPeriod)
-            val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
             when (val result = getTransactionsUseCase(
                 type = type,
-                startDate = startDate.format(formatter),
-                endDate = endDate.format(formatter)
+                startDate = startDate.format(apiDateFormatter),
+                endDate = endDate.format(apiDateFormatter)
             )) {
                 is Resource.Success -> {
                     _uiState.value = _uiState.value.copy(

@@ -5,6 +5,7 @@ import androidx.compose.ui.platform.LocalContext
 import java.time.format.DateTimeFormatter
 
 val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+val apiDateFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
 @Composable
 fun dateFormatter(): DateTimeFormatter {

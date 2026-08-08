@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.model.Transaction
@@ -27,7 +28,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -43,7 +43,6 @@ class ReportsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val locale = LocaleHelper.getLocale(context)
-    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     private val _uiState = MutableStateFlow(ReportsUiState())
     val uiState: StateFlow<ReportsUiState> = _uiState.asStateFlow()
@@ -73,15 +72,15 @@ class ReportsViewModel @Inject constructor(
             val transactionsDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = periodStart.format(formatter),
-                    endDate = periodEnd.minusDays(1).format(formatter)
+                    startDate = periodStart.format(apiDateFormatter),
+                    endDate = periodEnd.minusDays(1).format(apiDateFormatter)
                 )
             }
             val prevTransactionsDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = prevPeriodStart.format(formatter),
-                    endDate = prevPeriodEnd.minusDays(1).format(formatter)
+                    startDate = prevPeriodStart.format(apiDateFormatter),
+                    endDate = prevPeriodEnd.minusDays(1).format(apiDateFormatter)
                 )
             }
             val budgetsDeferred = async { getBudgetsUseCase() }

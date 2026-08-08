@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.constants.incomeCategories
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
+import com.example.fintrack.core.util.timeFormatter
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.presentation.model.TransactionCategory
 import com.example.fintrack.domain.model.TransactionType
@@ -18,7 +20,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
@@ -58,12 +59,11 @@ class AddTransactionViewModel @Inject constructor(
     private fun loadQuickAddSuggestions() {
         viewModelScope.launch {
             val today = LocalDate.now()
-            val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
             val result = getTransactionsUseCase(
                 type = null,
-                startDate = today.minusDays(QUICK_ADD_LOOKBACK_DAYS).format(formatter),
-                endDate = today.format(formatter)
+                startDate = today.minusDays(QUICK_ADD_LOOKBACK_DAYS).format(apiDateFormatter),
+                endDate = today.format(apiDateFormatter)
             )
 
             if (result is Resource.Success) {
@@ -76,13 +76,12 @@ class AddTransactionViewModel @Inject constructor(
 
     private fun calculateQuickAddSuggestions(transactions: List<Transaction>): List<Transaction> {
         val today = LocalDate.now()
-        val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
         return transactions
             .groupBy { Triple(it.type, it.category, it.amount) }
             .map { (_, group) ->
-                val mostRecent = group.maxBy { LocalDate.parse(it.date, formatter) }
-                val daysSinceLastSeen = ChronoUnit.DAYS.between(LocalDate.parse(mostRecent.date, formatter), today)
+                val mostRecent = group.maxBy { LocalDate.parse(it.date, apiDateFormatter) }
+                val daysSinceLastSeen = ChronoUnit.DAYS.between(LocalDate.parse(mostRecent.date, apiDateFormatter), today)
                 val score = group.size.toDouble() / (daysSinceLastSeen + 1)
                 mostRecent to score
             }
@@ -190,8 +189,8 @@ class AddTransactionViewModel @Inject constructor(
                 category = state.selectedCategory.key,
                 amount = state.amount.toDouble(),
                 note = state.note.takeIf { it.isNotBlank() },
-                date = state.selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                time = state.selectedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                date = state.selectedDate.format(apiDateFormatter),
+                time = state.selectedTime.format(timeFormatter),
                 recurring = state.isRecurring,
                 reminder = state.isReminder
             )

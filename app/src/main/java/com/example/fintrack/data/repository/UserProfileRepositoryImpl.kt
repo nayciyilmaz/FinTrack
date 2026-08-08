@@ -5,15 +5,14 @@ import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.data.mapper.UserProfileMapper
+import com.example.fintrack.data.remote.error.NetworkErrorParser
 import com.example.fintrack.data.remote.api.AuthService
-import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.data.remote.dto.UpdateEmailRequestDto
 import com.example.fintrack.data.remote.dto.UpdateNameRequestDto
 import com.example.fintrack.data.remote.dto.UpdatePasswordRequestDto
 import com.example.fintrack.domain.model.UserProfile
 import com.example.fintrack.domain.repository.UserProfileRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -21,7 +20,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val tokenManager: TokenManager,
     private val userProfileMapper: UserProfileMapper,
-    private val json: Json,
+    private val networkErrorParser: NetworkErrorParser,
     @ApplicationContext private val context: Context
 ) : UserProfileRepository {
 
@@ -30,9 +29,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             val response = authService.getCurrentUser()
             Resource.Success(userProfileMapper.toUserProfile(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -44,9 +41,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             val response = authService.updateName(UpdateNameRequestDto(firstName = firstName, lastName = lastName))
             Resource.Success(userProfileMapper.toUserProfile(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback), fieldErrors = errorDto?.fieldErrors)
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -60,9 +55,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             tokenManager.saveRefreshToken(response.refreshToken)
             Resource.Success(response.email)
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback), fieldErrors = errorDto?.fieldErrors)
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -76,9 +69,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             )
             Resource.Success(userProfileMapper.toUserProfile(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback), fieldErrors = errorDto?.fieldErrors)
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))

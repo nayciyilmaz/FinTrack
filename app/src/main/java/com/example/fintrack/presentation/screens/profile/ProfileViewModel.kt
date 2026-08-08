@@ -9,6 +9,7 @@ import com.example.fintrack.core.util.FontSizeHelper
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.core.util.ThemeHelper
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.domain.usecase.GetSavingsGoalsUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.domain.usecase.GetUserProfileUseCase
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -352,15 +352,14 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _actionState.value = _actionState.value.copy(isLoading = true, isError = false)
 
-            val formatter = DateTimeFormatter.ISO_LOCAL_DATE
             val today = LocalDate.now()
 
             val profileDeferred = async { getUserProfileUseCase() }
             val transactionsDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = LocalDate.of(2020, 1, 1).format(formatter),
-                    endDate = today.format(formatter)
+                    startDate = LocalDate.of(2020, 1, 1).format(apiDateFormatter),
+                    endDate = today.format(apiDateFormatter)
                 )
             }
             val goalsDeferred = async { getSavingsGoalsUseCase() }

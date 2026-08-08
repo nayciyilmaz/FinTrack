@@ -5,8 +5,8 @@ import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.data.mapper.AuthMapper
+import com.example.fintrack.data.remote.error.NetworkErrorParser
 import com.example.fintrack.data.remote.api.AuthService
-import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.data.remote.dto.ForgotPasswordRequestDto
 import com.example.fintrack.data.remote.dto.GoogleAuthRequestDto
 import com.example.fintrack.data.remote.dto.LoginRequestDto
@@ -16,7 +16,6 @@ import com.example.fintrack.data.remote.dto.VerifyResetCodeRequestDto
 import com.example.fintrack.domain.model.User
 import com.example.fintrack.domain.repository.AuthRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -24,7 +23,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val authMapper: AuthMapper,
     private val tokenManager: TokenManager,
-    private val json: Json,
+    private val networkErrorParser: NetworkErrorParser,
     @ApplicationContext private val context: Context
 ) : AuthRepository {
 
@@ -52,9 +51,7 @@ class AuthRepositoryImpl @Inject constructor(
             tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(
                 message = errorDto?.message ?: context.getString(R.string.error_generic_fallback),
                 fieldErrors = errorDto?.fieldErrors
@@ -72,9 +69,7 @@ class AuthRepositoryImpl @Inject constructor(
             tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             val fieldErrors = when (errorDto?.code) {
                 1001 -> mapOf("email" to (errorDto.message))
                 1003 -> mapOf("password" to (errorDto.message))
@@ -97,9 +92,7 @@ class AuthRepositoryImpl @Inject constructor(
             tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_google_signin_failed))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -121,9 +114,7 @@ class AuthRepositoryImpl @Inject constructor(
             authService.forgotPassword(ForgotPasswordRequestDto(email = email))
             Resource.Success(Unit)
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             val fieldErrors = when (errorDto?.code) {
                 1001 -> mapOf("email" to errorDto.message)
                 else -> errorDto?.fieldErrors
@@ -142,9 +133,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authService.verifyResetCode(VerifyResetCodeRequestDto(email = email, code = code))
             Resource.Success(response.resetToken)
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             val fieldErrors = when (errorDto?.code) {
                 1009 -> mapOf("code" to errorDto.message)
                 else -> errorDto?.fieldErrors
@@ -163,9 +152,7 @@ class AuthRepositoryImpl @Inject constructor(
             authService.resetPassword(ResetPasswordRequestDto(resetToken = resetToken, newPassword = newPassword))
             Resource.Success(Unit)
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(
                 message = errorDto?.message ?: context.getString(R.string.error_generic_fallback),
                 fieldErrors = errorDto?.fieldErrors

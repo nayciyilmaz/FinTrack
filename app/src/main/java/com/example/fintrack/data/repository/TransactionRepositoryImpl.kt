@@ -4,21 +4,20 @@ import android.content.Context
 import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.data.mapper.TransactionMapper
+import com.example.fintrack.data.remote.error.NetworkErrorParser
 import com.example.fintrack.data.remote.api.TransactionService
-import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.data.remote.dto.TransactionRequestDto
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.repository.TransactionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
     private val transactionService: TransactionService,
     private val transactionMapper: TransactionMapper,
-    private val json: Json,
+    private val networkErrorParser: NetworkErrorParser,
     @ApplicationContext private val context: Context
 ) : TransactionRepository {
 
@@ -47,9 +46,7 @@ class TransactionRepositoryImpl @Inject constructor(
             )
             Resource.Success(transactionMapper.toTransaction(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -65,9 +62,7 @@ class TransactionRepositoryImpl @Inject constructor(
             val response = transactionService.getTransactions(type?.name, startDate, endDate)
             Resource.Success(response.map { transactionMapper.toTransaction(it) })
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -101,9 +96,7 @@ class TransactionRepositoryImpl @Inject constructor(
             )
             Resource.Success(transactionMapper.toTransaction(response))
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -115,9 +108,7 @@ class TransactionRepositoryImpl @Inject constructor(
             transactionService.deleteTransaction(id)
             Resource.Success(Unit)
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
@@ -129,9 +120,7 @@ class TransactionRepositoryImpl @Inject constructor(
             val response = transactionService.getReminders()
             Resource.Success(response.map { transactionMapper.toTransaction(it) })
         } catch (e: HttpException) {
-            val errorDto = e.response()?.errorBody()?.string()?.let {
-                runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
-            }
+            val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))

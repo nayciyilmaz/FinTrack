@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import com.example.fintrack.domain.usecase.RegisterUseCase
@@ -125,7 +126,7 @@ class SignUpViewModel @Inject constructor(
         val maxDay = targetMonth.lengthOfMonth()
         val adjustedPayday = payday.coerceAtMost(maxDay)
         val salaryDate = targetMonth.withDayOfMonth(adjustedPayday)
-        val dateStr = salaryDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val dateStr = salaryDate.format(apiDateFormatter)
         val timeStr = LocalTime.of(9, 0).format(DateTimeFormatter.ISO_LOCAL_TIME)
 
         addTransactionUseCase(

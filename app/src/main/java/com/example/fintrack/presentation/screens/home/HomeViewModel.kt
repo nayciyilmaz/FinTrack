@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.model.TransactionType
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -39,7 +39,6 @@ class HomeViewModel @Inject constructor(
             _actionState.value = _actionState.value.copy(isLoading = true, isError = false)
 
             val today = LocalDate.now()
-            val formatter = DateTimeFormatter.ISO_LOCAL_DATE
             val payday = tokenManager.getPayday().first()
             val (periodStart, periodEnd) = calculatePeriodDates(payday, today)
             val periodText = formatPeriodText(periodStart, periodEnd)
@@ -47,16 +46,16 @@ class HomeViewModel @Inject constructor(
             val periodDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = periodStart.format(formatter),
-                    endDate = periodEnd.minusDays(1).format(formatter)
+                    startDate = periodStart.format(apiDateFormatter),
+                    endDate = periodEnd.minusDays(1).format(apiDateFormatter)
                 )
             }
 
             val recentDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = today.minusYears(1).format(formatter),
-                    endDate = today.format(formatter)
+                    startDate = today.minusYears(1).format(apiDateFormatter),
+                    endDate = today.format(apiDateFormatter)
                 )
             }
 

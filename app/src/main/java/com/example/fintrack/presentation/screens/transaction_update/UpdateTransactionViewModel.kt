@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.constants.expenseCategories
 import com.example.fintrack.core.constants.incomeCategories
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
+import com.example.fintrack.core.util.timeFormatter
 import com.example.fintrack.presentation.model.TransactionCategory
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.DeleteRecurringItemUseCase
@@ -20,7 +22,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -187,8 +188,8 @@ class UpdateTransactionViewModel @Inject constructor(
                     category = state.selectedCategory!!.key,
                     amount = state.amount.toDouble(),
                     note = state.note.takeIf { it.isNotBlank() },
-                    date = state.selectedDate!!.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    time = state.selectedTime!!.format(DateTimeFormatter.ofPattern("HH:mm")),
+                    date = state.selectedDate!!.format(apiDateFormatter),
+                    time = state.selectedTime!!.format(timeFormatter),
                     recurring = state.isRecurring,
                     reminder = state.isReminder
                 )

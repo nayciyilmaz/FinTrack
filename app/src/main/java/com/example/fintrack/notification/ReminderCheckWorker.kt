@@ -5,13 +5,13 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.usecase.GetReminderTransactionsUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @HiltWorker
 class ReminderCheckWorker @AssistedInject constructor(
@@ -42,7 +42,7 @@ class ReminderCheckWorker @AssistedInject constructor(
 
         return when (val result = getReminderTransactionsUseCase()) {
             is Resource.Success -> {
-                val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+                val today = LocalDate.now().format(apiDateFormatter)
                 val todayCount = result.data.orEmpty().count { it.date == today }
                 if (todayCount > 0) {
                     ReminderNotificationHelper.showReminderSummary(applicationContext, todayCount)

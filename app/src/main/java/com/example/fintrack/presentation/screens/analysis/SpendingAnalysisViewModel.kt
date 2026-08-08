@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import javax.inject.Inject
 
@@ -26,7 +26,6 @@ class SpendingAnalysisViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val locale = LocaleHelper.getLocale(context)
-    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     private val _uiState = MutableStateFlow(SpendingAnalysisUiState())
     val uiState: StateFlow<SpendingAnalysisUiState> = _uiState.asStateFlow()
@@ -56,8 +55,8 @@ class SpendingAnalysisViewModel @Inject constructor(
             val (startDate, endDate) = periodToDateRange(periodIndex)
             val result = getTransactionsUseCase(
                 type = TransactionType.EXPENSE,
-                startDate = startDate.format(formatter),
-                endDate = endDate.format(formatter)
+                startDate = startDate.format(apiDateFormatter),
+                endDate = endDate.format(apiDateFormatter)
             )
 
             when (result) {
@@ -86,8 +85,8 @@ class SpendingAnalysisViewModel @Inject constructor(
             val (startDate, endDate) = periodToDateRange(periodIndex)
             val result = getTransactionsUseCase(
                 type = TransactionType.EXPENSE,
-                startDate = startDate.format(formatter),
-                endDate = endDate.format(formatter)
+                startDate = startDate.format(apiDateFormatter),
+                endDate = endDate.format(apiDateFormatter)
             )
 
             when (result) {

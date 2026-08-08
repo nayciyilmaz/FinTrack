@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fintrack.R
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
 import com.example.fintrack.data.local.TokenManager
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.model.TransactionType
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -108,7 +108,6 @@ class SavingsGoalsViewModel @Inject constructor(
             _actionState.value = _actionState.value.copy(isLoading = true, isError = false)
 
             val today = LocalDate.now()
-            val formatter = DateTimeFormatter.ISO_LOCAL_DATE
             val payday = tokenManager.getPayday().first()
             val (currentPeriodStart, _) = calculatePeriodDates(payday, today)
 
@@ -118,16 +117,16 @@ class SavingsGoalsViewModel @Inject constructor(
             val prevPeriodDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = prevPeriodStart.format(formatter),
-                    endDate = currentPeriodStart.minusDays(1).format(formatter)
+                    startDate = prevPeriodStart.format(apiDateFormatter),
+                    endDate = currentPeriodStart.minusDays(1).format(apiDateFormatter)
                 )
             }
 
             val allTransactionsDeferred = async {
                 getTransactionsUseCase(
                     type = null,
-                    startDate = LocalDate.of(2020, 1, 1).format(formatter),
-                    endDate = currentPeriodStart.minusDays(1).format(formatter)
+                    startDate = LocalDate.of(2020, 1, 1).format(apiDateFormatter),
+                    endDate = currentPeriodStart.minusDays(1).format(apiDateFormatter)
                 )
             }
 
