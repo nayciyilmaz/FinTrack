@@ -33,6 +33,7 @@ import com.example.fintrack.presentation.components.EditDatePicker
 import com.example.fintrack.presentation.components.EditScaffold
 import com.example.fintrack.presentation.components.EditTimePicker
 import com.example.fintrack.presentation.components.NoteInput
+import com.example.fintrack.presentation.components.QuickAddSuggestions
 import com.example.fintrack.presentation.components.RecurringPaymentSection
 import com.example.fintrack.presentation.components.TransactionTypeSelector
 import com.example.fintrack.presentation.components.ValidationErrorText
@@ -92,6 +93,10 @@ fun AddTransactionScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            QuickAddSuggestions(
+                suggestions = uiState.quickAddSuggestions,
+                onSuggestionSelected = viewModel::onQuickAddSelected
+            )
             TransactionTypeSelector(
                 options = stringArrayResource(id = R.array.transaction_type_options).toList(),
                 selectedIndex = uiState.selectedTypeIndex,

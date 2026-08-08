@@ -38,8 +38,76 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
+import com.example.fintrack.core.constants.categoryKeyToIcon
+import com.example.fintrack.core.constants.categoryKeyToLabelResId
 import com.example.fintrack.core.util.currencySymbol
+import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.presentation.model.TransactionCategory
+
+@Composable
+fun QuickAddSuggestions(
+    suggestions: List<Transaction>,
+    onSuggestionSelected: (Transaction) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (suggestions.isEmpty()) return
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.label_quick_add),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+        )
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            suggestions.forEach { suggestion ->
+                QuickAddItem(
+                    transaction = suggestion,
+                    onClick = { onSuggestionSelected(suggestion) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuickAddItem(
+    transaction: Transaction,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(colorResource(id = R.color.card_background))
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Icon(
+            imageVector = categoryKeyToIcon(transaction.category),
+            contentDescription = null,
+            tint = colorResource(id = R.color.bottom_bar_fab)
+        )
+        Text(
+            text = stringResource(id = categoryKeyToLabelResId(transaction.category)),
+            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+            color = colorResource(id = R.color.text_primary)
+        )
+        Text(
+            text = "${currencySymbol()}${transaction.amount.toInt()}",
+            style = MaterialTheme.typography.labelSmall,
+            color = colorResource(id = R.color.text_secondary)
+        )
+    }
+}
 
 @Composable
 fun CategorySelector(

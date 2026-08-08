@@ -91,6 +91,7 @@
     <string name="label_minute">Minute</string>
     <string name="label_cancel">Cancel</string>
     <string name="label_confirm">OK</string>
+    <string name="label_quick_add">Quick add</string>
     <string name="label_category">Category</string>
     <string name="label_amount">Amount</string>
     <string name="label_amount_placeholder">0.00 %1$s</string>

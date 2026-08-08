@@ -1,5 +1,6 @@
 package com.example.fintrack.presentation.screens.transaction_add
 
+import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.presentation.model.TransactionCategory
 import java.time.LocalDate
 import java.time.LocalTime
@@ -18,5 +19,6 @@ data class AddTransactionUiState(
     val isReminder: Boolean = false,
     val showDatePicker: Boolean = false,
     val showTimePicker: Boolean = false,
-    val showValidationError: Boolean = false
+    val showValidationError: Boolean = false,
+    val quickAddSuggestions: List<Transaction> = emptyList()
 )

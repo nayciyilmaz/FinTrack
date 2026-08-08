@@ -91,6 +91,7 @@
     <string name="label_minute">Dakika</string>
     <string name="label_cancel">İptal</string>
     <string name="label_confirm">Tamam</string>
+    <string name="label_quick_add">Hızlı Ekle</string>
     <string name="label_category">Kategori</string>
     <string name="label_amount">İşlem Tutarı</string>
     <string name="label_amount_placeholder">0.00 %1$s</string>
