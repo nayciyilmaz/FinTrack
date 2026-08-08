@@ -3,12 +3,11 @@ package com.example.fintrack.data.repository
 import android.content.Context
 import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.data.mapper.RecurringItemMapper
 import com.example.fintrack.data.remote.api.RecurringItemService
 import com.example.fintrack.data.remote.dto.ErrorResponseDto
-import com.example.fintrack.data.remote.dto.RecurringItemResponseDto
 import com.example.fintrack.data.remote.dto.RecurringItemUpdateRequestDto
 import com.example.fintrack.domain.model.RecurringItem
-import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.repository.RecurringItemRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
@@ -17,13 +16,14 @@ import javax.inject.Inject
 
 class RecurringItemRepositoryImpl @Inject constructor(
     private val recurringItemService: RecurringItemService,
+    private val recurringItemMapper: RecurringItemMapper,
     private val json: Json,
     @ApplicationContext private val context: Context
 ) : RecurringItemRepository {
 
     override suspend fun getRecurringItems(): Resource<List<RecurringItem>> {
         return try {
-            Resource.Success(recurringItemService.getRecurringItems().map { it.toDomain() })
+            Resource.Success(recurringItemService.getRecurringItems().map { recurringItemMapper.toRecurringItem(it) })
         } catch (e: HttpException) {
             Resource.Error(message = extractErrorMessage(e))
         } catch (e: Exception) {
@@ -34,7 +34,7 @@ class RecurringItemRepositoryImpl @Inject constructor(
     override suspend fun updateRecurringItem(id: Long, amount: Double, dayOfMonth: Int): Resource<RecurringItem> {
         return try {
             val request = RecurringItemUpdateRequestDto(amount = amount, dayOfMonth = dayOfMonth)
-            Resource.Success(recurringItemService.updateRecurringItem(id, request).toDomain())
+            Resource.Success(recurringItemMapper.toRecurringItem(recurringItemService.updateRecurringItem(id, request)))
         } catch (e: HttpException) {
             Resource.Error(message = extractErrorMessage(e))
         } catch (e: Exception) {
@@ -59,12 +59,4 @@ class RecurringItemRepositoryImpl @Inject constructor(
         }
         return errorDto?.message ?: context.getString(R.string.error_generic_fallback)
     }
-
-    private fun RecurringItemResponseDto.toDomain() = RecurringItem(
-        id = id,
-        type = TransactionType.valueOf(type),
-        category = category,
-        amount = amount,
-        dayOfMonth = dayOfMonth
-    )
 }

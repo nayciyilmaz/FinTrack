@@ -3,9 +3,9 @@ package com.example.fintrack.data.repository
 import android.content.Context
 import com.example.fintrack.R
 import com.example.fintrack.core.util.Resource
+import com.example.fintrack.data.mapper.BudgetMapper
 import com.example.fintrack.data.remote.api.BudgetService
 import com.example.fintrack.data.remote.dto.BudgetRequestDto
-import com.example.fintrack.data.remote.dto.BudgetResponseDto
 import com.example.fintrack.data.remote.dto.ErrorResponseDto
 import com.example.fintrack.domain.model.Budget
 import com.example.fintrack.domain.repository.BudgetRepository
@@ -16,6 +16,7 @@ import javax.inject.Inject
 
 class BudgetRepositoryImpl @Inject constructor(
     private val budgetService: BudgetService,
+    private val budgetMapper: BudgetMapper,
     private val json: Json,
     @ApplicationContext private val context: Context
 ) : BudgetRepository {
@@ -23,7 +24,7 @@ class BudgetRepositoryImpl @Inject constructor(
     override suspend fun getBudgets(): Resource<List<Budget>> {
         return try {
             val response = budgetService.getBudgets()
-            Resource.Success(response.map { it.toDomain() })
+            Resource.Success(response.map { budgetMapper.toBudget(it) })
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
@@ -38,7 +39,7 @@ class BudgetRepositoryImpl @Inject constructor(
         return try {
             val request = budgets.map { BudgetRequestDto(category = it.first, limitAmount = it.second) }
             val response = budgetService.saveBudgets(request)
-            Resource.Success(response.map { it.toDomain() })
+            Resource.Success(response.map { budgetMapper.toBudget(it) })
         } catch (e: HttpException) {
             val errorDto = e.response()?.errorBody()?.string()?.let {
                 runCatching { json.decodeFromString<ErrorResponseDto>(it) }.getOrNull()
@@ -48,10 +49,4 @@ class BudgetRepositoryImpl @Inject constructor(
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
-
-    private fun BudgetResponseDto.toDomain() = Budget(
-        id = id,
-        category = category,
-        limitAmount = limitAmount
-    )
 }
