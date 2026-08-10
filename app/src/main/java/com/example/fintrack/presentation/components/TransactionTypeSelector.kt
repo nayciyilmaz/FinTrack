@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 
 @Composable
@@ -29,10 +29,10 @@ fun TransactionTypeSelector(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_lg)))
             .background(colorResource(id = R.color.card_background))
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(dimensionResource(id = R.dimen.padding_xs)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
     ) {
         options.forEachIndexed { index, label ->
             val isSelected = selectedIndex == index
@@ -43,10 +43,10 @@ fun TransactionTypeSelector(
                 textAlign = TextAlign.Center,
                 modifier = modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)))
                     .background(if (isSelected) colorResource(id = R.color.bottom_bar_fab) else Color.Transparent)
                     .clickable { onOptionSelected(index) }
-                    .padding(vertical = 10.dp)
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_10))
             )
         }
     }

@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +32,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 import com.example.fintrack.presentation.screens.profile.ProfileDialogType
 import com.example.fintrack.presentation.screens.profile.ProfileEditState
@@ -100,7 +100,7 @@ fun NameEditDialog(
         text = {
             Column(
                 modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
             ) {
                 Column {
                     EditOutlinedTextField(
@@ -178,7 +178,7 @@ fun EmailEditDialog(
         text = {
             Column(
                 modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
             ) {
                 Column {
                     EditOutlinedTextField(
@@ -241,7 +241,7 @@ fun PasswordEditDialog(
         text = {
             Column(
                 modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
             ) {
                 Column {
                     EditOutlinedTextField(
@@ -404,7 +404,7 @@ fun CurrencySelectDialog(
         text = {
             Column(
                 modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
             ) {
                 options.forEach { option ->
                     Row(
@@ -468,7 +468,7 @@ fun LanguageSelectDialog(
         text = {
             Column(
                 modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
             ) {
                 options.forEach { option ->
                     Row(
@@ -532,7 +532,7 @@ fun FontSizeSelectDialog(
         text = {
             Column(
                 modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
             ) {
                 options.forEach { option ->
                     Row(
@@ -596,7 +596,7 @@ fun DarkModeSelectDialog(
         text = {
             Column(
                 modifier = modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
             ) {
                 options.forEach { option ->
                     Row(

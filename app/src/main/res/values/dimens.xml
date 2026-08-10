@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="space_2xs">2dp</dimen>
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">12dp</dimen>
+    <dimen name="space_lg">16dp</dimen>
+    <dimen name="space_xl">20dp</dimen>
+    <dimen name="space_2xl">24dp</dimen>
+    <dimen name="space_10">10dp</dimen>
+
+    <dimen name="padding_2xs">2dp</dimen>
+    <dimen name="padding_xs">4dp</dimen>
+    <dimen name="padding_sm">8dp</dimen>
+    <dimen name="padding_md">12dp</dimen>
+    <dimen name="padding_lg">16dp</dimen>
+    <dimen name="padding_xl">20dp</dimen>
+    <dimen name="padding_2xl">24dp</dimen>
+    <dimen name="padding_3xl">28dp</dimen>
+    <dimen name="padding_4xl">32dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+
+    <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_md">12dp</dimen>
+    <dimen name="radius_lg">16dp</dimen>
+    <dimen name="radius_xl">20dp</dimen>
+    <dimen name="radius_2xl">24dp</dimen>
+    <dimen name="radius_3xl">28dp</dimen>
+    <dimen name="radius_10">10dp</dimen>
+    <dimen name="radius_pill">48dp</dimen>
+
+    <dimen name="border_hairline">1dp</dimen>
+    <dimen name="padding_hairline">1dp</dimen>
+
+    <dimen name="elevation_sm">2dp</dimen>
+    <dimen name="elevation_md">4dp</dimen>
+
+    <dimen name="size_icon_md">20dp</dimen>
+    <dimen name="size_scroll_wheel_width">80dp</dimen>
+    <dimen name="size_donut_chart">140dp</dimen>
+    <dimen name="size_bar_chart_height">160dp</dimen>
+    <dimen name="size_scroll_wheel_height">200dp</dimen>
+    <dimen name="size_code_box">48dp</dimen>
+
+</resources>

@@ -23,9 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 
 @Composable
@@ -42,12 +42,19 @@ fun PeriodSelector(
     Column(modifier = modifier) {
         Row(
             modifier = modifier
-                .clip(RoundedCornerShape(20.dp))
-                .border(1.dp, colorResource(id = R.color.text_primary).copy(alpha = 0.15f), RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)))
+                .border(
+                    dimensionResource(id = R.dimen.border_hairline),
+                    colorResource(id = R.color.text_primary).copy(alpha = 0.15f),
+                    RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl))
+                )
                 .clickable { expanded = true }
-                .padding(horizontal = 14.dp, vertical = 7.dp),
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_md),
+                    vertical = dimensionResource(id = R.dimen.padding_sm)
+                ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
         ) {
             Text(
                 text = selectedPeriod,

@@ -10,10 +10,10 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 
 @Composable
@@ -45,7 +45,7 @@ fun EditOutlinedTextField(
         keyboardActions = keyboardActions,
         singleLine = singleLine,
         enabled = enabled,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)),
         textStyle = textStyle,
         visualTransformation = visualTransformation,
         colors = colors ?: OutlinedTextFieldDefaults.colors(

@@ -30,11 +30,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -66,9 +66,9 @@ fun SpendingAnalysisScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(dimensionResource(id = R.dimen.padding_lg))
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             CategoryDistributionSection(
                 items = actionState.categoryDistribution,
@@ -115,19 +115,19 @@ private fun CategoryDistributionSection(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
             .background(colorResource(id = R.color.card_background))
-            .padding(20.dp),
+            .padding(dimensionResource(id = R.dimen.padding_xl)),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xl))
     ) {
         DonutChart(
             percentages = percentages,
             colors = colors,
-            modifier = Modifier.size(140.dp)
+            modifier = Modifier.size(dimensionResource(id = R.dimen.size_donut_chart))
         )
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             items.forEachIndexed { index, item ->
                 val label = if (item.categoryKey == "OTHER") {
@@ -137,14 +137,14 @@ private fun CategoryDistributionSection(
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
                 ) {
                     Box(
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(dimensionResource(id = R.dimen.padding_xs))
                             .clip(CircleShape)
                             .background(colors.getOrElse(index) { colors.last() })
-                            .padding(6.dp)
+                            .padding(dimensionResource(id = R.dimen.padding_xs))
                     )
                     Text(
                         text = label,
@@ -189,10 +189,10 @@ private fun SpendingTrendSection(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
             .background(colorResource(id = R.color.card_background))
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(dimensionResource(id = R.dimen.padding_xl)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_lg))
     ) {
         val barData = trendData.map { Pair(it.label, it.amount) }
         val maxValue = barData.maxOfOrNull { it.second } ?: 0f
@@ -235,10 +235,12 @@ private fun BarChart(
     barColor: Color,
     modifier: Modifier = Modifier
 ) {
+    val barChartHeight = dimensionResource(id = R.dimen.size_bar_chart_height)
+    val barCornerRadius = dimensionResource(id = R.dimen.radius_sm)
     Canvas(
         modifier = modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(barChartHeight)
     ) {
         val barCount = barData.size
         if (barCount == 0) return@Canvas
@@ -255,7 +257,7 @@ private fun BarChart(
                 color = barColor,
                 topLeft = Offset(x, y),
                 size = Size(barWidth, barHeight),
-                cornerRadius = CornerRadius(8.dp.toPx())
+                cornerRadius = CornerRadius(barCornerRadius.toPx())
             )
         }
     }
@@ -277,15 +279,15 @@ private fun SpendingSummaryCards(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
     ) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)))
                 .background(colorResource(id = R.color.card_background))
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+                .padding(dimensionResource(id = R.dimen.padding_md)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
         ) {
             Text(
                 text = summaryHigh.label,
@@ -305,10 +307,10 @@ private fun SpendingSummaryCards(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)))
                 .background(colorResource(id = R.color.card_background))
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+                .padding(dimensionResource(id = R.dimen.padding_md)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
         ) {
             Text(
                 text = summaryLow.label,

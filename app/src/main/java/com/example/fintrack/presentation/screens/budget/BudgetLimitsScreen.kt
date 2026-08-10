@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -97,7 +98,7 @@ fun BudgetLimitsScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(dimensionResource(id = R.dimen.padding_lg))
                 .verticalScroll(rememberScrollState())
         ) {
             BudgetCard(
@@ -108,7 +109,7 @@ fun BudgetLimitsScreen(
                 title = stringResource(id = R.string.label_category_limits),
                 actionText = stringResource(id = R.string.label_edit),
                 onActionClick = viewModel::onShowManageDialog,
-                modifier = modifier.padding(vertical = 4.dp)
+                modifier = modifier.padding(vertical = dimensionResource(id = R.dimen.padding_xs))
             )
             ScreenStateContent(
                 isLoading = actionState.isLoading,
@@ -117,7 +118,7 @@ fun BudgetLimitsScreen(
                 emptyMessageResId = R.string.label_no_budgets,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp)
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_md))
             ) {
                 actionState.budgets.forEach { budget ->
                     val usedAmount = actionState.categoryExpenses[budget.category] ?: 0
@@ -155,12 +156,12 @@ private fun ManageLimitsDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))) {
                 Column(
                     modifier = modifier
                         .heightIn(max = categoryListMaxHeight)
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
                 ) {
                     expenseCategories.forEach { category ->
                         val isActive = uiState.dialogActiveStates[category.key] ?: false
@@ -169,19 +170,19 @@ private fun ManageLimitsDialog(
                         Row(
                             modifier = modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
                         ) {
                             Icon(
                                 imageVector = category.icon,
                                 contentDescription = null,
                                 tint = if (isActive) colorResource(id = R.color.bottom_bar_fab) else colorResource(id = R.color.text_secondary),
                                 modifier = modifier
-                                    .clip(RoundedCornerShape(10.dp))
+                                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                                     .background(
                                         if (isActive) colorResource(id = R.color.quick_action_background)
                                         else colorResource(id = R.color.progress_track)
                                     )
-                                    .padding(8.dp)
+                                    .padding(dimensionResource(id = R.dimen.padding_sm))
                             )
                             Text(
                                 text = stringResource(id = category.labelResId),
@@ -277,8 +278,8 @@ private fun BudgetCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_2xl)),
+        elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(id = R.dimen.elevation_md)),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Column(
@@ -292,15 +293,15 @@ private fun BudgetCard(
                         )
                     )
                 )
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(dimensionResource(id = R.dimen.padding_xl)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_lg))
         ) {
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))) {
                     Text(
                         text = stringResource(id = R.string.label_monthly_budget),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
@@ -314,7 +315,7 @@ private fun BudgetCard(
                 }
                 Column(
                     horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
                 ) {
                     Text(
                         text = stringResource(id = R.string.label_used),
@@ -377,16 +378,16 @@ private fun CategoryLimitCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            .padding(bottom = dimensionResource(id = R.dimen.padding_sm)),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)),
+        elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(id = R.dimen.elevation_sm)),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+                .padding(dimensionResource(id = R.dimen.padding_lg)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             Row(
                 modifier = modifier.fillMaxWidth(),
@@ -395,18 +396,18 @@ private fun CategoryLimitCard(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
                 ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
                         tint = activeColor,
                         modifier = modifier
-                            .clip(RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                             .background(activeBackgroundColor)
-                            .padding(8.dp)
+                            .padding(dimensionResource(id = R.dimen.padding_sm))
                     )
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))) {
                         Text(
                             text = categoryName,
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -426,7 +427,7 @@ private fun CategoryLimitCard(
                 )
             }
 
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))) {
                 Row(
                     modifier = modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween

@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,8 +56,8 @@ fun TransactionsScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(dimensionResource(id = R.dimen.padding_lg)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
         ) {
             TransactionTypeSelector(
                 options = stringArrayResource(id = R.array.transaction_filter_options).toList(),
@@ -83,9 +84,9 @@ fun TransactionsScreen(
                 LazyColumn(
                     modifier = modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(28.dp))
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
                         .background(colorResource(id = R.color.card_background))
-                        .padding(horizontal = 20.dp, vertical = 4.dp),
+                        .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_xs)),
                     verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
                     itemsIndexed(uiState.transactions) { index, item ->

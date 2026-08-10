@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +48,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -99,7 +99,7 @@ fun SignInScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_2xl))
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -108,7 +108,7 @@ fun SignInScreen(
                 text = stringResource(id = R.string.sign_in_title),
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                 color = colorResource(id = R.color.sign_in_title),
-                modifier = modifier.padding(bottom = 20.dp)
+                modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.padding_xl))
             )
             Column(modifier = modifier.fillMaxWidth()) {
                 EditOutlinedTextField(
@@ -116,7 +116,7 @@ fun SignInScreen(
                     onValueChange = viewModel::onEmailChange,
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = dimensionResource(id = R.dimen.padding_md)),
                     label = {
                         Text(text = stringResource(id = R.string.sign_in_email))
                     },
@@ -171,7 +171,7 @@ fun SignInScreen(
                 text = stringResource(id = R.string.sign_in_forgot_password),
                 modifier = modifier
                     .align(Alignment.End)
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_xs)),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
             )
             EditButton(
@@ -183,21 +183,21 @@ fun SignInScreen(
                 onClick = { viewModel.launchGoogleSignIn(context) },
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                shape = RoundedCornerShape(12.dp),
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_md)),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)),
                 colors = ButtonDefaults.outlinedButtonColors(containerColor = colorResource(id = R.color.sign_in_google_button)),
-                border = BorderStroke(1.dp, colorResource(id = R.color.bottom_bar_background))
+                border = BorderStroke(dimensionResource(id = R.dimen.border_hairline), colorResource(id = R.color.bottom_bar_background))
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.google_g_2015),
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_icon_md))
                 )
                 Text(
                     text = stringResource(id = R.string.sign_in_google_button),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
                     color = colorResource(id = R.color.text_on_surface),
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_sm))
                 )
             }
             Row(

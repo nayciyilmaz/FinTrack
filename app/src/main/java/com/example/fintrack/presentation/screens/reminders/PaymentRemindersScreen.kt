@@ -20,11 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -77,9 +77,9 @@ fun PaymentRemindersScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(dimensionResource(id = R.dimen.padding_lg))
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             TransactionTypeSelector(
                 options = stringArrayResource(id = R.array.reminder_filter_options).toList(),
@@ -92,7 +92,7 @@ fun PaymentRemindersScreen(
                 isError = actionState.isError,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp)
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_md))
             ) {
                 when {
                     uiState.selectedFilterIndex == 2 -> {
@@ -134,7 +134,7 @@ private fun RecurringTabContent(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
     ) {
         if (expenseItems.isNotEmpty()) {
             Text(
@@ -144,9 +144,9 @@ private fun RecurringTabContent(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(28.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
                     .background(colorResource(id = R.color.card_background))
-                    .padding(horizontal = 20.dp, vertical = 4.dp)
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_xs))
             ) {
                 expenseItems.forEachIndexed { index, item ->
                     RecurringItemRow(
@@ -165,9 +165,9 @@ private fun RecurringTabContent(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(28.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
                     .background(colorResource(id = R.color.card_background))
-                    .padding(horizontal = 20.dp, vertical = 4.dp)
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_xs))
             ) {
                 incomeItems.forEachIndexed { index, item ->
                     RecurringItemRow(
@@ -239,7 +239,7 @@ private fun ReminderTabContent(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
     ) {
         if (expenseTransactions.isNotEmpty()) {
             Text(
@@ -249,9 +249,9 @@ private fun ReminderTabContent(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(28.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
                     .background(colorResource(id = R.color.card_background))
-                    .padding(horizontal = 20.dp, vertical = 4.dp)
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_xs))
             ) {
                 expenseTransactions.forEachIndexed { index, transaction ->
                     ReminderTransactionRow(
@@ -270,9 +270,9 @@ private fun ReminderTabContent(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(28.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
                     .background(colorResource(id = R.color.card_background))
-                    .padding(horizontal = 20.dp, vertical = 4.dp)
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_xs))
             ) {
                 incomeTransactions.forEachIndexed { index, transaction ->
                     ReminderTransactionRow(
@@ -336,7 +336,7 @@ private fun EmptyMessage(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .padding(vertical = dimensionResource(id = R.dimen.padding_md)),
         contentAlignment = Alignment.Center
     ) {
         Text(

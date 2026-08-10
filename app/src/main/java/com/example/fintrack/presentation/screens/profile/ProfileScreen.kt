@@ -41,9 +41,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -114,12 +114,12 @@ fun ProfileScreen(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(dimensionResource(id = R.dimen.padding_lg)),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
             ) {
                 Row(
                     modifier = modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
                 ) {
                     StatCard(
                         value = actionState.transactionCount.toString(),
@@ -145,7 +145,7 @@ fun ProfileScreen(
                     text = stringResource(id = R.string.profile_section_account_info),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = colorResource(id = R.color.text_primary),
-                    modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
+                    modifier = modifier.padding(start = dimensionResource(id = R.dimen.padding_xs), bottom = dimensionResource(id = R.dimen.padding_2xs))
                 )
                 AccountInfoCard(
                     fullName = "${actionState.firstName} ${actionState.lastName}".trim(),
@@ -159,7 +159,7 @@ fun ProfileScreen(
                     text = stringResource(id = R.string.profile_section_app_settings),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = colorResource(id = R.color.text_primary),
-                    modifier = modifier.padding(start = 4.dp, bottom = 2.dp)
+                    modifier = modifier.padding(start = dimensionResource(id = R.dimen.padding_xs), bottom = dimensionResource(id = R.dimen.padding_2xs))
                 )
                 AppSettingsCard(
                     currentCurrencyDisplay = uiState.currentCurrencyDisplay,
@@ -176,11 +176,11 @@ fun ProfileScreen(
                     text = stringResource(id = R.string.profile_logout),
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(top = 4.dp)
+                        .padding(top = dimensionResource(id = R.dimen.padding_xs))
                         .border(
-                            0.5.dp,
+                            dimensionResource(id = R.dimen.border_hairline),
                             colorResource(id = R.color.expense_red).copy(alpha = 0.3f),
-                            RoundedCornerShape(12.dp)
+                            RoundedCornerShape(dimensionResource(id = R.dimen.radius_md))
                         ),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(id = R.color.card_background),
@@ -207,19 +207,19 @@ private fun ProfileHeader(
         modifier = modifier
             .fillMaxWidth()
             .background(colorResource(id = R.color.bottom_bar_fab))
-            .padding(24.dp),
+            .padding(dimensionResource(id = R.dimen.padding_2xl)),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             Box(
                 modifier = modifier
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
-                    .border(1.5.dp, Color.White, CircleShape)
-                    .padding(28.dp),
+                    .border(dimensionResource(id = R.dimen.border_hairline), Color.White, CircleShape)
+                    .padding(dimensionResource(id = R.dimen.padding_3xl)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -250,11 +250,11 @@ private fun StatCard(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_lg)))
             .background(colorResource(id = R.color.card_background))
-            .padding(vertical = 14.dp, horizontal = 8.dp),
+            .padding(vertical = dimensionResource(id = R.dimen.padding_md), horizontal = dimensionResource(id = R.dimen.padding_sm)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
     ) {
         Text(
             text = value,
@@ -282,7 +282,7 @@ private fun AccountInfoCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)))
             .background(colorResource(id = R.color.card_background))
     ) {
         InfoRow(
@@ -292,7 +292,7 @@ private fun AccountInfoCard(
             onClick = onNameClick
         )
         HorizontalDivider(
-            modifier = modifier.padding(horizontal = 16.dp),
+            modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_lg)),
             color = colorResource(id = R.color.divider_color)
         )
         InfoRow(
@@ -302,7 +302,7 @@ private fun AccountInfoCard(
             onClick = onEmailClick
         )
         HorizontalDivider(
-            modifier = modifier.padding(horizontal = 16.dp),
+            modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_lg)),
             color = colorResource(id = R.color.divider_color)
         )
         InfoRow(
@@ -326,15 +326,15 @@ private fun InfoRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_lg), vertical = dimensionResource(id = R.dimen.padding_md)),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
     ) {
         Box(
             modifier = modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                 .background(colorResource(id = R.color.quick_action_background))
-                .padding(9.dp),
+                .padding(dimensionResource(id = R.dimen.padding_sm)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -343,7 +343,7 @@ private fun InfoRow(
                 tint = colorResource(id = R.color.icon_orange)
             )
         }
-        Column(modifier = modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Column(modifier = modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
@@ -378,7 +378,7 @@ private fun AppSettingsCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)))
             .background(colorResource(id = R.color.card_background))
     ) {
         SettingRowWithValue(
@@ -388,7 +388,7 @@ private fun AppSettingsCard(
             onClick = onCurrencyClick
         )
         HorizontalDivider(
-            modifier = modifier.padding(horizontal = 16.dp),
+            modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_lg)),
             color = colorResource(id = R.color.divider_color)
         )
         SettingRowWithValue(
@@ -398,7 +398,7 @@ private fun AppSettingsCard(
             onClick = onLanguageClick
         )
         HorizontalDivider(
-            modifier = modifier.padding(horizontal = 16.dp),
+            modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_lg)),
             color = colorResource(id = R.color.divider_color)
         )
         SettingRowWithValue(
@@ -408,7 +408,7 @@ private fun AppSettingsCard(
             onClick = onFontSizeClick
         )
         HorizontalDivider(
-            modifier = modifier.padding(horizontal = 16.dp),
+            modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_lg)),
             color = colorResource(id = R.color.divider_color)
         )
         SettingRowWithValue(
@@ -432,15 +432,15 @@ private fun SettingRowWithValue(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_lg), vertical = dimensionResource(id = R.dimen.padding_md)),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
     ) {
         Box(
             modifier = modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                 .background(colorResource(id = R.color.quick_action_background))
-                .padding(9.dp),
+                .padding(dimensionResource(id = R.dimen.padding_sm)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -457,7 +457,7 @@ private fun SettingRowWithValue(
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))
         ) {
             Text(
                 text = value,

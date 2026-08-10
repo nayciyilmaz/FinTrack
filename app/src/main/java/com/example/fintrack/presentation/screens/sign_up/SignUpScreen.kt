@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -40,7 +41,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -86,7 +86,7 @@ fun SignUpScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_2xl))
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -95,13 +95,13 @@ fun SignUpScreen(
                 text = stringResource(id = R.string.sign_up_title),
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                 color = colorResource(id = R.color.sign_in_title),
-                modifier = modifier.padding(bottom = 20.dp)
+                modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.padding_xl))
             )
             Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(top = dimensionResource(id = R.dimen.padding_md)),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     EditOutlinedTextField(
@@ -154,7 +154,7 @@ fun SignUpScreen(
                     onValueChange = viewModel::onEmailChange,
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp),
+                        .padding(top = dimensionResource(id = R.dimen.padding_md)),
                     label = {
                         Text(text = stringResource(id = R.string.sign_in_email))
                     },
@@ -178,7 +178,7 @@ fun SignUpScreen(
                     onValueChange = viewModel::onPasswordChange,
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp),
+                        .padding(top = dimensionResource(id = R.dimen.padding_md)),
                     label = {
                         Text(text = stringResource(id = R.string.sign_in_password))
                     },
@@ -206,8 +206,8 @@ fun SignUpScreen(
             Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(top = dimensionResource(id = R.dimen.padding_md)),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     EditOutlinedTextField(
@@ -262,12 +262,12 @@ fun SignUpScreen(
                 text = stringResource(id = R.string.sign_up_title),
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp)
+                    .padding(top = dimensionResource(id = R.dimen.padding_xl))
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = modifier.padding(top = 8.dp)
+                modifier = modifier.padding(top = dimensionResource(id = R.dimen.padding_sm))
             ) {
                 Text(
                     text = stringResource(id = R.string.sign_up_have_account),

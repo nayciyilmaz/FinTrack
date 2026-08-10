@@ -37,9 +37,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -103,14 +103,14 @@ fun ReportsScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(dimensionResource(id = R.dimen.padding_lg)),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
                 modifier = modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
             ) {
                 Text(
                     text = stringResource(id = R.string.report_period),
@@ -136,7 +136,7 @@ fun ReportsScreen(
                     isError = actionState.isError,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp)
+                        .padding(vertical = dimensionResource(id = R.dimen.padding_md))
                 ) {
                     ReportContentCard(
                         checkedStates = uiState.checkedSections,
@@ -149,7 +149,7 @@ fun ReportsScreen(
                 text = stringResource(id = R.string.report_create_pdf),
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
+                    .padding(top = dimensionResource(id = R.dimen.padding_sm))
             )
         }
     }
@@ -163,8 +163,8 @@ private fun ReportHeaderCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_2xl)),
+        elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(id = R.dimen.elevation_md)),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Column(
@@ -178,23 +178,23 @@ private fun ReportHeaderCard(
                         )
                     )
                 )
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(dimensionResource(id = R.dimen.padding_xl)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_lg))
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
             ) {
                 Icon(
                     imageVector = Icons.Filled.Description,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = modifier
-                        .clip(RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                         .background(Color.White.copy(alpha = 0.2f))
-                        .padding(8.dp)
+                        .padding(dimensionResource(id = R.dimen.padding_sm))
                 )
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))) {
                     Text(
                         text = stringResource(id = R.string.report_title),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -209,15 +209,15 @@ private fun ReportHeaderCard(
             }
             Row(
                 modifier = modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
             ) {
                 Column(
                     modifier = modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)))
                         .background(Color.White.copy(alpha = 0.15f))
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                        .padding(dimensionResource(id = R.dimen.padding_md)),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
                 ) {
                     Text(
                         text = stringResource(id = R.string.report_total_income),
@@ -233,10 +233,10 @@ private fun ReportHeaderCard(
                 Column(
                     modifier = modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)))
                         .background(Color.White.copy(alpha = 0.15f))
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                        .padding(dimensionResource(id = R.dimen.padding_md)),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
                 ) {
                     Text(
                         text = stringResource(id = R.string.report_total_expense),
@@ -266,15 +266,15 @@ private fun ReportPeriodSelector(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            .padding(bottom = dimensionResource(id = R.dimen.padding_sm)),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)),
+        elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(id = R.dimen.elevation_sm)),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_md), vertical = dimensionResource(id = R.dimen.padding_sm)),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -283,10 +283,10 @@ private fun ReportPeriodSelector(
                 contentDescription = null,
                 tint = if (canGoPrevious) colorResource(id = R.color.bottom_bar_fab) else colorResource(id = R.color.text_secondary).copy(alpha = 0.4f),
                 modifier = modifier
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                     .background(colorResource(id = R.color.quick_action_background))
                     .clickable(enabled = canGoPrevious, onClick = onPrevious)
-                    .padding(8.dp)
+                    .padding(dimensionResource(id = R.dimen.padding_sm))
             )
             Text(
                 text = periodLabel,
@@ -298,10 +298,10 @@ private fun ReportPeriodSelector(
                 contentDescription = null,
                 tint = if (canGoNext) colorResource(id = R.color.bottom_bar_fab) else colorResource(id = R.color.text_secondary).copy(alpha = 0.4f),
                 modifier = modifier
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                     .background(colorResource(id = R.color.quick_action_background))
                     .clickable(enabled = canGoNext, onClick = onNext)
-                    .padding(8.dp)
+                    .padding(dimensionResource(id = R.dimen.padding_sm))
             )
         }
     }
@@ -315,14 +315,14 @@ private fun ReportContentCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)),
+        elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(id = R.dimen.elevation_sm)),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_background))
     ) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_lg))
         ) {
             reportContentItems.forEachIndexed { index, item ->
                 ReportContentRow(
@@ -349,24 +349,24 @@ private fun ReportContentRow(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable { onCheckedChange(!isChecked) }
-                .padding(vertical = 8.dp),
+                .padding(vertical = dimensionResource(id = R.dimen.padding_sm)),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
             ) {
                 Icon(
                     imageVector = item.icon,
                     contentDescription = null,
                     tint = colorResource(id = R.color.bottom_bar_fab),
                     modifier = modifier
-                        .clip(RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_10)))
                         .background(colorResource(id = R.color.quick_action_background))
-                        .padding(8.dp)
+                        .padding(dimensionResource(id = R.dimen.padding_sm))
                 )
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))) {
                     Text(
                         text = stringResource(id = item.titleResId),
                         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),

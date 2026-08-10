@@ -35,6 +35,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -43,7 +44,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -87,7 +87,7 @@ fun ForgotPasswordScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_2xl))
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -96,7 +96,7 @@ fun ForgotPasswordScreen(
                 text = stringResource(id = R.string.forgot_password_title),
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                 color = colorResource(id = R.color.sign_in_title),
-                modifier = modifier.padding(bottom = 12.dp)
+                modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.padding_md))
             )
             when (uiState.step) {
                 ForgotPasswordStep.EMAIL -> EmailSection(
@@ -148,7 +148,7 @@ private fun EmailSection(
         text = stringResource(id = R.string.forgot_password_description),
         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
         textAlign = TextAlign.Center,
-        modifier = modifier.padding(bottom = 8.dp)
+        modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.padding_sm))
     )
     Column(modifier = modifier.fillMaxWidth()) {
         EditOutlinedTextField(
@@ -156,7 +156,7 @@ private fun EmailSection(
             onValueChange = onEmailChange,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
+                .padding(vertical = dimensionResource(id = R.dimen.padding_xs)),
             label = {
                 Text(text = stringResource(id = R.string.sign_in_email))
             },
@@ -182,12 +182,12 @@ private fun EmailSection(
         text = stringResource(id = R.string.forgot_password_send),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 16.dp)
+            .padding(top = dimensionResource(id = R.dimen.padding_lg))
     )
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = modifier.padding(top = 8.dp)
+        modifier = modifier.padding(top = dimensionResource(id = R.dimen.padding_sm))
     ) {
         Text(
             text = stringResource(id = R.string.forgot_password_remembered),
@@ -217,11 +217,11 @@ private fun CodeSection(
         text = stringResource(id = R.string.forgot_password_check_email),
         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
         textAlign = TextAlign.Center,
-        modifier = modifier.padding(bottom = 24.dp)
+        modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.padding_2xl))
     )
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm), Alignment.CenterHorizontally)
     ) {
         codeDigits.forEachIndexed { index, digit ->
             TextField(
@@ -239,7 +239,7 @@ private fun CodeSection(
                     }
                 },
                 modifier = Modifier
-                    .width(46.dp)
+                    .width(dimensionResource(id = R.dimen.size_code_box))
                     .focusRequester(focusRequesters[index]),
                 textStyle = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
@@ -250,7 +250,7 @@ private fun CodeSection(
                     imeAction = if (index == 5) ImeAction.Done else ImeAction.Next
                 ),
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = colorResource(id = R.color.sign_in_google_button),
                     unfocusedContainerColor = colorResource(id = R.color.sign_in_google_button),
@@ -266,12 +266,12 @@ private fun CodeSection(
         text = stringResource(id = R.string.forgot_password_confirm),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 32.dp)
+            .padding(top = dimensionResource(id = R.dimen.padding_4xl))
     )
     EditTextButton(
         onClick = onBackClick,
         text = stringResource(id = R.string.forgot_password_go_back),
-        modifier = modifier.padding(top = 8.dp)
+        modifier = modifier.padding(top = dimensionResource(id = R.dimen.padding_sm))
     )
 }
 
@@ -297,7 +297,7 @@ private fun NewPasswordSection(
         text = stringResource(id = R.string.forgot_password_new_password),
         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
         textAlign = TextAlign.Center,
-        modifier = modifier.padding(bottom = 8.dp)
+        modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.padding_sm))
     )
     Column(modifier = modifier.fillMaxWidth()) {
         EditOutlinedTextField(
@@ -305,7 +305,7 @@ private fun NewPasswordSection(
             onValueChange = onNewPasswordChange,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
+                .padding(vertical = dimensionResource(id = R.dimen.padding_xs)),
             label = {
                 Text(text = stringResource(id = R.string.forgot_password_new_password_label))
             },
@@ -336,7 +336,7 @@ private fun NewPasswordSection(
             onValueChange = onNewPasswordRepeatChange,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
+                .padding(vertical = dimensionResource(id = R.dimen.padding_xs)),
             label = {
                 Text(text = stringResource(id = R.string.forgot_password_new_password_repeat))
             },
@@ -369,12 +369,12 @@ private fun NewPasswordSection(
         text = stringResource(id = R.string.forgot_password_save),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 20.dp)
+            .padding(top = dimensionResource(id = R.dimen.padding_xl))
     )
     EditTextButton(
         onClick = onBackClick,
         text = stringResource(id = R.string.forgot_password_go_back),
-        modifier = modifier.padding(top = 8.dp)
+        modifier = modifier.padding(top = dimensionResource(id = R.dimen.padding_sm))
     )
 }
 

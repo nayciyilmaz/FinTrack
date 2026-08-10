@@ -19,8 +19,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 
 @Composable
@@ -42,22 +42,22 @@ fun TransactionRow(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable { onClick() }
-                .padding(vertical = 12.dp),
+                .padding(vertical = dimensionResource(id = R.dimen.padding_md)),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = iconTint,
                 modifier = modifier
-                    .clip(RoundedCornerShape(14.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_lg)))
                     .background(iconBackgroundColor)
-                    .padding(11.dp)
+                    .padding(dimensionResource(id = R.dimen.padding_md))
             )
             Column(
                 modifier = modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(3.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
             ) {
                 Text(
                     text = title,
@@ -72,7 +72,7 @@ fun TransactionRow(
             }
             Column(
                 horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(3.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
             ) {
                 Text(
                     text = amount,

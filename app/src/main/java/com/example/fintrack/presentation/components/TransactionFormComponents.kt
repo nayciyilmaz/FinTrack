@@ -32,11 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import com.example.fintrack.R
 import com.example.fintrack.core.constants.categoryKeyToIcon
 import com.example.fintrack.core.constants.categoryKeyToLabelResId
@@ -54,7 +54,7 @@ fun QuickAddSuggestions(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
     ) {
         Text(
             text = stringResource(id = R.string.label_quick_add),
@@ -64,7 +64,7 @@ fun QuickAddSuggestions(
             modifier = modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
         ) {
             suggestions.forEach { suggestion ->
                 QuickAddItem(
@@ -84,12 +84,12 @@ private fun QuickAddItem(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)))
             .background(colorResource(id = R.color.card_background))
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_lg), vertical = dimensionResource(id = R.dimen.padding_md)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
     ) {
         Icon(
             imageVector = categoryKeyToIcon(transaction.category),
@@ -118,7 +118,7 @@ fun CategorySelector(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
     ) {
         Text(
             text = stringResource(id = R.string.label_category),
@@ -128,7 +128,7 @@ fun CategorySelector(
             modifier = modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_10))
         ) {
             categories.forEach { category ->
                 CategoryItem(
@@ -150,18 +150,18 @@ private fun CategoryItem(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_xl)))
             .background(if (isSelected) colorResource(id = R.color.bottom_bar_fab) else colorResource(id = R.color.card_background))
             .clickable { onCategorySelected() }
-            .padding(horizontal = 18.dp, vertical = 14.dp),
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_lg), vertical = dimensionResource(id = R.dimen.padding_lg)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
     ) {
         Icon(
             imageVector = category.icon,
             contentDescription = null,
             tint = if (isSelected) Color.White else colorResource(id = R.color.bottom_bar_fab),
-            modifier = modifier.padding(2.dp)
+            modifier = modifier.padding(dimensionResource(id = R.dimen.padding_2xs))
         )
         Text(
             text = stringResource(id = category.labelResId),
@@ -181,7 +181,7 @@ fun AmountInput(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
     ) {
         Text(
             text = stringResource(id = R.string.label_amount),
@@ -224,7 +224,7 @@ fun NoteInput(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
     ) {
         Text(
             text = stringResource(id = R.string.label_note),
@@ -264,7 +264,7 @@ fun DateTimeSection(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
     ) {
         Text(
             text = stringResource(id = R.string.label_date_time),
@@ -272,7 +272,7 @@ fun DateTimeSection(
         )
         Row(
             modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             EditOutlinedTextField(
                 value = date,
@@ -346,9 +346,9 @@ fun RecurringPaymentSection(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_lg)))
             .background(colorResource(id = R.color.card_background))
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_lg), vertical = dimensionResource(id = R.dimen.padding_xs))
     ) {
         RecurringPaymentRow(
             icon = Icons.Filled.Repeat,
@@ -380,22 +380,22 @@ private fun RecurringPaymentRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 14.dp),
+            .padding(vertical = dimensionResource(id = R.dimen.padding_lg)),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             tint = colorResource(id = R.color.bottom_bar_fab),
             modifier = modifier
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)))
                 .background(colorResource(id = R.color.quick_action_background))
-                .padding(10.dp)
+                .padding(dimensionResource(id = R.dimen.padding_10))
         )
         Column(
             modifier = modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(3.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))
         ) {
             Text(
                 text = title,

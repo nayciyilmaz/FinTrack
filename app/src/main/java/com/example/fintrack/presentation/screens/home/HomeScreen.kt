@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,7 +82,7 @@ fun HomeScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(dimensionResource(id = R.dimen.padding_lg))
                 .verticalScroll(rememberScrollState())
         ) {
             BudgetHeader(
@@ -114,10 +115,13 @@ private fun BudgetHeader(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+            .clip(RoundedCornerShape(
+                topStart = dimensionResource(id = R.dimen.radius_3xl),
+                topEnd = dimensionResource(id = R.dimen.radius_3xl)
+            ))
             .background(colorResource(id = R.color.bottom_bar_fab))
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_lg)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
     ) {
         Text(
             text = periodText,
@@ -126,7 +130,7 @@ private fun BudgetHeader(
         )
         Row(
             modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             BudgetHeaderInfoItem(
                 label = stringResource(id = R.string.label_remaining_balance),
@@ -150,10 +154,10 @@ private fun BudgetHeaderInfoItem(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_lg)))
             .background(Color.White.copy(alpha = 0.2f))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_md), vertical = dimensionResource(id = R.dimen.padding_10)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))
     ) {
         Text(
             text = label,
@@ -178,14 +182,17 @@ private fun BudgetDetails(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
+            .clip(RoundedCornerShape(
+                bottomStart = dimensionResource(id = R.dimen.radius_3xl),
+                bottomEnd = dimensionResource(id = R.dimen.radius_3xl)
+            ))
             .background(colorResource(id = R.color.card_background))
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_lg)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_lg))
     ) {
         Row(
             modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_md))
         ) {
             BudgetDetailsInfoItem(
                 label = stringResource(id = R.string.label_income),
@@ -202,7 +209,7 @@ private fun BudgetDetails(
                 modifier = modifier.weight(1f)
             )
         }
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))) {
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -239,7 +246,7 @@ private fun BudgetDetailsInfoItem(
     val borderWidth = 3.dp
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_lg)))
             .background(colorResource(id = R.color.surface_gray))
             .drawBehind {
                 drawRect(
@@ -248,7 +255,7 @@ private fun BudgetDetailsInfoItem(
                 )
             }
             .padding(start = borderWidth + 13.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_xs))
     ) {
         Text(
             text = label,
@@ -271,8 +278,8 @@ private fun QuickActions(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(top = dimensionResource(id = R.dimen.padding_md)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
     ) {
         Text(
             text = stringResource(id = R.string.quick_actions_title),
@@ -281,9 +288,9 @@ private fun QuickActions(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(28.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
                 .background(colorResource(id = R.color.card_background))
-                .padding(horizontal = 20.dp, vertical = 4.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_xs))
         ) {
             Row(
                 modifier = modifier.fillMaxWidth(),
@@ -292,7 +299,7 @@ private fun QuickActions(
                 quickActionItems.forEach { item ->
                     Column(
                         modifier = modifier
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_md)))
                             .clickable {
                                 navigateAndClearBackStack(
                                     navController = navController,
@@ -301,18 +308,18 @@ private fun QuickActions(
                                     inclusive = false
                                 )
                             }
-                            .padding(8.dp),
+                            .padding(dimensionResource(id = R.dimen.padding_sm)),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_sm))
                     ) {
                         Icon(
                             imageVector = item.icon,
                             contentDescription = null,
                             tint = colorResource(id = item.iconTintRes),
                             modifier = modifier
-                                .clip(RoundedCornerShape(16.dp))
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_lg)))
                                 .background(colorResource(id = item.iconBackgroundColorRes))
-                                .padding(14.dp)
+                                .padding(dimensionResource(id = R.dimen.padding_md))
                         )
                         Text(
                             text = stringResource(id = item.labelResId),
@@ -336,8 +343,8 @@ private fun RecentTransactions(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+            .padding(top = dimensionResource(id = R.dimen.padding_xs)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_2xs))
     ) {
         SectionHeaderRow(
             title = stringResource(id = R.string.label_recent_transactions),
@@ -358,14 +365,14 @@ private fun RecentTransactions(
             emptyMessageResId = R.string.label_no_transactions,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp)
+                .padding(vertical = dimensionResource(id = R.dimen.padding_md))
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(28.dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.radius_3xl)))
                     .background(colorResource(id = R.color.card_background))
-                    .padding(horizontal = 20.dp, vertical = 4.dp)
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_xl), vertical = dimensionResource(id = R.dimen.padding_xs))
             ) {
                 transactions.forEachIndexed { index, item ->
                     val isIncome = item.transaction.type == TransactionType.INCOME

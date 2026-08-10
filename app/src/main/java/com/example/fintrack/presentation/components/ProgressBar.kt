@@ -10,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.dimensionResource
+import com.example.fintrack.R
 
 @Composable
 fun ProgressBar(
@@ -19,19 +20,20 @@ fun ProgressBar(
     progressColor: Color,
     modifier: Modifier = Modifier
 ) {
+    val pillRadius = dimensionResource(id = R.dimen.radius_pill)
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(50.dp))
+            .clip(RoundedCornerShape(pillRadius))
             .background(trackColor)
     ) {
         Text(
             text = "",
             modifier = Modifier
                 .fillMaxWidth(progress.coerceIn(0f, 1f))
-                .clip(RoundedCornerShape(50.dp))
+                .clip(RoundedCornerShape(pillRadius))
                 .background(progressColor)
-                .padding(vertical = 0.5.dp)
+                .padding(vertical = dimensionResource(id = R.dimen.padding_hairline))
         )
     }
 }
