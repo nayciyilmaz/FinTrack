@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
@@ -127,6 +128,7 @@ class ReportsViewModel @Inject constructor(
                     savingsEstimatedDates = goals.associate { it.id to calculateEstimatedDate(it) }
                 )
             } else {
+                Timber.w("Load reports data failed")
                 _actionState.value = _actionState.value.copy(isLoading = false, isError = true)
             }
         }
@@ -162,6 +164,9 @@ class ReportsViewModel @Inject constructor(
                     savingsEstimatedDates = state.savingsEstimatedDates,
                     selectedSections = selectedSections
                 )
+            }
+            if (!success) {
+                Timber.w("Generate report PDF failed")
             }
             _actionState.value = _actionState.value.copy(
                 isGeneratingPdf = false,

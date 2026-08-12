@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -197,7 +198,10 @@ class AddTransactionViewModel @Inject constructor(
 
             when (result) {
                 is Resource.Success -> _actionState.value = AddTransactionActionState(isSuccess = true)
-                is Resource.Error -> _actionState.value = AddTransactionActionState(isLoading = false)
+                is Resource.Error -> {
+                    Timber.w("Add transaction failed: message=%s", result.message)
+                    _actionState.value = AddTransactionActionState(isLoading = false)
+                }
                 is Resource.Loading -> Unit
             }
         }

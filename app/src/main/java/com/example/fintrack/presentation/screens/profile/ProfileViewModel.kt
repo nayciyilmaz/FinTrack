@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
@@ -391,9 +392,11 @@ class ProfileViewModel @Inject constructor(
                         passwordChangedAtDisplay = formatPasswordChangedAt(profile.passwordChangedAt)
                     )
                 } else {
+                    Timber.w("Load profile data failed, profile is null")
                     _actionState.value = ProfileActionState(isError = true)
                 }
             } else {
+                Timber.w("Load profile data failed")
                 _actionState.value = ProfileActionState(isError = true)
             }
         }
@@ -433,6 +436,7 @@ class ProfileViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
                 }
                 is Resource.Error -> {
+                    Timber.w("Update user name failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         editState = _uiState.value.editState.copy(
                             firstNameError = result.fieldErrors?.get("first_name"),
@@ -463,6 +467,7 @@ class ProfileViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
                 }
                 is Resource.Error -> {
+                    Timber.w("Update user email failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         editState = _uiState.value.editState.copy(
                             emailError = result.fieldErrors?.get("email") ?: result.message
@@ -500,6 +505,7 @@ class ProfileViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(editState = _uiState.value.editState.copy(activeDialog = null))
                 }
                 is Resource.Error -> {
+                    Timber.w("Update user password failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         editState = _uiState.value.editState.copy(
                             currentPasswordError = result.fieldErrors?.get("current_password") ?: result.message,

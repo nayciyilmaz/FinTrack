@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -46,6 +47,7 @@ class PaymentRemindersViewModel @Inject constructor(
                     reminderTransactions = remindersResult.data ?: emptyList()
                 )
             } else {
+                Timber.w("Load payment reminders data failed")
                 _actionState.value = _actionState.value.copy(isLoading = false, isError = true)
             }
         }

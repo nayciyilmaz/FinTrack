@@ -14,6 +14,7 @@ import com.example.fintrack.domain.model.UserProfile
 import com.example.fintrack.domain.repository.UserProfileRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -29,9 +30,11 @@ class UserProfileRepositoryImpl @Inject constructor(
             val response = authService.getCurrentUser()
             Resource.Success(userProfileMapper.toUserProfile(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Get user profile failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get user profile failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -41,9 +44,11 @@ class UserProfileRepositoryImpl @Inject constructor(
             val response = authService.updateName(UpdateNameRequestDto(firstName = firstName, lastName = lastName))
             Resource.Success(userProfileMapper.toUserProfile(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Update user name failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback), fieldErrors = errorDto?.fieldErrors)
         } catch (e: Exception) {
+            Timber.e(e, "Update user name failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -55,9 +60,11 @@ class UserProfileRepositoryImpl @Inject constructor(
             tokenManager.saveRefreshToken(response.refreshToken)
             Resource.Success(response.email)
         } catch (e: HttpException) {
+            Timber.e(e, "Update user email failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback), fieldErrors = errorDto?.fieldErrors)
         } catch (e: Exception) {
+            Timber.e(e, "Update user email failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -69,9 +76,11 @@ class UserProfileRepositoryImpl @Inject constructor(
             )
             Resource.Success(userProfileMapper.toUserProfile(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Update user password failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback), fieldErrors = errorDto?.fieldErrors)
         } catch (e: Exception) {
+            Timber.e(e, "Update user password failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }

@@ -12,6 +12,7 @@ import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.repository.TransactionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
@@ -46,9 +47,11 @@ class TransactionRepositoryImpl @Inject constructor(
             )
             Resource.Success(transactionMapper.toTransaction(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Add transaction failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Add transaction failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -62,9 +65,11 @@ class TransactionRepositoryImpl @Inject constructor(
             val response = transactionService.getTransactions(type?.name, startDate, endDate)
             Resource.Success(response.map { transactionMapper.toTransaction(it) })
         } catch (e: HttpException) {
+            Timber.e(e, "Get transactions failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get transactions failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -96,9 +101,11 @@ class TransactionRepositoryImpl @Inject constructor(
             )
             Resource.Success(transactionMapper.toTransaction(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Update transaction failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Update transaction failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -108,9 +115,11 @@ class TransactionRepositoryImpl @Inject constructor(
             transactionService.deleteTransaction(id)
             Resource.Success(Unit)
         } catch (e: HttpException) {
+            Timber.e(e, "Delete transaction failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Delete transaction failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -120,9 +129,11 @@ class TransactionRepositoryImpl @Inject constructor(
             val response = transactionService.getReminders()
             Resource.Success(response.map { transactionMapper.toTransaction(it) })
         } catch (e: HttpException) {
+            Timber.e(e, "Get reminders failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get reminders failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -76,6 +77,7 @@ class BudgetLimitsViewModel @Inject constructor(
                     categoryExpenses = categoryExpenses
                 )
             } else {
+                Timber.w("Load budget limits data failed")
                 _actionState.value = BudgetLimitsActionState(isError = true)
             }
         }
@@ -150,6 +152,7 @@ class BudgetLimitsViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
+                    Timber.w("Save budgets failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(isSaving = false)
                 }
                 is Resource.Loading -> Unit

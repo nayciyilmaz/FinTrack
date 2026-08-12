@@ -1,5 +1,6 @@
 package com.example.fintrack.di
 
+import com.example.fintrack.BuildConfig
 import com.example.fintrack.data.remote.api.AdvisorService
 import com.example.fintrack.data.remote.api.AuthService
 import com.example.fintrack.data.remote.api.BudgetService
@@ -47,7 +48,11 @@ object NetworkModule {
             .authenticator(tokenAuthenticator)
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
+                    level = if (BuildConfig.DEBUG) {
+                        HttpLoggingInterceptor.Level.BODY
+                    } else {
+                        HttpLoggingInterceptor.Level.NONE
+                    }
                 }
             )
             .build()

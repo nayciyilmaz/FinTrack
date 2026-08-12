@@ -6,6 +6,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -18,17 +19,20 @@ class ReminderNotificationScheduler @Inject constructor(
 ) {
 
     fun schedule() {
+        Timber.d("Scheduling reminder checks")
         enqueueFirst(MORNING_WORK_NAME, MORNING_HOUR, MORNING_MINUTE)
         enqueueFirst(AFTERNOON_WORK_NAME, AFTERNOON_HOUR, AFTERNOON_MINUTE)
     }
 
     fun cancel() {
+        Timber.d("Cancelling reminder checks")
         val workManager = WorkManager.getInstance(context)
         workManager.cancelUniqueWork(MORNING_WORK_NAME)
         workManager.cancelUniqueWork(AFTERNOON_WORK_NAME)
     }
 
     fun rescheduleNextDay(workName: String, targetHour: Int, targetMinute: Int) {
+        Timber.d("Rescheduling reminder check for next day: workName=%s", workName)
         WorkManager.getInstance(context).enqueueUniqueWork(
             workName,
             ExistingWorkPolicy.REPLACE,

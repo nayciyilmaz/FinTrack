@@ -12,6 +12,7 @@ import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.repository.SavingsGoalRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class SavingsGoalRepositoryImpl @Inject constructor(
@@ -26,9 +27,11 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             val response = savingsGoalService.getGoals()
             Resource.Success(response.map { savingsGoalMapper.toSavingsGoal(it) })
         } catch (e: HttpException) {
+            Timber.e(e, "Get savings goals failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get savings goals failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -40,9 +43,11 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             )
             Resource.Success(savingsGoalMapper.toSavingsGoal(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Add savings goal failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Add savings goal failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -54,9 +59,11 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             )
             Resource.Success(savingsGoalMapper.toSavingsGoal(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Update savings goal failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Update savings goal failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -66,9 +73,11 @@ class SavingsGoalRepositoryImpl @Inject constructor(
             savingsGoalService.deleteGoal(id)
             Resource.Success(Unit)
         } catch (e: HttpException) {
+            Timber.e(e, "Delete savings goal failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Delete savings goal failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }

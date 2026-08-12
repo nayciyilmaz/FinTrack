@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +49,7 @@ class ForgotPasswordViewModel @Inject constructor(
                     _actionState.value = ForgotPasswordActionState()
                 }
                 is Resource.Error -> {
+                    Timber.w("Send password reset code failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         validationErrors = ForgotPasswordValidationErrors(
                             emailError = result.fieldErrors?.get("email") ?: result.message
@@ -86,6 +88,7 @@ class ForgotPasswordViewModel @Inject constructor(
                     _actionState.value = ForgotPasswordActionState()
                 }
                 is Resource.Error -> {
+                    Timber.w("Verify password reset code failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         validationErrors = ForgotPasswordValidationErrors(
                             codeError = result.fieldErrors?.get("code") ?: result.message
@@ -160,6 +163,7 @@ class ForgotPasswordViewModel @Inject constructor(
             when (val result = resetPasswordUseCase(_uiState.value.resetToken, newPassword)) {
                 is Resource.Success -> _actionState.value = ForgotPasswordActionState(isSuccess = true)
                 is Resource.Error -> {
+                    Timber.w("Reset password failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         validationErrors = _uiState.value.validationErrors.copy(
                             newPasswordError = result.fieldErrors?.get("new_password") ?: result.message

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,6 +51,7 @@ class AiAdvisorViewModel @Inject constructor(
                     insights = insightsResult.data ?: emptyList()
                 )
             } else {
+                Timber.w("Load advisor data failed")
                 _actionState.value = _actionState.value.copy(isLoading = false, isError = true)
             }
         }
@@ -85,6 +87,7 @@ class AiAdvisorViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
+                    Timber.w("Ask advisor question failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(isLoading = false, isError = true)
                 }
                 is Resource.Loading -> Unit
@@ -110,6 +113,7 @@ class AiAdvisorViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
+                    Timber.w("Refresh advisor insight failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(refreshingInsightId = null)
                 }
                 is Resource.Loading -> Unit

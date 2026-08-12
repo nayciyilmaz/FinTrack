@@ -3,6 +3,7 @@ package com.example.fintrack.data.local
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import timber.log.Timber
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -25,6 +26,7 @@ class TokenCrypto @Inject constructor() {
     private fun getOrCreateKey(): SecretKey {
         (keyStore.getKey(KEY_ALIAS, null) as? SecretKey)?.let { return it }
 
+        Timber.d("Generating new Keystore key: alias=%s", KEY_ALIAS)
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
         val spec = KeyGenParameterSpec.Builder(
             KEY_ALIAS,

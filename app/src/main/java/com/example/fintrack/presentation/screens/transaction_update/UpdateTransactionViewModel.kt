@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -175,7 +176,10 @@ class UpdateTransactionViewModel @Inject constructor(
                     )
                 ) {
                     is Resource.Success -> _actionState.value = UpdateTransactionActionState(isSuccess = true)
-                    is Resource.Error -> _actionState.value = UpdateTransactionActionState(isError = true)
+                    is Resource.Error -> {
+                        Timber.w("Update recurring item failed: message=%s", result.message)
+                        _actionState.value = UpdateTransactionActionState(isError = true)
+                    }
                     is Resource.Loading -> Unit
                 }
                 return@launch
@@ -195,7 +199,10 @@ class UpdateTransactionViewModel @Inject constructor(
                 )
             ) {
                 is Resource.Success -> _actionState.value = UpdateTransactionActionState(isSuccess = true)
-                is Resource.Error -> _actionState.value = UpdateTransactionActionState(isError = true)
+                is Resource.Error -> {
+                    Timber.w("Update transaction failed: message=%s", result.message)
+                    _actionState.value = UpdateTransactionActionState(isError = true)
+                }
                 is Resource.Loading -> Unit
             }
         }
@@ -208,7 +215,10 @@ class UpdateTransactionViewModel @Inject constructor(
             if (isRecurringItemEdit) {
                 when (val result = deleteRecurringItemUseCase(recurringItemId)) {
                     is Resource.Success -> _actionState.value = UpdateTransactionActionState(isSuccess = true)
-                    is Resource.Error -> _actionState.value = UpdateTransactionActionState(isError = true)
+                    is Resource.Error -> {
+                        Timber.w("Delete recurring item failed: message=%s", result.message)
+                        _actionState.value = UpdateTransactionActionState(isError = true)
+                    }
                     is Resource.Loading -> Unit
                 }
                 return@launch
@@ -216,7 +226,10 @@ class UpdateTransactionViewModel @Inject constructor(
 
             when (val result = deleteTransactionUseCase(transactionId)) {
                 is Resource.Success -> _actionState.value = UpdateTransactionActionState(isSuccess = true)
-                is Resource.Error -> _actionState.value = UpdateTransactionActionState(isError = true)
+                is Resource.Error -> {
+                    Timber.w("Delete transaction failed: message=%s", result.message)
+                    _actionState.value = UpdateTransactionActionState(isError = true)
+                }
                 is Resource.Loading -> Unit
             }
         }

@@ -17,6 +17,7 @@ import com.example.fintrack.domain.model.User
 import com.example.fintrack.domain.repository.AuthRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -51,12 +52,14 @@ class AuthRepositoryImpl @Inject constructor(
             tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Register failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(
                 message = errorDto?.message ?: context.getString(R.string.error_generic_fallback),
                 fieldErrors = errorDto?.fieldErrors
             )
         } catch (e: Exception) {
+            Timber.e(e, "Register failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -69,6 +72,7 @@ class AuthRepositoryImpl @Inject constructor(
             tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Login failed")
             val errorDto = networkErrorParser.parse(e)
             val fieldErrors = when (errorDto?.code) {
                 1001 -> mapOf("email" to (errorDto.message))
@@ -80,6 +84,7 @@ class AuthRepositoryImpl @Inject constructor(
                 fieldErrors = fieldErrors
             )
         } catch (e: Exception) {
+            Timber.e(e, "Login failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -92,9 +97,11 @@ class AuthRepositoryImpl @Inject constructor(
             tokenManager.savePayday(response.payday)
             Resource.Success(authMapper.toUser(response))
         } catch (e: HttpException) {
+            Timber.e(e, "Google login failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_google_signin_failed))
         } catch (e: Exception) {
+            Timber.e(e, "Google login failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -103,6 +110,7 @@ class AuthRepositoryImpl @Inject constructor(
         try {
             authService.logout()
         } catch (e: Exception) {
+            Timber.e(e, "Logout request failed")
         }
         tokenManager.clearAll()
         tokenManager.notifySessionExpired()
@@ -114,6 +122,7 @@ class AuthRepositoryImpl @Inject constructor(
             authService.forgotPassword(ForgotPasswordRequestDto(email = email))
             Resource.Success(Unit)
         } catch (e: HttpException) {
+            Timber.e(e, "Send password reset code failed")
             val errorDto = networkErrorParser.parse(e)
             val fieldErrors = when (errorDto?.code) {
                 1001 -> mapOf("email" to errorDto.message)
@@ -124,6 +133,7 @@ class AuthRepositoryImpl @Inject constructor(
                 fieldErrors = fieldErrors
             )
         } catch (e: Exception) {
+            Timber.e(e, "Send password reset code failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -133,6 +143,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authService.verifyResetCode(VerifyResetCodeRequestDto(email = email, code = code))
             Resource.Success(response.resetToken)
         } catch (e: HttpException) {
+            Timber.e(e, "Verify password reset code failed")
             val errorDto = networkErrorParser.parse(e)
             val fieldErrors = when (errorDto?.code) {
                 1009 -> mapOf("code" to errorDto.message)
@@ -143,6 +154,7 @@ class AuthRepositoryImpl @Inject constructor(
                 fieldErrors = fieldErrors
             )
         } catch (e: Exception) {
+            Timber.e(e, "Verify password reset code failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -152,12 +164,14 @@ class AuthRepositoryImpl @Inject constructor(
             authService.resetPassword(ResetPasswordRequestDto(resetToken = resetToken, newPassword = newPassword))
             Resource.Success(Unit)
         } catch (e: HttpException) {
+            Timber.e(e, "Reset password failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(
                 message = errorDto?.message ?: context.getString(R.string.error_generic_fallback),
                 fieldErrors = errorDto?.fieldErrors
             )
         } catch (e: Exception) {
+            Timber.e(e, "Reset password failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }

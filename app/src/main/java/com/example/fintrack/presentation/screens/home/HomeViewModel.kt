@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
@@ -83,6 +84,7 @@ class HomeViewModel @Inject constructor(
                     recentTransactions = calculateDisplayItems(recentTransactions).take(3)
                 )
             } else {
+                Timber.w("Load home data failed")
                 _actionState.value = HomeActionState(isError = true)
             }
         }

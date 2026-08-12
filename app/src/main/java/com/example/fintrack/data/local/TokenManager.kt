@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,6 +57,7 @@ class TokenManager @Inject constructor(
     }
 
     suspend fun clearAll() {
+        Timber.d("Clearing stored tokens")
         context.dataStore.edit {
             it.remove(TOKEN_KEY)
             it.remove(REFRESH_TOKEN_KEY)
@@ -64,6 +66,7 @@ class TokenManager @Inject constructor(
     }
 
     fun notifySessionExpired() {
+        Timber.w("Session expired")
         _sessionExpired.tryEmit(Unit)
     }
 }

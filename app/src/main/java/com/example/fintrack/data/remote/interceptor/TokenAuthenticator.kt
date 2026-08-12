@@ -13,6 +13,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.Route
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,6 +43,7 @@ class TokenAuthenticator @Inject constructor(
             val refreshToken = runBlocking { tokenManager.getRefreshToken().firstOrNull() }
 
             if (refreshToken == null) {
+                Timber.w("Token refresh skipped, no refresh token available")
                 runBlocking { tokenManager.clearAll() }
                 tokenManager.notifySessionExpired()
                 return null
@@ -70,11 +72,13 @@ class TokenAuthenticator @Inject constructor(
                         .header("Authorization", "Bearer ${tokenResponse.token}")
                         .build()
                 } else {
+                    Timber.w("Token refresh request failed: status=%d", refreshResponse.code)
                     runBlocking { tokenManager.clearAll() }
                     tokenManager.notifySessionExpired()
                     null
                 }
             } catch (e: Exception) {
+                Timber.e(e, "Token refresh failed")
                 runBlocking { tokenManager.clearAll() }
                 tokenManager.notifySessionExpired()
                 null

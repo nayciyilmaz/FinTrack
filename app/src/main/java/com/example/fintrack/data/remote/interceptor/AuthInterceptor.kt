@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,6 +19,9 @@ class AuthInterceptor @Inject constructor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking { tokenManager.getToken().firstOrNull() }
+        if (token == null) {
+            Timber.d("Request sent without auth token: %s", chain.request().url)
+        }
         val languageCode = LocaleHelper.getLanguage(context)
         val request = chain.request().newBuilder().apply {
             token?.let { addHeader("Authorization", "Bearer $it") }

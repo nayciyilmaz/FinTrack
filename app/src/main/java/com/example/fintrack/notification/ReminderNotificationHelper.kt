@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.fintrack.MainActivity
 import com.example.fintrack.R
+import timber.log.Timber
 
 object ReminderNotificationHelper {
 
@@ -35,6 +36,7 @@ object ReminderNotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
+            Timber.w("Reminder notification skipped, POST_NOTIFICATIONS permission not granted")
             return
         }
 
@@ -59,5 +61,6 @@ object ReminderNotificationHelper {
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
+        Timber.d("Reminder notification shown: count=%d", count)
     }
 }

@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -78,6 +79,7 @@ class SignInViewModel @Inject constructor(
                     _actionState.value = SignInActionState(isSuccess = true)
                 }
                 is Resource.Error -> {
+                    Timber.w("Login failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         validationErrors = mapErrorToValidation(result.message, result.fieldErrors)
                     )
@@ -105,6 +107,7 @@ class SignInViewModel @Inject constructor(
                             _actionState.value = SignInActionState(isSuccess = true)
                         }
                         is Resource.Error -> {
+                            Timber.w("Google login failed: message=%s", authResult.message)
                             _uiState.value = _uiState.value.copy(
                                 validationErrors = SignInValidationErrors(emailError = authResult.message)
                             )
@@ -116,6 +119,7 @@ class SignInViewModel @Inject constructor(
                     _actionState.value = SignInActionState(isLoading = false)
                 }
             } catch (e: GetCredentialException) {
+                Timber.w(e, "Google sign-in cancelled or failed")
                 _uiState.value = _uiState.value.copy(
                     validationErrors = SignInValidationErrors(emailError = context.getString(R.string.sign_in_error_google_cancelled))
                 )

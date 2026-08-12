@@ -12,6 +12,7 @@ import com.example.fintrack.domain.model.AdvisorSummary
 import com.example.fintrack.domain.repository.AdvisorRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class AdvisorRepositoryImpl @Inject constructor(
@@ -25,8 +26,10 @@ class AdvisorRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(advisorMapper.toAdvisorSummary(advisorService.getSummary()))
         } catch (e: HttpException) {
+            Timber.e(e, "Get advisor summary failed")
             Resource.Error(message = networkErrorParser.parse(e)?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get advisor summary failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -35,8 +38,10 @@ class AdvisorRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(advisorService.getInsights().map { advisorMapper.toAdvisorInsight(it) })
         } catch (e: HttpException) {
+            Timber.e(e, "Get advisor insights failed")
             Resource.Error(message = networkErrorParser.parse(e)?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get advisor insights failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -46,8 +51,10 @@ class AdvisorRepositoryImpl @Inject constructor(
             val request = AdvisorAskRequestDto(categoryKey = categoryKey, question = question)
             Resource.Success(advisorMapper.toAdvisorInsight(advisorService.askQuestion(request)))
         } catch (e: HttpException) {
+            Timber.e(e, "Ask advisor question failed")
             Resource.Error(message = networkErrorParser.parse(e)?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Ask advisor question failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -56,8 +63,10 @@ class AdvisorRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(advisorMapper.toAdvisorInsight(advisorService.refreshInsight(id)))
         } catch (e: HttpException) {
+            Timber.e(e, "Refresh advisor insight failed")
             Resource.Error(message = networkErrorParser.parse(e)?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Refresh advisor insight failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }

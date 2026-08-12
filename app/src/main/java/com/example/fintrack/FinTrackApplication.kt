@@ -8,6 +8,7 @@ import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.ThemeHelper
 import com.example.fintrack.notification.ReminderNotificationHelper
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -30,6 +31,9 @@ class FinTrackApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
         ReminderNotificationHelper.createChannel(this)
     }
 }

@@ -11,6 +11,7 @@ import com.example.fintrack.domain.model.Budget
 import com.example.fintrack.domain.repository.BudgetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class BudgetRepositoryImpl @Inject constructor(
@@ -25,9 +26,11 @@ class BudgetRepositoryImpl @Inject constructor(
             val response = budgetService.getBudgets()
             Resource.Success(response.map { budgetMapper.toBudget(it) })
         } catch (e: HttpException) {
+            Timber.e(e, "Get budgets failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get budgets failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -38,9 +41,11 @@ class BudgetRepositoryImpl @Inject constructor(
             val response = budgetService.saveBudgets(request)
             Resource.Success(response.map { budgetMapper.toBudget(it) })
         } catch (e: HttpException) {
+            Timber.e(e, "Save budgets failed")
             val errorDto = networkErrorParser.parse(e)
             Resource.Error(message = errorDto?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Save budgets failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }

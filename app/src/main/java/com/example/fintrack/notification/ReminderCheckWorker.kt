@@ -11,6 +11,7 @@ import com.example.fintrack.domain.usecase.GetReminderTransactionsUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.firstOrNull
+import timber.log.Timber
 import java.time.LocalDate
 
 @HiltWorker
@@ -36,6 +37,7 @@ class ReminderCheckWorker @AssistedInject constructor(
 
         val token = tokenManager.getToken().firstOrNull()
         if (token == null) {
+            Timber.d("Reminder check skipped, user not logged in: workName=%s", workName)
             scheduler.rescheduleNextDay(workName, targetHour, targetMinute)
             return Result.success()
         }
@@ -51,6 +53,7 @@ class ReminderCheckWorker @AssistedInject constructor(
                 Result.success()
             }
             is Resource.Error -> {
+                Timber.w("Reminder check failed: workName=%s, attempt=%d, message=%s", workName, runAttemptCount, result.message)
                 if (runAttemptCount < MAX_ATTEMPTS) {
                     Result.retry()
                 } else {

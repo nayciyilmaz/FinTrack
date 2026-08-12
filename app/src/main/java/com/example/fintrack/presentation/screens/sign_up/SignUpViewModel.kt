@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -108,6 +109,7 @@ class SignUpViewModel @Inject constructor(
                     _actionState.value = SignUpActionState(isSuccess = true)
                 }
                 is Resource.Error -> {
+                    Timber.w("Register failed: message=%s", result.message)
                     _uiState.value = _uiState.value.copy(
                         validationErrors = mapErrorToValidation(result.message, result.fieldErrors)
                     )

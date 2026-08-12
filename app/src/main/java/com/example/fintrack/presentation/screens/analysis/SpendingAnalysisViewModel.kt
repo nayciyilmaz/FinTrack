@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.TextStyle
 import javax.inject.Inject
@@ -68,6 +69,7 @@ class SpendingAnalysisViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
+                    Timber.w("Load category distribution failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(
                         isCategoryLoading = false,
                         isCategoryError = true
@@ -102,6 +104,7 @@ class SpendingAnalysisViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
+                    Timber.w("Load spending trend failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(
                         isTrendLoading = false,
                         isTrendError = true

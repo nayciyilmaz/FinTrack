@@ -11,6 +11,7 @@ import com.example.fintrack.domain.model.RecurringItem
 import com.example.fintrack.domain.repository.RecurringItemRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class RecurringItemRepositoryImpl @Inject constructor(
@@ -24,8 +25,10 @@ class RecurringItemRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(recurringItemService.getRecurringItems().map { recurringItemMapper.toRecurringItem(it) })
         } catch (e: HttpException) {
+            Timber.e(e, "Get recurring items failed")
             Resource.Error(message = networkErrorParser.parse(e)?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Get recurring items failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -35,8 +38,10 @@ class RecurringItemRepositoryImpl @Inject constructor(
             val request = RecurringItemUpdateRequestDto(amount = amount, dayOfMonth = dayOfMonth)
             Resource.Success(recurringItemMapper.toRecurringItem(recurringItemService.updateRecurringItem(id, request)))
         } catch (e: HttpException) {
+            Timber.e(e, "Update recurring item failed")
             Resource.Error(message = networkErrorParser.parse(e)?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Update recurring item failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }
@@ -46,8 +51,10 @@ class RecurringItemRepositoryImpl @Inject constructor(
             recurringItemService.deleteRecurringItem(id)
             Resource.Success(Unit)
         } catch (e: HttpException) {
+            Timber.e(e, "Delete recurring item failed")
             Resource.Error(message = networkErrorParser.parse(e)?.message ?: context.getString(R.string.error_generic_fallback))
         } catch (e: Exception) {
+            Timber.e(e, "Delete recurring item failed")
             Resource.Error(message = e.message ?: context.getString(R.string.error_generic_fallback))
         }
     }

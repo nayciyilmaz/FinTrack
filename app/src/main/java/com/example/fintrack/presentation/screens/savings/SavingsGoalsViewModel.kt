@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
@@ -158,6 +159,7 @@ class SavingsGoalsViewModel @Inject constructor(
                     estimatedDates = goals.associate { it.id to calculateEstimatedDate(it) }
                 )
             } else {
+                Timber.w("Load savings goals data failed")
                 _actionState.value = SavingsGoalsActionState(isError = true)
             }
         }
@@ -202,6 +204,7 @@ class SavingsGoalsViewModel @Inject constructor(
                     }
                 }
                 is Resource.Error -> {
+                    Timber.w("Add savings goal failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(isSaving = false)
                 }
                 is Resource.Loading -> Unit
@@ -247,6 +250,7 @@ class SavingsGoalsViewModel @Inject constructor(
                     }
                 }
                 is Resource.Error -> {
+                    Timber.w("Update savings goal failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(isSaving = false)
                 }
                 is Resource.Loading -> Unit
@@ -259,7 +263,7 @@ class SavingsGoalsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _actionState.value = _actionState.value.copy(isSaving = true)
-            when (deleteSavingsGoalUseCase(goalId)) {
+            when (val result = deleteSavingsGoalUseCase(goalId)) {
                 is Resource.Success -> {
                     val updatedGoals = _actionState.value.goals.filter { it.id != goalId }
                     _actionState.value = _actionState.value.copy(
@@ -270,6 +274,7 @@ class SavingsGoalsViewModel @Inject constructor(
                     _uiState.value = SavingsGoalsUiState()
                 }
                 is Resource.Error -> {
+                    Timber.w("Delete savings goal failed: message=%s", result.message)
                     _actionState.value = _actionState.value.copy(isSaving = false)
                 }
                 is Resource.Loading -> Unit
