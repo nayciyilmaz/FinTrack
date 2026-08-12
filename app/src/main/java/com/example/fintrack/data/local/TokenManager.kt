@@ -19,7 +19,8 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 @Singleton
 class TokenManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val tokenCrypto: TokenCrypto
 ) {
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("auth_token")
@@ -31,16 +32,20 @@ class TokenManager @Inject constructor(
     val sessionExpired: SharedFlow<Unit> = _sessionExpired.asSharedFlow()
 
     suspend fun saveToken(token: String) {
-        context.dataStore.edit { it[TOKEN_KEY] = token }
+        context.dataStore.edit { it[TOKEN_KEY] = tokenCrypto.encrypt(token) }
     }
 
-    fun getToken(): Flow<String?> = context.dataStore.data.map { it[TOKEN_KEY] }
+    fun getToken(): Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[TOKEN_KEY]?.let { tokenCrypto.decrypt(it) }
+    }
 
     suspend fun saveRefreshToken(refreshToken: String) {
-        context.dataStore.edit { it[REFRESH_TOKEN_KEY] = refreshToken }
+        context.dataStore.edit { it[REFRESH_TOKEN_KEY] = tokenCrypto.encrypt(refreshToken) }
     }
 
-    fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { it[REFRESH_TOKEN_KEY] }
+    fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[REFRESH_TOKEN_KEY]?.let { tokenCrypto.decrypt(it) }
+    }
 
     suspend fun savePayday(payday: Int) {
         context.dataStore.edit { it[PAYDAY_KEY] = payday.toString() }
