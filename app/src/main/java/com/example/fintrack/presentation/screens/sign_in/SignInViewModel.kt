@@ -38,14 +38,16 @@ class SignInViewModel @Inject constructor(
     private val _actionState = MutableStateFlow(SignInActionState())
     val actionState: StateFlow<SignInActionState> = _actionState.asStateFlow()
 
-    private val googleSignInRequest = GetCredentialRequest.Builder()
-        .addCredentialOption(
-            GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(BuildConfig.GOOGLE_WEB_CLIENT_ID)
-                .build()
-        )
-        .build()
+    private val googleSignInRequest by lazy {
+        GetCredentialRequest.Builder()
+            .addCredentialOption(
+                GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+                    .build()
+            )
+            .build()
+    }
 
     fun onEmailChange(value: String) {
         _uiState.value = _uiState.value.copy(
