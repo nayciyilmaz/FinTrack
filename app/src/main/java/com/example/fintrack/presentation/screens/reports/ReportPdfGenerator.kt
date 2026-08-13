@@ -19,7 +19,6 @@ import com.example.fintrack.domain.model.Transaction
 import com.example.fintrack.domain.model.TransactionType
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 object ReportPdfGenerator {
 
