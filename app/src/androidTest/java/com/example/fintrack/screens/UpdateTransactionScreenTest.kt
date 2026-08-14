@@ -128,7 +128,7 @@ class UpdateTransactionScreenTest {
         val deleteButtonText = context.getString(R.string.label_delete)
         val confirmButtonText = context.getString(R.string.label_confirm_action)
 
-        composeRule.onNodeWithText(deleteButtonText).performClick()
+        composeRule.onNodeWithText(deleteButtonText).performScrollTo().performClick()
         composeRule.onNodeWithText(confirmButtonText).performClick()
 
         composeRule.waitUntil(timeoutMillis = 5000) {
