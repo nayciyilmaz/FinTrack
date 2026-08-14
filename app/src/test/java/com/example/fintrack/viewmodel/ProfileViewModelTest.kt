@@ -271,4 +271,75 @@ class ProfileViewModelTest {
         assertTrue(viewModel.uiState.value.shouldRecreateActivity)
         assertEquals("EUR_DISPLAY", viewModel.uiState.value.currentCurrencyDisplay)
     }
+
+    @Test
+    fun `onApplyCurrency does not mark activity for recreation when currency unchanged`() {
+        viewModel.onShowCurrencyDialog()
+        viewModel.onCurrencyOptionSelect("TRY_DISPLAY")
+
+        viewModel.onApplyCurrency()
+
+        assertFalse(viewModel.uiState.value.shouldRecreateActivity)
+    }
+
+    @Test
+    fun `onApplyLanguage marks activity for recreation when language changed`() {
+        viewModel.onShowLanguageDialog()
+        viewModel.onLanguageOptionSelect("EN_DISPLAY")
+
+        viewModel.onApplyLanguage()
+
+        assertTrue(viewModel.uiState.value.shouldRecreateActivity)
+        assertEquals("EN_DISPLAY", viewModel.uiState.value.currentLanguageDisplay)
+    }
+
+    @Test
+    fun `onApplyFontSize marks activity for recreation when font size changed`() {
+        viewModel.onShowFontSizeDialog()
+        viewModel.onFontSizeOptionSelect("LARGE_DISPLAY")
+
+        viewModel.onApplyFontSize()
+
+        assertTrue(viewModel.uiState.value.shouldRecreateActivity)
+        assertEquals("LARGE_DISPLAY", viewModel.uiState.value.currentFontSizeDisplay)
+    }
+
+    @Test
+    fun `onApplyTheme marks activity for recreation when theme changed`() {
+        viewModel.onShowDarkModeDialog()
+        viewModel.onDarkModeOptionSelect("DARK_DISPLAY")
+
+        viewModel.onApplyTheme()
+
+        assertTrue(viewModel.uiState.value.shouldRecreateActivity)
+        assertEquals("DARK_DISPLAY", viewModel.uiState.value.currentThemeDisplay)
+    }
+
+    @Test
+    fun `onUpdateEmail sets field error when api call fails`() = runTest {
+        viewModel.onEmailInputChange("taken@example.com")
+        coEvery { updateUserEmailUseCase("taken@example.com") } returns Resource.Error(
+            "Email already in use", fieldErrors = mapOf("email" to "Already taken")
+        )
+
+        viewModel.onUpdateEmail()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("Already taken", viewModel.uiState.value.editState.emailError)
+    }
+
+    @Test
+    fun `onUpdatePassword sets field error when api call fails`() = runTest {
+        viewModel.onCurrentPasswordInputChange("wrongpass")
+        viewModel.onNewPasswordInputChange("newpass123")
+        viewModel.onConfirmPasswordInputChange("newpass123")
+        coEvery { updateUserPasswordUseCase("wrongpass", "newpass123") } returns Resource.Error(
+            "Validation failed", fieldErrors = mapOf("current_password" to "Incorrect password")
+        )
+
+        viewModel.onUpdatePassword()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("Incorrect password", viewModel.uiState.value.editState.currentPasswordError)
+    }
 }

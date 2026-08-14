@@ -15,12 +15,15 @@ import okhttp3.Response
 import okhttp3.Route
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class TokenAuthenticator @Inject constructor(
     private val tokenManager: TokenManager,
-    private val json: Json
+    private val json: Json,
+    @Named("tokenRefreshClient") private val refreshHttpClient: OkHttpClient,
+    @Named("tokenRefreshUrl") private val refreshUrl: String
 ) : Authenticator {
 
     private val lock = Any()
@@ -50,16 +53,15 @@ class TokenAuthenticator @Inject constructor(
             }
 
             return try {
-                val client = OkHttpClient.Builder().build()
                 val body = json.encodeToString(RefreshRequestDto.serializer(), RefreshRequestDto(refreshToken))
                     .toRequestBody("application/json".toMediaType())
 
                 val refreshRequest = Request.Builder()
-                    .url("http://10.0.2.2:8080/api/auth/refresh")
+                    .url(refreshUrl)
                     .post(body)
                     .build()
 
-                val refreshResponse = client.newCall(refreshRequest).execute()
+                val refreshResponse = refreshHttpClient.newCall(refreshRequest).execute()
 
                 if (refreshResponse.isSuccessful) {
                     val responseBody = refreshResponse.body?.string() ?: return null

@@ -20,6 +20,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -33,6 +34,15 @@ object NetworkModule {
         coerceInputValues = true
         encodeDefaults = true
     }
+
+    @Provides
+    @Singleton
+    @Named("tokenRefreshClient")
+    fun provideTokenRefreshClient(): OkHttpClient = OkHttpClient.Builder().build()
+
+    @Provides
+    @Named("tokenRefreshUrl")
+    fun provideTokenRefreshUrl(): String = "http://10.0.2.2:8080/api/auth/refresh"
 
     @Provides
     @Singleton

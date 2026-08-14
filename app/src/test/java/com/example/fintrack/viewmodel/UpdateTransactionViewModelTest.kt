@@ -152,4 +152,37 @@ class UpdateTransactionViewModelTest {
 
         assertTrue(viewModel.actionState.value.isSuccess)
     }
+
+    @Test
+    fun `updateTransaction sets error state when recurring item update fails`() = runTest {
+        val viewModel = buildViewModel(recurringItemId = 10L)
+        coEvery { updateRecurringItemUseCase(10L, 50.0, 15) } returns Resource.Error("network error")
+
+        viewModel.updateTransaction()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertTrue(viewModel.actionState.value.isError)
+    }
+
+    @Test
+    fun `deleteTransaction sets error state when normal transaction delete fails`() = runTest {
+        val viewModel = buildViewModel()
+        coEvery { deleteTransactionUseCase(1L) } returns Resource.Error("network error")
+
+        viewModel.deleteTransaction()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertTrue(viewModel.actionState.value.isError)
+    }
+
+    @Test
+    fun `deleteTransaction sets error state when recurring item delete fails`() = runTest {
+        val viewModel = buildViewModel(recurringItemId = 10L)
+        coEvery { deleteRecurringItemUseCase(10L) } returns Resource.Error("network error")
+
+        viewModel.deleteTransaction()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertTrue(viewModel.actionState.value.isError)
+    }
 }
