@@ -167,6 +167,9 @@
     <string name="label_fintrack_assistant">FinTrack-Assistent</string>
     <string name="label_financial_health_score">Finanzieller Gesundheitswert</string>
     <string name="label_risk_level">Risikostufe</string>
+    <string name="risk_level_high">Hoch</string>
+    <string name="risk_level_medium">Mittel</string>
+    <string name="risk_level_low">Niedrig</string>
     <string name="quick_question_category_expense">Ausgaben</string>
     <string name="quick_question_category_analysis">Analyse</string>
     <string name="quick_question_category_budget">Budget &amp; Limits</string>
@@ -212,6 +215,11 @@
     <string name="report_content_category_analysis_desc">Ausgabenverteilung</string>
     <string name="report_content_spending_trend">Ausgabentrend</string>
     <string name="report_content_spending_trend_desc">Ausgabendiagramm für den Zeitraum</string>
+    <string name="label_spending_period_day">Tag</string>
+    <string name="label_spending_period_week">Woche</string>
+    <string name="label_spending_period_month">Monat</string>
+    <string name="label_spending_summary_highest">Höchste Ausgaben %1$s</string>
+    <string name="label_spending_summary_lowest">Niedrigste Ausgaben %1$s</string>
     <string name="report_content_budget_limits_desc">Status der Kategorielimits</string>
     <string name="report_content_savings_goals_desc">Fortschritt bei Sparzielen</string>
     <string name="report_period">Berichtszeitraum</string>

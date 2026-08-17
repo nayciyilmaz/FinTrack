@@ -57,6 +57,15 @@ class ProfileViewModel @Inject constructor(
     )
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
+    fun refreshLocalizedDisplayValues() {
+        _uiState.value = _uiState.value.copy(
+            currentLanguageDisplay = languageDisplayName(LocaleHelper.getLanguage(context)),
+            currentCurrencyDisplay = currencyDisplayName(CurrencyHelper.getCurrency(context)),
+            currentThemeDisplay = themeDisplayName(ThemeHelper.getTheme(context)),
+            currentFontSizeDisplay = fontSizeDisplayName(FontSizeHelper.getFontSize(context))
+        )
+    }
+
     fun onShowNameDialog() {
         _uiState.value = _uiState.value.copy(
             editState = ProfileEditState(
@@ -210,20 +219,26 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun localizedContext(): Context {
+        return LocaleHelper.setLocale(context, LocaleHelper.getLanguage(context))
+    }
+
     private fun currencyDisplayName(currencyCode: String): String {
+        val localizedContext = localizedContext()
         return when (currencyCode) {
-            "TRY" -> context.getString(R.string.profile_currency_try)
-            "EUR" -> context.getString(R.string.profile_currency_eur)
-            "USD" -> context.getString(R.string.profile_currency_usd)
-            else -> context.getString(R.string.profile_currency_try)
+            "TRY" -> localizedContext.getString(R.string.profile_currency_try)
+            "EUR" -> localizedContext.getString(R.string.profile_currency_eur)
+            "USD" -> localizedContext.getString(R.string.profile_currency_usd)
+            else -> localizedContext.getString(R.string.profile_currency_try)
         }
     }
 
     private fun currencyCode(currencyDisplayName: String): String {
+        val localizedContext = localizedContext()
         return when (currencyDisplayName) {
-            context.getString(R.string.profile_currency_try) -> "TRY"
-            context.getString(R.string.profile_currency_eur) -> "EUR"
-            context.getString(R.string.profile_currency_usd) -> "USD"
+            localizedContext.getString(R.string.profile_currency_try) -> "TRY"
+            localizedContext.getString(R.string.profile_currency_eur) -> "EUR"
+            localizedContext.getString(R.string.profile_currency_usd) -> "USD"
             else -> "TRY"
         }
     }
@@ -255,19 +270,21 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun languageDisplayName(languageCode: String): String {
+        val localizedContext = localizedContext()
         return when (languageCode) {
-            "tr" -> context.getString(R.string.profile_language_tr)
-            "en" -> context.getString(R.string.profile_language_en)
-            "de" -> context.getString(R.string.profile_language_de)
-            else -> context.getString(R.string.profile_language_tr)
+            "tr" -> localizedContext.getString(R.string.profile_language_tr)
+            "en" -> localizedContext.getString(R.string.profile_language_en)
+            "de" -> localizedContext.getString(R.string.profile_language_de)
+            else -> localizedContext.getString(R.string.profile_language_tr)
         }
     }
 
     private fun languageCode(languageDisplayName: String): String {
+        val localizedContext = localizedContext()
         return when (languageDisplayName) {
-            context.getString(R.string.profile_language_tr) -> "tr"
-            context.getString(R.string.profile_language_en) -> "en"
-            context.getString(R.string.profile_language_de) -> "de"
+            localizedContext.getString(R.string.profile_language_tr) -> "tr"
+            localizedContext.getString(R.string.profile_language_en) -> "en"
+            localizedContext.getString(R.string.profile_language_de) -> "de"
             else -> "tr"
         }
     }
@@ -295,17 +312,19 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun fontSizeDisplayName(fontSize: String): String {
+        val localizedContext = localizedContext()
         return when (fontSize) {
-            "small" -> context.getString(R.string.profile_font_size_small)
-            "large" -> context.getString(R.string.profile_font_size_large)
-            else -> context.getString(R.string.profile_font_size_medium)
+            "small" -> localizedContext.getString(R.string.profile_font_size_small)
+            "large" -> localizedContext.getString(R.string.profile_font_size_large)
+            else -> localizedContext.getString(R.string.profile_font_size_medium)
         }
     }
 
     private fun fontSizeCode(fontSizeDisplayName: String): String {
+        val localizedContext = localizedContext()
         return when (fontSizeDisplayName) {
-            context.getString(R.string.profile_font_size_small) -> "small"
-            context.getString(R.string.profile_font_size_large) -> "large"
+            localizedContext.getString(R.string.profile_font_size_small) -> "small"
+            localizedContext.getString(R.string.profile_font_size_large) -> "large"
             else -> "medium"
         }
     }
@@ -333,17 +352,19 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun themeDisplayName(theme: String): String {
+        val localizedContext = localizedContext()
         return when (theme) {
-            "light" -> context.getString(R.string.profile_dark_mode_light)
-            "dark" -> context.getString(R.string.profile_dark_mode_dark)
-            else -> context.getString(R.string.profile_dark_mode_light)
+            "light" -> localizedContext.getString(R.string.profile_dark_mode_light)
+            "dark" -> localizedContext.getString(R.string.profile_dark_mode_dark)
+            else -> localizedContext.getString(R.string.profile_dark_mode_light)
         }
     }
 
     private fun themeCode(themeDisplayName: String): String {
+        val localizedContext = localizedContext()
         return when (themeDisplayName) {
-            context.getString(R.string.profile_dark_mode_light) -> "light"
-            context.getString(R.string.profile_dark_mode_dark) -> "dark"
+            localizedContext.getString(R.string.profile_dark_mode_light) -> "light"
+            localizedContext.getString(R.string.profile_dark_mode_dark) -> "dark"
             else -> "light"
         }
     }

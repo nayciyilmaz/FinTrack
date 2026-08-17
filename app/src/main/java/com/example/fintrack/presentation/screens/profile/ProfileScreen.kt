@@ -71,6 +71,7 @@ fun ProfileScreen(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 viewModel.loadData()
+                viewModel.refreshLocalizedDisplayValues()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)

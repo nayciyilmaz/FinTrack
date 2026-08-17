@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.example.fintrack.R
 import com.example.fintrack.presentation.screens.profile.ProfileDialogType
 import com.example.fintrack.presentation.screens.profile.ProfileViewModel
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.model.SavingsGoal
 import com.example.fintrack.domain.model.Transaction
@@ -22,6 +23,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -87,6 +90,9 @@ class ProfileViewModelTest {
         every { context.getString(R.string.profile_dark_mode_dark) } returns "DARK_DISPLAY"
         every { context.getString(R.string.profile_password_mismatch) } returns "Passwords do not match"
 
+        mockkObject(LocaleHelper)
+        every { LocaleHelper.setLocale(any(), any()) } returns context
+
         viewModel = ProfileViewModel(
             getUserProfileUseCase, getTransactionsUseCase, getSavingsGoalsUseCase, logoutUseCase,
             updateUserNameUseCase, updateUserEmailUseCase, updateUserPasswordUseCase,
@@ -97,6 +103,7 @@ class ProfileViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkObject(LocaleHelper)
     }
 
     private fun buildProfile() = UserProfile(

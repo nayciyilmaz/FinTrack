@@ -3,6 +3,7 @@ package com.example.fintrack.presentation.screens.analysis
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fintrack.R
 import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.core.util.apiDateFormatter
@@ -255,23 +256,28 @@ class SpendingAnalysisViewModel @Inject constructor(
         val highItem = trendData.maxBy { it.amount }
         val lowItem = trendData.minBy { it.amount }
 
+        val localizedContext = localizedContext()
         val summaryLabel = when (periodIndex) {
-            0, 1 -> "Gün"
-            3 -> "Hafta"
-            else -> "Ay"
+            0, 1 -> localizedContext.getString(R.string.label_spending_period_day)
+            3 -> localizedContext.getString(R.string.label_spending_period_week)
+            else -> localizedContext.getString(R.string.label_spending_period_month)
         }
 
         return Pair(
             SpendingSummary(
-                label = "En Çok Harcanan $summaryLabel",
+                label = localizedContext.getString(R.string.label_spending_summary_highest, summaryLabel),
                 date = highItem.detailLabel,
                 amount = highItem.amount.toDouble()
             ),
             SpendingSummary(
-                label = "En Az Harcanan $summaryLabel",
+                label = localizedContext.getString(R.string.label_spending_summary_lowest, summaryLabel),
                 date = lowItem.detailLabel,
                 amount = lowItem.amount.toDouble()
             )
         )
+    }
+
+    private fun localizedContext(): Context {
+        return LocaleHelper.setLocale(context, LocaleHelper.getLanguage(context))
     }
 }

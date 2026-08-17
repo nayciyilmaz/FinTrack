@@ -167,6 +167,9 @@
     <string name="label_fintrack_assistant">FinTrack Assistant</string>
     <string name="label_financial_health_score">Financial Health Score</string>
     <string name="label_risk_level">Risk Level</string>
+    <string name="risk_level_high">High</string>
+    <string name="risk_level_medium">Medium</string>
+    <string name="risk_level_low">Low</string>
     <string name="quick_question_category_expense">Spending</string>
     <string name="quick_question_category_analysis">Analysis</string>
     <string name="quick_question_category_budget">Budget &amp; Limits</string>
@@ -212,6 +215,11 @@
     <string name="report_content_category_analysis_desc">Spending distribution</string>
     <string name="report_content_spending_trend">Spending Trend</string>
     <string name="report_content_spending_trend_desc">Spending chart over the period</string>
+    <string name="label_spending_period_day">Day</string>
+    <string name="label_spending_period_week">Week</string>
+    <string name="label_spending_period_month">Month</string>
+    <string name="label_spending_summary_highest">Highest Spending %1$s</string>
+    <string name="label_spending_summary_lowest">Lowest Spending %1$s</string>
     <string name="report_content_budget_limits_desc">Category limit statuses</string>
     <string name="report_content_savings_goals_desc">Savings and goal progress</string>
     <string name="report_period">Report Period</string>

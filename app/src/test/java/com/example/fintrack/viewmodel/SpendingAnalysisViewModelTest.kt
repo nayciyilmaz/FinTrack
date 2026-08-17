@@ -2,6 +2,7 @@ package com.example.fintrack.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.fintrack.core.util.LocaleHelper
 import com.example.fintrack.core.util.Resource
 import com.example.fintrack.presentation.screens.analysis.SpendingAnalysisViewModel
 import com.example.fintrack.domain.model.Transaction
@@ -10,6 +11,9 @@ import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import com.example.fintrack.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -45,6 +49,15 @@ class SpendingAnalysisViewModelTest {
         every { context.getSharedPreferences(any(), any()) } returns sharedPreferences
         every { sharedPreferences.getString(any(), any()) } answers { secondArg() }
 
+        mockkObject(LocaleHelper)
+        every { LocaleHelper.setLocale(any(), any()) } returns context
+
+        every { context.getString(R.string.label_spending_period_day) } returns "Day"
+        every { context.getString(R.string.label_spending_period_week) } returns "Week"
+        every { context.getString(R.string.label_spending_period_month) } returns "Month"
+        every { context.getString(R.string.label_spending_summary_highest, any()) } returns "Highest"
+        every { context.getString(R.string.label_spending_summary_lowest, any()) } returns "Lowest"
+
         coEvery { getTransactionsUseCase(TransactionType.EXPENSE, any(), any()) } returns initialResult
 
         viewModel = SpendingAnalysisViewModel(getTransactionsUseCase, context)
@@ -53,6 +66,7 @@ class SpendingAnalysisViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkObject(LocaleHelper)
     }
 
     @Test

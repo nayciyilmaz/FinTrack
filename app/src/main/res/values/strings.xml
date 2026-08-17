@@ -167,6 +167,9 @@
     <string name="label_fintrack_assistant">FinTrack Asistan</string>
     <string name="label_financial_health_score">Finansal Sağlık Skoru</string>
     <string name="label_risk_level">Risk Seviyesi</string>
+    <string name="risk_level_high">Yüksek</string>
+    <string name="risk_level_medium">Orta</string>
+    <string name="risk_level_low">Düşük</string>
     <string name="quick_question_category_expense">Harcama</string>
     <string name="quick_question_category_analysis">Analiz</string>
     <string name="quick_question_category_budget">Bütçe ve Limitler</string>
@@ -212,6 +215,11 @@
     <string name="report_content_category_analysis_desc">Harcama dağılımı</string>
     <string name="report_content_spending_trend">Harcama Trendi</string>
     <string name="report_content_spending_trend_desc">Dönem içi harcama grafiği</string>
+    <string name="label_spending_period_day">Gün</string>
+    <string name="label_spending_period_week">Hafta</string>
+    <string name="label_spending_period_month">Ay</string>
+    <string name="label_spending_summary_highest">En Çok Harcanan %1$s</string>
+    <string name="label_spending_summary_lowest">En Az Harcanan %1$s</string>
     <string name="report_content_budget_limits_desc">Kategori limit durumları</string>
     <string name="report_content_savings_goals_desc">Tasarruf ve hedef ilerlemeleri</string>
     <string name="report_period">Rapor Dönemi</string>

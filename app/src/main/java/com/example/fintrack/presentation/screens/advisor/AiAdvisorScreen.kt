@@ -192,6 +192,16 @@ private fun QuickQuestionsDialog(
 }
 
 @Composable
+private fun riskLevelDisplayText(riskLevel: String): String {
+    return when (riskLevel) {
+        "HIGH" -> stringResource(id = R.string.risk_level_high)
+        "MEDIUM" -> stringResource(id = R.string.risk_level_medium)
+        "LOW" -> stringResource(id = R.string.risk_level_low)
+        else -> riskLevel
+    }
+}
+
+@Composable
 private fun AiAssistantCard(
     periodText: String,
     healthScore: Int,
@@ -299,7 +309,7 @@ private fun AiAssistantCard(
                         color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
-                        text = riskLevel,
+                        text = riskLevelDisplayText(riskLevel),
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
                         color = Color.White
                     )
