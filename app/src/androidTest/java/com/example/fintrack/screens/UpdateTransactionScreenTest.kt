@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.fintrack.R
+import com.example.fintrack.core.util.Resource
 import com.example.fintrack.domain.usecase.DeleteRecurringItemUseCase
 import com.example.fintrack.domain.usecase.DeleteTransactionUseCase
 import com.example.fintrack.domain.usecase.UpdateRecurringItemUseCase
@@ -119,6 +120,110 @@ class UpdateTransactionScreenTest {
         assert(fakeRecurringItemRepository.lastUpdateRecurringItemDayOfMonth == 11) {
             "Expected day of month 11 but was ${fakeRecurringItemRepository.lastUpdateRecurringItemDayOfMonth}"
         }
+    }
+
+    @Test
+    fun transactionTypeSelector_whenSwitchedToIncome_showsIncomeCategories() {
+        setUpdateTransactionContent(buildViewModel())
+
+        val incomeOptionText = context.resources.getStringArray(R.array.transaction_type_options)[1]
+        composeRule.onNodeWithText(incomeOptionText).performClick()
+
+        val salaryCategoryText = context.getString(R.string.category_maas)
+        composeRule.onNodeWithText(salaryCategoryText).assertIsDisplayed()
+    }
+
+    @Test
+    fun updateTransaction_whenAmountBlank_showsValidationError() {
+        setUpdateTransactionContent(buildViewModel())
+
+        composeRule.onNodeWithText("100").performTextReplacement("")
+
+        val saveButtonText = context.getString(R.string.label_save)
+        val errorText = context.getString(R.string.error_required_fields)
+
+        composeRule.onNodeWithText(saveButtonText).performScrollTo().performClick()
+        composeRule.onNodeWithText(errorText).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun updateTransaction_whenServerError_staysOnUpdateScreen() {
+        val fakeTransactionRepository = FakeTransactionRepository(
+            updateTransactionResult = Resource.Error(message = "Server error")
+        )
+        setUpdateTransactionContent(buildViewModel(fakeTransactionRepository = fakeTransactionRepository))
+
+        composeRule.onNodeWithText("100").performTextReplacement("250")
+
+        val saveButtonText = context.getString(R.string.label_save)
+        composeRule.onNodeWithText(saveButtonText).performScrollTo().performClick()
+
+        composeRule.waitUntil(timeoutMillis = 3000) {
+            composeRule.onAllNodesWithText(saveButtonText).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onAllNodesWithText("HOME_PLACEHOLDER").fetchSemanticsNodes().isEmpty()
+    }
+
+    @Test
+    fun updateRecurringItem_whenServerError_staysOnUpdateScreen() {
+        val fakeRecurringItemRepository = FakeRecurringItemRepository(
+            updateRecurringItemResult = Resource.Error(message = "Server error")
+        )
+        setUpdateTransactionContent(
+            buildViewModel(
+                fakeRecurringItemRepository = fakeRecurringItemRepository,
+                extraSavedState = mapOf("recurringItemId" to 5L)
+            )
+        )
+
+        val saveButtonText = context.getString(R.string.label_save)
+        composeRule.onNodeWithText(saveButtonText).performScrollTo().performClick()
+
+        composeRule.waitUntil(timeoutMillis = 3000) {
+            composeRule.onAllNodesWithText(saveButtonText).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onAllNodesWithText("HOME_PLACEHOLDER").fetchSemanticsNodes().isEmpty()
+    }
+
+    @Test
+    fun deleteRecurringItem_whenConfirmed_navigatesToHomeScreen() {
+        val fakeRecurringItemRepository = FakeRecurringItemRepository()
+        setUpdateTransactionContent(
+            buildViewModel(
+                fakeRecurringItemRepository = fakeRecurringItemRepository,
+                extraSavedState = mapOf("recurringItemId" to 5L)
+            )
+        )
+
+        val deleteButtonText = context.getString(R.string.label_delete)
+        val confirmButtonText = context.getString(R.string.label_confirm_action)
+
+        composeRule.onNodeWithText(deleteButtonText).performScrollTo().performClick()
+        composeRule.onNodeWithText(confirmButtonText).performClick()
+
+        composeRule.waitUntil(timeoutMillis = 5000) {
+            composeRule.onAllNodesWithText("HOME_PLACEHOLDER").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithText("HOME_PLACEHOLDER").assertIsDisplayed()
+    }
+
+    @Test
+    fun deleteTransaction_whenServerError_staysOnUpdateScreen() {
+        val fakeTransactionRepository = FakeTransactionRepository(
+            deleteTransactionResult = Resource.Error(message = "Server error")
+        )
+        setUpdateTransactionContent(buildViewModel(fakeTransactionRepository = fakeTransactionRepository))
+
+        val deleteButtonText = context.getString(R.string.label_delete)
+        val confirmButtonText = context.getString(R.string.label_confirm_action)
+
+        composeRule.onNodeWithText(deleteButtonText).performScrollTo().performClick()
+        composeRule.onNodeWithText(confirmButtonText).performClick()
+
+        composeRule.waitUntil(timeoutMillis = 3000) {
+            composeRule.onAllNodesWithText(deleteButtonText).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onAllNodesWithText("HOME_PLACEHOLDER").fetchSemanticsNodes().isEmpty()
     }
 
     @Test

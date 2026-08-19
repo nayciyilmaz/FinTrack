@@ -17,6 +17,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.fintrack.R
 import com.example.fintrack.core.util.CurrencyHelper
+import com.example.fintrack.core.util.Resource
+import com.example.fintrack.core.util.apiDateFormatter
+import com.example.fintrack.domain.model.Transaction
+import com.example.fintrack.domain.model.TransactionType
 import com.example.fintrack.domain.usecase.AddTransactionUseCase
 import com.example.fintrack.domain.usecase.GetTransactionsUseCase
 import com.example.fintrack.fake.FakeTransactionRepository
@@ -25,6 +29,7 @@ import com.example.fintrack.presentation.screens.transaction_add.AddTransactionS
 import com.example.fintrack.presentation.screens.transaction_add.AddTransactionViewModel
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDate
 
 class AddTransactionScreenTest {
 
@@ -93,6 +98,66 @@ class AddTransactionScreenTest {
             composeRule.onAllNodesWithText("HOME_PLACEHOLDER").fetchSemanticsNodes().isNotEmpty()
         }
         composeRule.onNodeWithText("HOME_PLACEHOLDER").assertIsDisplayed()
+    }
+
+    @Test
+    fun addTransaction_whenServerError_staysOnAddScreen() {
+        val fakeTransactionRepository = FakeTransactionRepository(
+            addTransactionResult = Resource.Error(message = "Server error")
+        )
+        setAddTransactionContent(buildViewModel(fakeTransactionRepository))
+
+        val categoryText = context.getString(R.string.category_market)
+        composeRule.onNodeWithText(categoryText).performClick()
+
+        val amountPlaceholder = context.getString(R.string.label_amount_placeholder, CurrencyHelper.getSymbol(context))
+        composeRule.onNodeWithText(amountPlaceholder).performTextInput("250")
+
+        val dateLabel = context.getString(R.string.label_date)
+        val timeLabel = context.getString(R.string.label_time)
+        val confirmText = context.getString(R.string.label_confirm)
+
+        composeRule.onNodeWithText(dateLabel).performClick()
+        composeRule.onNodeWithText(confirmText).performClick()
+
+        composeRule.onNodeWithText(timeLabel).performClick()
+        composeRule.onNodeWithText(confirmText).performClick()
+
+        val saveButtonText = context.getString(R.string.label_save)
+        composeRule.onNode(hasText(saveButtonText).and(hasClickAction())).performScrollTo().performClick()
+
+        composeRule.waitUntil(timeoutMillis = 3000) {
+            composeRule.onAllNodesWithText(saveButtonText).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onAllNodesWithText("HOME_PLACEHOLDER").fetchSemanticsNodes().isEmpty()
+    }
+
+    @Test
+    fun quickAddSuggestion_whenSelected_prefillsAmountField() {
+        val suggestedTransaction = Transaction(
+            id = 1L,
+            type = TransactionType.EXPENSE,
+            category = "MARKET",
+            amount = 500.0,
+            note = null,
+            date = LocalDate.now().minusDays(1).format(apiDateFormatter),
+            time = "10:00",
+            isRecurring = false,
+            isReminder = false,
+            createdAt = LocalDate.now().minusDays(1).format(apiDateFormatter)
+        )
+        val fakeTransactionRepository = FakeTransactionRepository(
+            getTransactionsResult = Resource.Success(listOf(suggestedTransaction))
+        )
+        setAddTransactionContent(buildViewModel(fakeTransactionRepository))
+
+        val symbol = CurrencyHelper.getSymbol(context)
+        composeRule.waitUntil(timeoutMillis = 5000) {
+            composeRule.onAllNodesWithText("${symbol}500").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithText("${symbol}500").performClick()
+
+        composeRule.onNodeWithText("500").assertIsDisplayed()
     }
 
     @Test

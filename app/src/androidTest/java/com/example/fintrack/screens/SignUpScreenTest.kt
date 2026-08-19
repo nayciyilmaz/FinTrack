@@ -33,10 +33,13 @@ class SignUpScreenTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private fun buildViewModel(fakeAuthRepository: FakeAuthRepository): SignUpViewModel {
+    private fun buildViewModel(
+        fakeAuthRepository: FakeAuthRepository,
+        fakeTransactionRepository: FakeTransactionRepository = FakeTransactionRepository()
+    ): SignUpViewModel {
         return SignUpViewModel(
             registerUseCase = RegisterUseCase(fakeAuthRepository),
-            addTransactionUseCase = AddTransactionUseCase(FakeTransactionRepository()),
+            addTransactionUseCase = AddTransactionUseCase(fakeTransactionRepository),
             context = context
         )
     }
@@ -97,6 +100,87 @@ class SignUpScreenTest {
             composeRule.onAllNodesWithText(errorMessage).fetchSemanticsNodes().isNotEmpty()
         }
         composeRule.onNodeWithText(errorMessage).assertIsDisplayed()
+    }
+
+    @Test
+    fun register_whenPaydayFieldErrorReturned_showsPaydayError() {
+        val paydayErrorMessage = "Payday must be between 1 and 31"
+        val viewModel = buildViewModel(
+            FakeAuthRepository(
+                registerResult = Resource.Error(
+                    message = "Validation failed",
+                    fieldErrors = mapOf("payday" to paydayErrorMessage)
+                )
+            )
+        )
+        setSignUpContent(viewModel)
+
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_first_name)).performTextInput("Test")
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_last_name)).performTextInput("User")
+        composeRule.onNodeWithText(context.getString(R.string.sign_in_email)).performTextInput("newuser@fintrack.com")
+        composeRule.onNodeWithText(context.getString(R.string.sign_in_password)).performTextInput("Password123")
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_payday)).performTextInput("99")
+
+        val registerButtonText = context.getString(R.string.sign_up_title)
+
+        composeRule.onNode(hasText(registerButtonText).and(hasClickAction())).performClick()
+        composeRule.waitUntil(timeoutMillis = 5000) {
+            composeRule.onAllNodesWithText(paydayErrorMessage).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithText(paydayErrorMessage).assertIsDisplayed()
+        composeRule.onAllNodesWithText("SIGN_IN_PLACEHOLDER").fetchSemanticsNodes().isEmpty()
+    }
+
+    @Test
+    fun register_whenSalaryProvided_createsSalaryTransaction() {
+        val fakeTransactionRepository = FakeTransactionRepository()
+        val viewModel = buildViewModel(FakeAuthRepository(), fakeTransactionRepository)
+        setSignUpContent(viewModel)
+
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_first_name)).performTextInput("Test")
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_last_name)).performTextInput("User")
+        composeRule.onNodeWithText(context.getString(R.string.sign_in_email)).performTextInput("newuser@fintrack.com")
+        composeRule.onNodeWithText(context.getString(R.string.sign_in_password)).performTextInput("Password123")
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_payday)).performTextInput("15")
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_salary)).performTextInput("25000")
+
+        val registerButtonText = context.getString(R.string.sign_up_title)
+
+        composeRule.onNode(hasText(registerButtonText).and(hasClickAction())).performClick()
+        composeRule.waitUntil(timeoutMillis = 5000) {
+            composeRule.onAllNodesWithText("SIGN_IN_PLACEHOLDER").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithText("SIGN_IN_PLACEHOLDER").assertIsDisplayed()
+        assert(fakeTransactionRepository.lastAddTransactionCategory == "SALARY") {
+            "Expected SALARY category but was ${fakeTransactionRepository.lastAddTransactionCategory}"
+        }
+        assert(fakeTransactionRepository.lastAddTransactionAmount == 25000.0) {
+            "Expected amount 25000.0 but was ${fakeTransactionRepository.lastAddTransactionAmount}"
+        }
+    }
+
+    @Test
+    fun register_whenSalaryEmpty_doesNotCreateSalaryTransaction() {
+        val fakeTransactionRepository = FakeTransactionRepository()
+        val viewModel = buildViewModel(FakeAuthRepository(), fakeTransactionRepository)
+        setSignUpContent(viewModel)
+
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_first_name)).performTextInput("Test")
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_last_name)).performTextInput("User")
+        composeRule.onNodeWithText(context.getString(R.string.sign_in_email)).performTextInput("newuser@fintrack.com")
+        composeRule.onNodeWithText(context.getString(R.string.sign_in_password)).performTextInput("Password123")
+        composeRule.onNodeWithText(context.getString(R.string.sign_up_payday)).performTextInput("15")
+
+        val registerButtonText = context.getString(R.string.sign_up_title)
+
+        composeRule.onNode(hasText(registerButtonText).and(hasClickAction())).performClick()
+        composeRule.waitUntil(timeoutMillis = 5000) {
+            composeRule.onAllNodesWithText("SIGN_IN_PLACEHOLDER").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithText("SIGN_IN_PLACEHOLDER").assertIsDisplayed()
+        assert(fakeTransactionRepository.lastAddTransactionCategory == null) {
+            "Expected no salary transaction but category was ${fakeTransactionRepository.lastAddTransactionCategory}"
+        }
     }
 
     @Test

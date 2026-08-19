@@ -119,6 +119,72 @@ class SignInScreenTest {
     }
 
     @Test
+    fun login_whenFieldErrorsReturned_showsPasswordFieldError() {
+        val passwordErrorMessage = "Password must be at least 8 characters"
+        val viewModel = buildViewModel(
+            FakeAuthRepository(
+                loginResult = Resource.Error(
+                    message = "Validation failed",
+                    fieldErrors = mapOf("password" to passwordErrorMessage)
+                )
+            )
+        )
+
+        val emailLabel = context.getString(R.string.sign_in_email)
+        val passwordLabel = context.getString(R.string.sign_in_password)
+        val loginButtonText = context.getString(R.string.sign_in_title)
+
+        composeRule.setContent {
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = FinTrackScreens.SignInScreen.route) {
+                composable(route = FinTrackScreens.SignInScreen.route) {
+                    SignInScreen(navController = navController, viewModel = viewModel)
+                }
+                composable(route = FinTrackScreens.HomeScreen.route) {
+                    Text("HOME_PLACEHOLDER")
+                }
+            }
+        }
+
+        composeRule.onNodeWithText(emailLabel).performTextInput("test@fintrack.com")
+        composeRule.onNodeWithText(passwordLabel).performTextInput("short")
+        composeRule.onNode(hasText(loginButtonText).and(hasClickAction())).performClick()
+
+        composeRule.waitUntil(timeoutMillis = 5000) {
+            composeRule.onAllNodesWithText(passwordErrorMessage).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithText(passwordErrorMessage).assertIsDisplayed()
+        composeRule.onAllNodesWithText("HOME_PLACEHOLDER").fetchSemanticsNodes().isEmpty()
+    }
+
+    @Test
+    fun forgotPassword_whenClicked_navigatesToForgotPasswordScreen() {
+        val viewModel = buildViewModel(FakeAuthRepository())
+        val forgotPasswordText = context.getString(R.string.sign_in_forgot_password)
+
+        composeRule.setContent {
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = FinTrackScreens.SignInScreen.route) {
+                composable(route = FinTrackScreens.SignInScreen.route) {
+                    SignInScreen(navController = navController, viewModel = viewModel)
+                }
+                composable(route = FinTrackScreens.ForgotPasswordScreen.route) {
+                    Text("FORGOT_PASSWORD_PLACEHOLDER")
+                }
+            }
+        }
+
+        composeRule.onNodeWithText(forgotPasswordText).performClick()
+
+        composeRule.waitUntil(timeoutMillis = 3000) {
+            composeRule.onAllNodesWithText("FORGOT_PASSWORD_PLACEHOLDER").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithText("FORGOT_PASSWORD_PLACEHOLDER").assertIsDisplayed()
+    }
+
+    @Test
     fun emailField_acceptsTextInput() {
         val viewModel = buildViewModel(FakeAuthRepository())
         val emailLabel = context.getString(R.string.sign_in_email)

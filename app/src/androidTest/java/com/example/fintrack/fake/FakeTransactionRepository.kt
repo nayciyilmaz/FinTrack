@@ -8,10 +8,15 @@ import com.example.fintrack.domain.repository.TransactionRepository
 class FakeTransactionRepository(
     private val addTransactionResult: Resource<Transaction>? = null,
     private val updateTransactionResult: Resource<Transaction>? = null,
-    private val deleteTransactionResult: Resource<Unit>? = null
+    private val deleteTransactionResult: Resource<Unit>? = null,
+    private val getTransactionsResult: Resource<List<Transaction>>? = null
 ) : TransactionRepository {
 
     var lastUpdateTransactionAmount: Double? = null
+        private set
+    var lastAddTransactionCategory: String? = null
+        private set
+    var lastAddTransactionAmount: Double? = null
         private set
 
     override suspend fun addTransaction(
@@ -24,6 +29,8 @@ class FakeTransactionRepository(
         recurring: Boolean,
         reminder: Boolean
     ): Resource<Transaction> {
+        lastAddTransactionCategory = category
+        lastAddTransactionAmount = amount
         return addTransactionResult ?: Resource.Success(
             Transaction(
                 id = 1L,
@@ -44,7 +51,7 @@ class FakeTransactionRepository(
         type: TransactionType?,
         startDate: String,
         endDate: String
-    ): Resource<List<Transaction>> = Resource.Success(emptyList())
+    ): Resource<List<Transaction>> = getTransactionsResult ?: Resource.Success(emptyList())
 
     override suspend fun updateTransaction(
         id: Long,
